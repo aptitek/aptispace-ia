@@ -1,0 +1,124 @@
+# 2. Réseaux de neurones
+
+## 2.1. L'Inspiration : Du Neurone Biologique au Modèle Formel
+
+L'intelligence artificielle n'est pas née de rien ; elle puise ses racines dans une tentative fascinante de modéliser mathématiquement le fonctionnement du cerveau humain. Pour comprendre comment une machine "apprend", nous devons d'abord observer la cellule élémentaire de notre propre intelligence : le neurone biologique. Dans notre système nerveux, un neurone reçoit des impulsions électriques, les intègre et décide, selon l'intensité reçue, de transmettre ou non un signal à ses voisins.
+
+*[Illustration : Insérez ici un schéma comparatif côte à côte montrant un neurone biologique (avec ses dendrites, son soma et son axone) et un perceptron artificiel basique.]*
+
+Le tableau suivant illustre la correspondance directe entre les structures du vivant et leur traduction informatique :
+
+| Composant Biologique | Composant Formel | Rôle Fonctionnel |
+| :--- | :--- | :--- |
+| **Dendrites** | Entrées ($x_i$) | Canaux de réception des signaux externes. |
+| **Corps Cellulaire** | Sommation ($\sum$) | Noyau de calcul qui fusionne les informations. |
+| **Synapse** | Poids ($w_i$) | Modulateur de la force du signal (efficience). |
+| **Axone** | Sortie ($y$) | Canal de transmission du signal final. |
+
+L’apprentissage, qu’il soit biologique ou artificiel, repose sur la **plasticité synaptique**. Contrairement à une idée reçue, l'intelligence ne provient pas de l'ajout de nouveaux neurones, mais de l'ajustement de la "force" de connexion entre eux. En IA, apprendre consiste à modifier ces poids pour renforcer les liens utiles et inhiber les informations parasites.
+
+Cette architecture biologique, bien que d'une complexité chimique immense, a été simplifiée par les chercheurs pour devenir un modèle mathématique rigoureux capable de traiter des données numériques.
+
+## 2.2. Les Briques Élémentaires : Anatomie du Neurone Formel
+
+Un neurone artificiel est une unité de traitement qui transforme des stimuli en une décision numérique. Pour y parvenir, il s'appuie sur quatre composants critiques :
+
+* **Les Entrées ($x_i$)** : Ce sont les données brutes (ex : la luminosité d'un pixel). Techniquement, on ajoute souvent une entrée fictive $x_0 = -1$ pour intégrer le biais dans le calcul global.
+* **Les Poids ($w_i$)** : Ce sont les leviers de l'apprentissage. Un poids positif ($w_i > 0$) correspond à une **synapse excitatrice** (il amplifie l'information), tandis qu'un poids négatif ($w_i < 0$) agit comme une **synapse inhibitrice** (il freine le signal).
+* **Le Biais ($b$ ou $w_0$)** : C'est une valeur qui permet de déplacer le seuil de déclenchement du neurone. Pédagogiquement, il représente la "sensibilité" du neurone : un biais élevé permet au neurone de s'activer plus facilement, même avec des entrées faibles.
+* **La Sortie ($y$)** : C'est le signal final, la réponse du neurone après avoir traité l'information.
+
+Une fois ces composants réunis, ils entrent en action via une opération centrale qui simule l'intégration des signaux par le corps cellulaire : la sommation pondérée.
+
+```{mermaid}
+graph LR
+    subgraph "Modèle du Neurone Artificiel"
+        direction LR
+        x1(("Entrée x₁")) -->|Poids w₁| Sum(("Σ (Somme)"))
+        x2(("Entrée x₂")) -->|Poids w₂| Sum
+        x3(("Entrée x₃")) -->|Poids w₃| Sum
+        b[/"Biais (b)"/] --> Sum
+        Sum -->|Signal s| Act["Fonction d'Activation (f)"]
+        Act --> y(("Sortie y"))
+    end
+    
+    style Sum fill:#f9f,stroke:#333,stroke-width:2px
+    style Act fill:#bbf,stroke:#333,stroke-width:2px
+```
+
+## 2.3. Le Cœur du Calcul : La Sommation Pondérée
+
+Le neurone effectue une synthèse de tous les stimuli reçus. Il ne se contente pas d'additionner les entrées, il pondère chacune d'elles pour refléter son importance.
+
+**Le mécanisme étape par étape :**
+1. **Pondération** : Chaque entrée ($x_i$) est multipliée par son poids respectif ($w_i$).
+2. **Sommation** : Le neurone additionne tous ces produits.
+3. **Ajustement du Biais** : On ajoute le biais ($b$) pour obtenir le niveau d'activation brut.
+
+Mathématiquement, cela correspond au calcul d'un hyperplan séparateur :
+$$s = \sum_{i=1}^{n} w_i x_i + b$$
+
+Le biais est ici crucial car il définit la "ligne de démarcation" (le seuil) à franchir. On peut aussi l'écrire $s = \sum w_i x_i - w_0$, où $w_0$ est le seuil de déclenchement que la somme des signaux doit impérativement dépasser pour que le neurone "s'allume".
+
+> **💡 Exemple Concret : La décision de jouer au tennis**
+> Imaginons un neurone qui doit décider si vous allez jouer au tennis ($1 = Oui$, $0 = Non$).
+> * $x_1$ (Il fait beau) = $1$. Son importance (poids $w_1$) est forte : $5$.
+> * $x_2$ (Vous êtes fatigué) = $1$. C'est un frein (poids inhibiteur $w_2$) : $-3$.
+> * Le Biais ($b$) est de $-2$ (votre flemme naturelle, il faut la surmonter).
+> * **Calcul :** $s = (1 \times 5) + (1 \times -3) - 2 = 0$.
+> La somme brute est nulle, l'information n'est pas assez forte pour surmonter le biais de flemme. Le neurone ne s'activera probablement pas.
+
+Ce résultat de somme ($s$) est une valeur brute qui doit encore être filtrée pour devenir une décision exploitable.
+
+## 2.4. La Prise de Décision : Les Fonctions d'Activation
+
+La fonction d'activation est le filtre final. Elle définit la "personnalité" du neurone en transformant la somme pondérée en un signal structuré.
+
+*[Illustration : Insérez ici un graphe regroupant les courbes des principales fonctions d'activation, montrant bien l'échelon de Heaviside, la courbe en "S" de la Sigmoïde, et la cassure à zéro de la ReLU.]*
+
+| Fonction d'Activation | Comportement | Usage & Nuances Pédagogiques |
+| :--- | :--- | :--- |
+| **Seuil (Heaviside)** | Retourne **0** ou **1** | Idéal pour les décisions binaires strictes (Oui/Non). |
+| **Linéaire** | Retourne la valeur brute ($y=s$) | Utilisée pour des prédictions numériques simples (Régression). |
+| **Sigmoïde** | Écrase la sortie entre **0** et **1** | Interprète la sortie comme une **probabilité**. *Note : elle sature pour les grandes valeurs et n'est pas centrée sur zéro*. |
+| **ReLU** | Bloque à **0** si $s < 0$, sinon garde $s$ | Standard moderne. Elle résout le problème de l'**évanouissement du gradient**, permettant d'entraîner des réseaux très profonds. |
+
+Le choix de cette fonction est déterminant : alors que la Sigmoïde est parfaite pour une probabilité finale, la fonction **Tangente Hyperbolique (Tanh)** est souvent préférée en interne car elle est "zéro-centrée" (entre -1 et 1), ce qui facilite l'optimisation mathématique du réseau.
+
+## 2.5. Synthèse : Le Voyage d'une Donnée dans le Neurone
+
+Le parcours d'une information au sein du neurone peut être résumé en cinq étapes clés :
+1. **Réception** : Captation des entrées ($x_i$).
+2. **Pondération** : Multiplication par les poids (excitateurs ou inhibiteurs).
+3. **Sommation** : Fusion des signaux et intégration du biais ($b$).
+4. **Activation** : Passage dans le filtre (ex: ReLU ou Sigmoïde).
+5. **Transmission** : Envoi du signal de sortie ($y$).
+
+**Le "So What ?" : Les deux piliers de l'IA**
+* **Les Poids ($w$)** représentent la **mémoire** et la **connaissance**. Apprendre, c'est ajuster ces poids pour que le réseau reconnaisse des motifs.
+* **L'Activation ($f$)** permet d'introduire la **complexité**. Sans elle, le réseau ne serait qu'une simple calculatrice linéaire incapable de s'adapter au monde réel.
+
+Cependant, un neurone seul a ses limites : il ne peut résoudre que des problèmes dits **"linéairement séparables"**. Cela signifie qu'il peut séparer des groupes de données par une simple ligne droite.
+
+Face à un problème comme le **OU-Exclusif (XOR)**, où les données sont croisées, un neurone unique est impuissant. C'est ce "mur" technique qui a poussé les chercheurs à organiser les neurones en couches multiples (Perceptron Multicouche) pour faire émerger l'intelligence complexe.
+
+```{mermaid}
+graph TD
+    subgraph "Limites du Neurone Simple vs Puissance du Réseau"
+        direction LR
+        N1(("Neurone Unique")) -.->|Ne peut tracer| L("Ligne Droite Uniquement")
+        L -.-> E1["Échoue sur le problème XOR"]
+        
+        R1(("Couche Cachée 1")) --> R2(("Couche Cachée 2"))
+        R2 --> S(("Sortie (Réseau)"))
+        S -.->|Peut tracer| C("Frontières Non-Linéaires")
+        C -.-> E2["Résout le problème XOR"]
+    end
+```
+
+## 2.6. Aide-Mémoire pour l'Apprenant
+
+**Ce qu'il faut retenir :**
+* **Le Signal 📡** : Les entrées sont les stimuli, la sortie est la décision finale.
+* **Le Poids ⚖️** : Il définit l'importance de l'info. L'apprentissage est l'ajustement de ces poids (plasticité).
+* **Le Seuil 🚪** : Le biais et la fonction d'activation décident si l'information est assez cruciale pour franchir la porte et être transmise.

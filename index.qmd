@@ -1,0 +1,88 @@
+# Intelligence Artificielle
+
+Ce cours porte sur l'Intelligence Artificielle. Nous allons explorer les bases de l'IA, ses applications et ses limites. 
+
+
+::: {.success header="Prérequis"}
+* Avoir des bases en mathématiques
+* Avoir des bases en Python
+* Maîtriser le terminal
+* Avoir des bases en anglais
+* (Savoir utiliser docker)
+:::
+
+## Plan du cours
+
+### 1. [Introduction](cours/1_introduction.qmd)
+* **Objectifs** :
+    - Comprendre ce qu'est l'IA
+    - Connaître les bases de l'histoire de l'IA
+    - Connaître les bases des différents types d'IA
+    - Base mathématique du deep learning
+    - Tenseurs, fonction d'activation, descente de gradient
+* **Pratique** :
+    - Rappels Python, introduction Jupyter
+    - Introduction et manipulation des tenseurs
+    - Génération de données avec NumPy
+    - Entraînement d'un modèle de régression linéaire
+* **Quizz** : Cluedo en groupe
+
+### 2. [Réseaux de neurones](cours/2_reseaux_de_neurones.qmd)
+* **Objectifs** :
+    - Comprendre ce qu'est un réseau de neurones
+    - Comprendre le fonctionnement d'un neurone
+    - Architecture en couches
+    - Limites des réseaux de neurones classiques
+    - Réseaux de neurones convolutifs (CNN)
+* **Pratique** :
+    - Importation de données
+    - Tensorflow Keras
+    - Fonction de perte et métriques
+    - Hyperparamètres
+    - Overfitting et underfitting
+* **Quizz** : Mot de passe
+* **Projet** : Étude de cas (Kaggle)
+
+### 3. [Prompt Engineering](cours/3_prompt_engineering.qmd)
+* **Objectifs** :
+    - Introduction aux modèles génératifs
+    - Espace latent, Auto-encodeurs, VAE
+    - Tokenisation, Embeddings
+    - Transformers, Attention, LLM
+    - Pilliers du Prompt engineering
+    - Contexte Window et Compression des Tokens
+    - Optimisations et fine tuning, Température
+    - Limites, biais, hallucinations
+    - Raisonnement
+    - Prompting avancé
+    - Introduction à la sécurité des IA
+* **Compétition** : Prompt Battle
+
+### 4. [Langchain](cours/4_langchain.qmd)
+* **Objectifs** :
+    - Introduction à Langchain
+    - System prompt, Rôle, Persona
+    - Chaînes de traitement
+    - Agents
+    - Outils et MCP
+* **Quizz** : Complétez la chaine
+* **Pratique** : 
+    - Création d'agents
+    - Manipulation de contexte
+    - Introduction à langchain
+    - Introduction au outils et MCP
+* **Projet** : Agent anti-arnaqueurs
+
+### 5. [Éthique](cours/5_ethique.qmd)
+* **Objectifs** :
+    - Introduction à l'éthique
+    - Explication des valeurs morales comme guide
+    - Concept de Responsabilité
+    - Comment gagner de la confiance avec l'IA ?
+    - Les 6 pilliers de la propriété
+    - Accessibilité et Abordabilité
+    - Équité et Justice (Gouvernance)
+* **Débats** : Quel sera l'IA parfaite selon vous ?
+* **Quizz** : Jeopardy
+    
+    

@@ -1,0 +1,144 @@
+---
+title: "1. Introduction"
+---
+
+L'intelligence artificielle a évolué d'une logique de règles statistiques simples vers des réseaux profonds capables de modéliser des complexités infinies. Ce cours explore l'anatomie de la donnée et la mécanique mathématique (le gradient) qui permet aux machines d'apprendre [@ibm_ai_ml_dl; @googlecloud_dl_ml_ai; @wiki_deep_learning].
+
+## 1.1. C'est quoi l'IA
+
+L'évolution de l'IA peut se résumer à une quête de flexibilité. Là où l'informatique classique utilise des règles figées ("Si A alors B"), l'IA moderne utilise des paramètres ajustables [@rpatech_ai_hierarchy]. Pour qu'une machine apprenne, elle doit minimiser une **Fonction de Perte** (notée $J$).
+
+| Type d'IA | Caractéristique Clé | Rôle du Gradient (Optimisation de $J$) |
+| :--- | :--- | :--- |
+| **ML Classique** | Modèles statistiques (Régression, SVM). | Trouve la "droite" ou la frontière qui sépare le mieux les données. |
+| **IA Générative** | Architectures profondes (Transformers, Diffusion). | Ajuste des milliards de poids pour prédire le prochain jeton (token) ou pixel avec cohérence. |
+| **AGI (Théorique)** | Polyvalence totale et multi-domaine. | Naviguerait dans des paysages de perte multi-objectifs extrêmement complexes. |
+
+::: {.info header="Le concept clé"}
+#### Apprendre, c'est minimiser l'erreur
+Imaginez que la fonction de perte $J$ est une chaîne de montagnes. L'IA est un alpiniste aveugle qui cherche le village au fond de la vallée (l'erreur minimale) en tâtant la pente sous ses pieds.
+:::
+
+```{mermaid}
+graph LR
+    A[Données Brutes] --> B(Modèle / Poids paramétrables)
+    B --> C{Prédiction}
+    C --> D((Calcul de l'Erreur <br/> Fonction J))
+    D -.->|Mise à jour des poids <br/> via le Gradient| B
+    style D fill:#ff9999,stroke:#333,stroke-width:2px
+    style B fill:#99ccff,stroke:#333,stroke-width:2px
+```
+**Schéma : Le cycle fondamental de l'apprentissage**
+
+
+---
+
+## 1.2. Les Tenseurs : Les briques élémentaires de la donnée
+
+Pour qu'un algorithme traite des données, il faut les transformer en structures géométriques. Le **Tenseur** est l'unité de stockage universelle en Deep Learning [@wandb_tensors; @deepai_tensor_definition]. C'est une généralisation multidimensionnelle d'un tableau (on parle souvent de *modes* ou de *voies* pour désigner ses dimensions). L'omniprésence des tenseurs s'explique par leur capacité à structurer massivement la donnée pour le calcul parallèle [@stackexchange_tensors].
+
+* **Scalaire (Ordre 0) :** Une magnitude pure, un nombre unique. $x \in \mathbb{R}$ (ex: le prix d'une maison).
+* **Vecteur (Ordre 1) :** Une direction et une magnitude. C'est un tenseur à 1 mode. $v \in \mathbb{R}^n$ (ex: les caractéristiques d'une maison : surface, nb de pièces).
+* **Matrice (Ordre 2) :** Une grille de nombres à 2 modes (lignes et colonnes). $M \in \mathbb{R}^{m \times n}$ (ex: un tableau Excel ou une image en niveaux de gris).
+* **Tenseur d'ordre supérieur (3D, 4D, etc.) :**
+    * **Image couleur :** Un tenseur 3D composé d'un empilement de 3 matrices (Rouge, Vert, Bleu). Format : $(C, H, W)$ pour Canaux, Hauteur, Largeur.
+    * **Vidéo :** Une séquence temporelle d'images. C'est un tenseur 4D. Format : $(T, C, H, W)$ [@wiki_tensor_ml].
+
+
+```{mermaid}
+graph TD
+    S[Scalaire <br/> Ordre 0] -->|Ajout d'une dimension| V[Vecteur <br/> Ordre 1]
+    V -->|Ajout d'une dimension| M[Matrice <br/> Ordre 2]
+    M -->|Empilement / Profondeur| T[Tenseur <br/> Ordre 3 et +]
+```
+**Schéma : Hiérarchie des Tenseurs**
+
+---
+
+## 1.3. La Dérivée Directionnelle : Mesurer la pente dans le brouillard
+
+Dans un espace de données massives, il y a une infinité de directions possibles. Imaginez que vous êtes en un point $(a, b)$ de notre montagne. La **dérivée directionnelle** mesure la "raideur" de la pente si vous choisissez de marcher dans une direction spécifique définie par un vecteur $u$ [@libretexts_gradients; @nagy_directional_derivatives].
+
+Mathématiquement, pour une direction donnée par un vecteur unitaire $u$ (dont la norme $||u|| = 1$), la dérivée directionnelle de $f$ est donnée par le produit scalaire entre le gradient et ce vecteur :
+
+$$D_u f(a, b) = \nabla f(a, b) \cdot u$$
+
+::: {.warning header="Pourquoi l'unité est-elle importante ?"}
+L'utilisation d'un vecteur unitaire ($||u|| = 1$) est cruciale. Elle permet d'isoler l'effet de la *direction pure*. Si le vecteur n'était pas unitaire, la valeur de la pente dépendrait de la "force" de votre pas (la magnitude du déplacement) et non de la géométrie réelle du terrain. En IA, cela permet de comparer équitablement l'impact de chaque direction possible.
+:::
+
+---
+
+## 1.4. Le Gradient : La boussole de l'ascension (et de la descente)
+
+Le Gradient, noté $\nabla f$, est un vecteur qui regroupe toutes les dérivées partielles d'une fonction par rapport à chaque variable [@libretexts_gradients]. C'est l'outil mathématique qui dit à l'IA : *"Pour augmenter l'erreur le plus vite possible, va par là"*.
+
+Pour une fonction à plusieurs variables, il se définit comme :
+
+$$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\ \frac{\partial f}{\partial x_2} \\ \vdots \\ \frac{\partial f}{\partial x_n} \end{bmatrix}$$
+
+Pour une fonction de deux variables, cela s'écrit simplement $\nabla f = \langle f_x, f_y \rangle = \left\langle \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right\rangle$.
+
+::: {.info header="Les deux règles d'or du Gradient"}
+1.  **La Direction :** Il pointe toujours vers le sommet le plus raide (la direction où la dérivée directionnelle atteint sa valeur maximale) [@zhang2024demystifying]. Il est également toujours orthogonal aux lignes de niveau (les courbes d'égale altitude).
+2.  **La Magnitude :** Sa norme $||\nabla f||$ indique si la pente est un mur abrupt ou une légère inclinaison. Si le gradient est nul, la pente est plate : vous êtes au sommet, au fond de la vallée, ou sur un point selle.
+:::
+
+:::{.success header="Note"}
+En intelligence artificielle, nous utilisons cette boussole de manière *inversée*. Nous cherchons non pas à monter, mais à descendre vers le point d'erreur minimale.
+:::
+
+---
+
+## 1.5. L'Apprentissage : Descente de Gradient et Backpropagation
+
+### 1.5.1 La Descente de Gradient
+C'est l'algorithme qui met à jour les poids $\theta$ (les paramètres du cerveau de l'IA). On soustrait le gradient pour aller à l'opposé de la montée [@santopaolo2025optimizers] :
+
+$$\theta_{new} = \theta_{old} - \eta \cdot \nabla J(\theta)$$
+
+*Où $\eta$ (Alpha ou Eta) est le **taux d'apprentissage** (la taille de votre pas).*
+
+### 1.5.2 Les Fonctions d'Activation : Ajouter de la courbure
+Sans elles, un réseau de neurones ne serait qu'une suite de multiplications linéaires (ce qui équivaut à une simple droite, incapable de résoudre des problèmes complexes). Elles introduisent de la non-linéarité pour "tordre" le paysage [@google_ml_glossary].
+
+| Fonction | Équation | Plage | Utilité |
+| :--- | :--- | :--- | :--- |
+| **Sigmoïde** | $\sigma(x) = \frac{1}{1 + e^{-x}}$ | $[0, 1]$ | Utile historiquement pour simuler une activation "tout ou rien" d'un neurone. |
+| **ReLU** | $f(x) = \max(0, x)$ | $[0, \infty[$ | Le standard moderne. Élimine les signaux négatifs et évite la disparition du gradient (Vanishing Gradient). |
+| **Softmax** | $\frac{e^{z_i}}{\sum e^{z_j}}$ | $[0, 1]$ | Cruciale pour la sortie en classification : transforme des scores en une distribution de probabilités (total = 100%). |
+
+### 1.5.3 Le Moteur : Backpropagation et Règle de la Chaîne
+L'apprentissage est une suite d'opérations matricielles reposant sur la **Règle de la Chaîne** (Chain Rule) [@torralba2024backprop; @nielsen2015backprop]. Imaginez un réseau à 3 couches : $A \rightarrow B \rightarrow C$. Pour savoir comment ajuster $A$ pour corriger une erreur en $C$, on multiplie les influences locales [@picklai_backprop] :
+
+$$\frac{\partial C}{\partial A} = \frac{\partial C}{\partial B} \times \frac{\partial B}{\partial A}$$
+
+* **Pass Avant (Forward) :** Les données traversent les couches et subissent des transformations linéaires et non-linéaires.
+* **Pass Arrière (Backward) :** On remonte de l'erreur vers les poids [@ibm_what_is_backprop]. En pratique, c'est une séquence de multiplications matricielles utilisant souvent la transposée des matrices de poids ($W^T$) pour ajuster chaque paramètre proportionnellement à sa contribution à l'erreur finale [@wiki_backprop].
+
+
+```{mermaid}
+graph LR
+    X((Entrée X)) -->|Forward| H((Couche Cachée))
+    H -->|Forward| Y((Prédiction Y))
+    Y --> J[Erreur / Loss]
+    J -.->|Backward : Calcul dJ/dW| H
+    H -.->|Backward : Propagation| X
+    style J fill:#ff9999
+    style X fill:#ccffcc
+    style Y fill:#ccffcc
+```
+**Schéma : Forward et Backward Pass*
+
+## 1.6. Synthèse : Ce qu'il faut retenir du flux de l'IA
+
+Pour résumer le cycle de vie d'une donnée dans un modèle d'IA [@comp_arch_deep_learning] :
+
+* [x] Les Tenseurs sont les conteneurs : Ils permettent d'organiser les données en multiples "modes" (dimensions) pour que le gradient soit calculé simultanément sur des millions de paramètres.
+* [x] Le Gradient est la boussole d'erreur : En calculant le vecteur des dérivées partielles \langle f_x, f_y, ... \rangle, l'IA sait exactement comment modifier chaque poids pour réduire la perte.
+* [x] La Règle de la Chaîne est le moteur de l'apprentissage : C'est elle qui permet de décomposer la perte globale en ajustements locaux précis via des multiplications de matrices transposées (W^T).
+
+# Bibliographie
+
+::: {#refs}
+:::
