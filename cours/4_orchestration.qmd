@@ -1,0 +1,223 @@
+---
+title: "4. Orchestration & Agents : Quand le code prend le contrôle"
+---
+
+::: {.danger header="🧊 Icebreaker Séance 4 : Le Cerveau dans un Bocal"}
+**Script pour l'enseignant :**
+"Bonjour à tous ! Hier, nous avons appris à 'murmurer' à l'oreille des modèles. Mais jusqu'ici, nos IA sont comme des génies enfermés dans un bocal : elles savent tout, mais ne peuvent rien faire. Elles ne peuvent pas lire vos mails, pas vérifier la météo, pas exécuter un script Python. 
+Aujourd'hui, nous allons leur donner des bras, des jambes et un badge d'accès à votre système d'information. On passe de l'IA qui discute à l'IA qui agit."
+:::
+
+## 4.1 L'Orchestrateur : LangChain et le Réveil des Automates 🎮
+
+L'industrie de l'IA a opéré une mutation structurelle, délaissant les modèles génératifs isolés pour embrasser l'**Ingénierie Agentique**. Les modèles (LLM) sont brillants mais "congelés" : leurs connaissances s'arrêtent à leur date d'entraînement et ils sont incapables d'interagir nativement avec le monde réel. 
+
+L'enjeu n'est plus seulement de générer du texte, mais de mettre en place un **plan de contrôle** capable de transformer le LLM en un moteur de raisonnement capable de piloter des workflows complexes.
+
+### 4.1.1 LangChain : Le Système d'Exploitation de l'IA ⚙️
+
+LangChain s'est imposé comme la couche d'orchestration stratégique. Il ne s'agit pas d'une simple bibliothèque de fonctions, mais d'une architecture qui découple la logique métier du fournisseur de modèle. 
+
+
+
+Grâce à son interface standardisée, vous pouvez changer de "cerveau" (passer de GPT-4 à Claude ou Llama 3) sans réécrire une seule ligne de votre logique applicative. L'architecte doit cependant choisir entre deux modes d'exécution selon la prédictibilité souhaitée :
+
+| Caractéristique | Chaînes (Chains) | Agents |
+| :--- | :--- | :--- |
+| **Type de workflow** | Linéaire, scripté (A -> B -> C) | Dynamique, itératif |
+| **Flexibilité** | Faible (suit un rail rigide) | Élevée (s'adapte en temps réel) |
+| **Prévisibilité** | Totale (débogage facile) | Variable (dépend du raisonnement) |
+| **Usage idéal** | Résumés, traduction, pipelines ETL | Recherche ouverte, dépannage |
+
+
+
+### 4.1.2 Ingénierie Cognitive : Le System Prompt comme Architecture 🧠
+
+Le **System Prompt** n'est pas une simple consigne, c'est une architecture rhétorique qui cadre l'espace de probabilité du modèle. Pour éviter que l'IA ne soit qu'un "assistant trop poli" qui acquiesce à tout (sycophantisme), on utilise des techniques avancées :
+
+1. **Le Framing Block (Bloc de cadrage interne) :** On force le modèle à verbaliser son interprétation de la tâche dans un bloc de raisonnement obligatoire *avant* de répondre. Cela ancre la réponse dans une analyse logique plutôt que dans une réaction statistique immédiate.
+2. **Le Persona Design :** On définit une "parallaxe conceptuelle" (ex: "Agis comme un expert en cybersécurité doublé d'un pédagogue stoïcien"). Cela permet de saturer le modèle de priorités spécifiques et d'éviter les réponses génériques.
+
+```{mermaid}
+graph TD
+    A[Utilisateur] --> B{Orchestrateur LangChain}
+    B --> C[System Prompt & Persona]
+    B --> D[Mémoire à long terme]
+    B --> E[Outils externes]
+    C & D & E --> F[Moteur de Raisonnement LLM]
+    F --> G[Action déterministe ou Réponse]
+```
+
+---
+
+### 4.1.3 Aide-mémoire 📝
+- [ ] **Modèle vs Application :** Le LLM n'est pas l'application, c'est le moteur de raisonnement interchangeable.
+- [ ] **Chains :** Pour les processus prévisibles et répétitifs.
+- [ ] **Agents :** Pour les tâches complexes nécessitant de l'autonomie.
+- [ ] **Framing Block :** Technique pour forcer l'IA à réfléchir avant d'agir.
+
+### 4.1.4 Mini-Glossaire 📖
+- **Orchestration :** Coordination de plusieurs composants (modèles, bases de données, API) pour réaliser une tâche complexe.
+- **System Prompt :** Instructions de haut niveau définissant le rôle, les limites et la personnalité du modèle pour toute la session.
+- **Structured Output :** Technique forçant le modèle à répondre dans un format informatique (JSON/Zod) pour être lu par un programme classique.
+
+## 4.2 Mécanique du RAG : De l'Ingestion à la Recherche Hybride 🏗️
+
+Le **RAG (Retrieval-Augmented Generation)** est la réponse structurelle aux hallucinations des modèles. Au lieu de compter sur la mémoire statistique du LLM, on transforme celui-ci en un lecteur capable de consulter une bibliothèque privée avant de répondre [@ibm_2026_rag]. 
+
+### 4.2.1 Le Pipeline d'Ingestion : Préparer la matière brute 📥
+
+Avant de pouvoir poser une question, il faut transformer vos documents (PDF, Word, sites web) dans un format compréhensible par l'IA. C'est l'étape d'ingestion [@state_2026_agenticreport] :
+
+* **Le Chunking (Découpage) :** Un LLM a une fenêtre de contexte limitée. On ne lui donne pas un PDF de 500 pages d'un coup. On découpe le texte en "chunks" (morceaux). 
+    * *Stratégie Sémantique :* On découpe selon les thèmes pour ne pas couper une idée au milieu d'une phrase.
+    * *Overlap (Chevauchement) :* On garde un petit bout de la fin du chunk A au début du chunk B pour ne pas perdre le contexte aux frontières.
+* **L'Embedding (Vectorisation) :** Chaque morceau de texte est passé dans un modèle spécialisé qui le transforme en une suite de chiffres (un vecteur). Ce vecteur représente le "sens" mathématique du texte [@state_2026_agenticreport].
+
+### 4.2.2 Le Stockage : Les Bases de Données Vectorielles 🗄️
+
+Les vecteurs sont stockés dans des bases de données spécifiques (Pinecone, Milvus, ChromaDB). Le choix de l'indexation est un arbitrage crucial entre vitesse et coût [@state_2026_agenticreport] :
+
+| Algorithme | Support | Avantage | Inconvénient |
+| :--- | :--- | :--- | :--- |
+| **HNSW** | RAM (Mémoire vive) | Latence ultra-faible (1-2ms), idéal pour la réactivité. | Très coûteux à grande échelle. |
+| **DiskANN** | SSD / NVMe | Scalabilité massive, coût optimisé pour des téraoctets de données. | Latence légèrement supérieure. |
+
+
+
+### 4.2.3 La Recherche Hybride : Le meilleur des deux mondes 🔍
+
+Lorsqu'un utilisateur pose une question, le système ne se contente plus d'une simple recherche par mots-clés. Il effectue une **Recherche Hybride** [@state_2026_agenticreport] :
+
+1. **Recherche Vectorielle (Dense) :** Trouve les documents qui ont le même *sens* (ex: si vous cherchez "félin", il trouvera "chat"). Elle utilise la **similarité cosinus** pour mesurer l'angle entre deux vecteurs.
+2. **Recherche BM25 (Parcimonieuse) :** La recherche classique par mots-clés. Elle est indispensable pour trouver des termes très précis (codes produits, noms propres rares).
+3. **Le Re-ranker :** Un second modèle d'IA trie les résultats des deux méthodes pour ne garder que les 3 ou 5 morceaux les plus pertinents qui seront envoyés au LLM.
+
+```{mermaid}
+graph TD
+    A[Question Utilisateur] --> B(Embedding de la Question)
+    B --> C{Base Vectorielle}
+    C -->|Recherche Sémantique| D[Top Chunks Pertinents]
+    A -->|Recherche Mots-clés| D
+    D --> E[Modèle Re-ranker]
+    E --> F[Contexte Final purifié]
+    F --> G[LLM génère la réponse finalisée]
+```
+
+---
+
+### 4.2.4 Aide-mémoire 📝
+- [ ] **Chunking :** Ne jamais oublier le chevauchement (overlap) pour préserver le sens entre deux segments.
+- [ ] **Similarité Cosinus :** La méthode mathématique standard pour comparer deux vecteurs de sens.
+- [ ] **Re-ranking :** Étape indispensable pour ne pas polluer la fenêtre de contexte du LLM avec des documents moyennement pertinents.
+- [ ] **RAG vs Fine-Tuning :** Le RAG est préférable pour les données qui changent souvent (actualités, stocks, docs internes).
+
+### 4.2.5 Mini-Glossaire 📖
+- **Embedding :** Représentation numérique d'une donnée où la proximité mathématique équivaut à une proximité de sens.
+- **Similarité Cosinus :** Mesure de l'orientation relative de deux vecteurs ; plus l'angle est petit, plus les textes sont sémantiquement proches.
+- **HNSW (Hierarchical Navigable Small World) :** Algorithme de recherche de voisinage ultra-rapide utilisé dans les bases vectorielles.
+
+## 4.3 Agents Autonomes et Model Context Protocol (MCP) : L'Intégration Universelle 🤖
+
+Si le RAG donne la mémoire à l'IA, les **Agents** lui donnent des mains. Un agent autonome est un LLM orchestré de manière à pouvoir interagir avec son environnement. Il ne se contente pas de répondre à une question ; il évalue la situation, choisit un outil approprié (une calculatrice, un terminal bash, une API météo), s'en sert, observe le résultat, et ajuste sa stratégie.
+
+### 4.3.1 Le Cerveau de l'Agent : Le Framework ReAct 🧠
+
+Pour qu'un LLM puisse utiliser des outils sans se perdre, on utilise un cadre de raisonnement appelé **ReAct (Reasoning and Acting)** [@ibm_2026_react]. 
+
+Contrairement à la simple "Chain-of-Thought" (qui n'est qu'une réflexion interne vulnérable aux hallucinations), ReAct force l'agent à alterner entre le raisonnement et la réalité. La boucle typique est :
+1. **Thought (Pensée) :** "Je dois trouver la météo à Paris, je vais utiliser l'outil 'Weather_API'."
+2. **Action :** Appel de la fonction `get_weather("Paris")`.
+3. **Observation :** Le système retourne `{"temp": 15, "condition": "Rain"}`.
+4. **Thought :** "Il pleut à Paris. Je peux maintenant formuler ma réponse à l'utilisateur."
+
+### 4.3.2 Le Défi de l'Intégration et la Révolution MCP 🔌
+
+Jusqu'à récemment, l'intégration des outils posait un problème d'échelle (fragmentation "N x M"). Chaque fournisseur (OpenAI, Anthropic, Google) nécessitait du code personnalisé pour se connecter à chaque application d'entreprise (Slack, GitHub, Salesforce).
+
+En réponse, l'industrie a standardisé les échanges avec le **Model Context Protocol (MCP)**, que l'on peut voir comme le "port USB-C de l'Intelligence Artificielle" [@wikipedia_2026_mcp; @google_2026_mcpguide].
+
+L'architecture MCP repose sur trois entités communiquant via le format JSON-RPC 2.0 [@mcp_2025_spec] :
+* **Le Serveur MCP :** Le programme léger qui expose vos données ou vos outils de manière standardisée (ex: un serveur MCP qui lit votre base de données PostgreSQL).
+* **Le Client MCP :** Le connecteur qui interroge le serveur (souvent intégré dans LangChain).
+* **L'Hôte :** L'application IA finale avec laquelle l'utilisateur interagit.
+
+
+
+### 4.3.3 Divulgation Progressive et Sécurité 🔒
+
+Un défi majeur avec les agents est la consommation de tokens. Si vous fournissez un millier de schémas d'outils au LLM pour qu'il sache ce qu'il peut faire, vous saturez sa fenêtre de contexte.
+
+L'implémentation performante de MCP utilise la **Divulgation Progressive (Progressive Disclosure)**. L'agent explore l'arborescence des outils (comme un explorateur de fichiers) et ne charge dans sa mémoire que le schéma de l'outil dont il a besoin à l'instant T. Cette approche réduit la consommation de jetons de près de 98,7 % [@anthropic_2025_mcpcode].
+
+::: {.success header="Sécurité Interceptée"}
+Le client MCP agit également comme un pare-feu. Lors d'une transaction, si le serveur MCP renvoie des données sensibles (PII), le client peut intercepter et masquer (tokeniser) ces données avant même qu'elles n'atteignent le LLM hébergé dans le Cloud, garantissant ainsi la conformité de l'entreprise [@anthropic_2025_mcpcode].
+:::
+
+### 4.3.4 L'Orchestration Multi-Agents 🐝
+
+Pour les tâches titanesques, un seul agent devient instable. On recourt alors à une architecture **Leader-Worker** (ou "essaim d'agents").
+Un agent Leader analyse la requête globale et délègue les sous-tâches à des agents spécialisés (un agent Codeur, un agent Testeur, un agent Rédacteur). Ils communiquent entre eux via le protocole A2A (Agent-to-Agent) orchestré par LangGraph, redéfinissant ainsi l'ingénierie logicielle [@kumar_2026_agentic].
+
+```{mermaid}
+graph TD
+    A[Utilisateur] -->|Requête complexe| B(Agent Leader)
+    B -->|Délègue la recherche| C(Agent Chercheur)
+    B -->|Délègue l'analyse| D(Agent Analyste)
+    C <-->|Protocole MCP| E[Outil : Recherche Web]
+    D <-->|Protocole MCP| F[Outil : Base de données Interne]
+    C --> B
+    D --> B
+    B -->|Synthèse finale| A
+```
+
+---
+
+### 4.3.5 Aide-mémoire 📝
+- [ ] **ReAct :** La boucle de raisonnement robuste (Pensée -> Action -> Observation).
+- [ ] **MCP (Model Context Protocol) :** Le standard universel pour connecter n'importe quel LLM à n'importe quelle source de données ou outil.
+- [ ] **Divulgation Progressive :** Optimisation consistant à ne révéler les détails d'un outil à l'agent que s'il en a explicitement besoin.
+- [ ] **Multi-Agents :** Diviser pour régner, en spécialisant les rôles de chaque agent sous la supervision d'un Leader.
+
+### 4.3.6 Mini-Glossaire 📖
+- **JSON-RPC 2.0 :** Protocole léger d'appel de procédure à distance (RPC) encodé en JSON, utilisé par le standard MCP pour faire communiquer les briques d'IA.
+- **Essaim d'agents (Agent Swarm) :** Architecture où plusieurs agents autonomes spécialisés collaborent et communiquent pour résoudre un problème commun.
+- **Tokenisation de données (Sécurité) :** Processus consistant à remplacer une donnée sensible par un jeton non sensible équivalent (sans signification mathématique), afin de la protéger lors d'un transit vers un modèle externe.
+
+## 4.4 Sécurité, Gouvernance et Futur de l'Ingénierie Agentique 🛡️
+
+L'autonomie des agents introduit un nouveau paradigme de risque. Contrairement à un simple script déterministe qui plantera s'il rencontre une erreur, un agent IA tentera de contourner le problème, parfois en prenant des initiatives inattendues. Une gouvernance stricte est donc impérative.
+
+### 4.4.1 L'Observabilité et la Mémoire (LangSmith & LangMem) 👁️
+
+La règle d'or de l'ingénierie agentique est l'**observabilité**. Vous ne pouvez pas déployer un agent autonome en production sans avoir la capacité de tracer chaque décision qu'il prend [@kumar_2026_agentic].
+
+* **LangSmith (Traçage) :** Cet outil agit comme la "boîte noire" d'un avion. Il enregistre chaque appel au modèle, chaque outil utilisé, la latence, le coût en tokens et la "pensée" de l'agent. C'est indispensable pour le débogage et l'auditabilité.
+* **LangMem (État à long terme) :** Permet à l'agent d'avoir une mémoire persistante entre différentes sessions. L'agent peut ainsi apprendre de ses erreurs passées et personnaliser ses interactions futures sans saturer sa fenêtre de contexte immédiate.
+
+### 4.4.2 Principes de Sécurité et d'Isolation 🔒
+
+Pour éviter les catastrophes (comme un agent qui déciderait de supprimer une base de données de production pour "faire de la place"), l'architecture doit intégrer des garde-fous [@mcp_2025_spec] :
+
+* **Human-in-the-loop (HITL) :** Pour toute action irréversible (envoyer un email à un client, exécuter une transaction financière, modifier des droits d'accès), l'agent doit formuler la demande, se mettre en pause, et attendre l'approbation explicite (un clic) d'un opérateur humain.
+* **Isolation des périmètres (Namespace Isolation) :** Un agent ne doit avoir accès qu'au strict minimum de données et d'outils nécessaires à sa tâche (Principe du moindre privilège).
+
+
+
+### 4.4.3 Perspectives : L'ère des collaborateurs numériques 🚀
+
+Les premiers retours de l'industrie sur l'intégration de ces systèmes orchestrés sont spectaculaires. On observe notamment une réduction de 93 % du temps de diagnostic (*Time-to-root-cause*) sur des incidents logiciels complexes et un gain allant jusqu'à 200 heures d'ingénierie par mois grâce aux essaims d'agents [@kumar_2026_agentic].
+
+La convergence entre l'orchestration cyclique (LangGraph), le RAG haute fidélité et le standard d'intégration universel (MCP) transforme définitivement l'entreprise. Les modèles d'IA ne sont plus de simples gadgets conversationnels, ils deviennent de véritables collaborateurs numériques, capables d'automatiser des flux de travail complets tout en garantissant la souveraineté des données.
+
+---
+
+### 4.4.4 Aide-mémoire 📝
+- [ ] **Observabilité :** Tracer chaque étape du raisonnement (Pensée, Action, Résultat) pour pouvoir auditer l'agent.
+- [ ] **Human-in-the-loop :** Toujours exiger une validation humaine avant une action critique.
+- [ ] **Principe du moindre privilège :** Ne donnez pas les clés de toute l'entreprise à un agent qui doit juste trier des tickets ou lire des documents.
+
+### 4.4.5 Mini-Glossaire 📖
+- **Observabilité :** Capacité à comprendre l'état interne d'un système complexe à partir de ses sorties externes (logs, traces, métriques).
+- **LangSmith :** Plateforme de développement de l'écosystème LangChain dédiée au débogage, aux tests et au monitoring des applications LLM.
+- **Human-in-the-loop (HITL) :** Modèle d'interaction où le système IA nécessite l'intervention d'un être humain pour prendre des décisions finales ou valider des actions.

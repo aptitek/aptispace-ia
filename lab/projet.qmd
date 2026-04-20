@@ -1,0 +1,31 @@
+## 🎓 Projet de Synthèse : "L'Architecte IA Responsable"
+
+### 📋 Le Sujet
+**Contexte :** Vous êtes mandaté par une ONG internationale pour concevoir le prototype d'un système d'IA capable d'aider à la gestion de crises humanitaires (ex: séisme ou inondation). 
+
+**Votre mission :** Rédiger un dossier d'architecture technique (6 à 10 pages) décrivant une solution intégrée qui répond aux quatre piliers suivants :
+
+1.  **Module Vision (Chapitre 2) :** Décrivez un système de détection (CNN ou ViT) pour analyser des images satellites ou de drones afin d'identifier les zones prioritaires (bâtiments détruits, routes bloquées). Justifiez le choix de l'architecture.
+2.  **Module NLP & RAG (Chapitres 3 & 4) :** Concevez un assistant capable de lire des milliers de rapports de terrain et de répondre aux questions des secouristes en temps réel. Détaillez la stratégie de *Chunking*, le choix de la base vectorielle et la gestion de la fenêtre de contexte.
+3.  **Module Agentique (Chapitre 4) :** L'assistant doit pouvoir agir. Décrivez un agent capable d'utiliser un outil (via protocole MCP) pour commander des stocks de médicaments ou contacter des services d'urgence locaux. Intégrez une étape *Human-in-the-loop*.
+4.  **Audit Éthique & Sobriété (Chapitre 5) :** Réalisez une analyse d'impact. Comment gérez-vous les biais (ex: reconnaissance de zones informelles) ? Quel est votre plan pour limiter l'empreinte carbone (Green AI) ? Comment garantissez-vous la conformité à l'EU AI Act (classement du risque) ?
+
+---
+
+## ⚖️ Grille de Notation (Barème sur 20)
+
+| Critère d'Évaluation | Indicateurs de Réussite | Points |
+| :--- | :--- | :---: |
+| **Maîtrise de la Vision** | Choix pertinent entre CNN/ViT. Compréhension des couches de convolution. | /4 |
+| **Architecture RAG** | Justification technique du découpage (chunks) et de l'indexation (HNSW vs DiskANN). | /4 |
+| **Logique Agentique** | Utilisation correcte du cycle ReAct et intégration de la sécurité (HITL/MCP). | /4 |
+| **Conformité & Éthique** | Analyse fine des risques (AI Act), proposition de métriques de fairness (Parité démographique). | /4 |
+| **Cohérence & Sobriété** | Capacité à proposer une architecture frugale (choix de petits modèles spécialisés). | /2 |
+| **Qualité du Rendu** | Clarté des schémas (Mermaid ou autre) et précision du vocabulaire technique. | /2 |
+
+---
+
+## 🛠️ Livrables attendus
+* Un **Document Quarto (.qmd)** compilé en PDF.
+* Un **Schéma d'architecture complet** (illustrant le flux de données de l'image satellite à l'action de l'agent).
+* Une **Bibliographie BibTeX** rigoureuse citant les sources du cours.

@@ -1,124 +1,291 @@
-# 2. Réseaux de neurones
+---
+title: "2. Deep Learning & Vision : Apprendre à voir dans les matrices"
+---
 
-## 2.1. L'Inspiration : Du Neurone Biologique au Modèle Formel
+::: {.danger header="🧊 Icebreaker Séance 2 : Le paradoxe du Chihuahua"}
+**Script pour l'enseignant :**
+"Bonjour à tous ! Hier, nous avons nettoyé des tableaux Excel. Aujourd'hui, on donne des yeux à la machine. 
+*(Afficher au vidéoprojecteur une image du célèbre mème 'Chihuahua ou Muffin aux myrtilles')*. 
+Pour notre cerveau, distinguer le chien du gâteau prend une fraction de seconde. Pour un algorithme classique 'Si/Alors', c'est mathématiquement impossible à coder. Comment expliquer à un ordinateur ce qu'est une oreille avec des pixels ? C'est tout l'enjeu de la Vision par Ordinateur."
+:::
 
-L'intelligence artificielle n'est pas née de rien ; elle puise ses racines dans une tentative fascinante de modéliser mathématiquement le fonctionnement du cerveau humain. Pour comprendre comment une machine "apprend", nous devons d'abord observer la cellule élémentaire de notre propre intelligence : le neurone biologique. Dans notre système nerveux, un neurone reçoit des impulsions électriques, les intègre et décide, selon l'intensité reçue, de transmettre ou non un signal à ses voisins.
+## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️
 
-*[Illustration : Insérez ici un schéma comparatif côte à côte montrant un neurone biologique (avec ses dendrites, son soma et son axone) et un perceptron artificiel basique.]*
+La vision par ordinateur s'est imposée comme le pont technologique entre la perception biologique et l'intelligence artificielle. En tant qu'architecte système, il ne faut pas voir cette discipline comme un simple algorithme de tri, mais comme une tentative complexe d'extraction automatisée et de compréhension sémantique à partir de flux visuels purs [@networkoptix_2024_computervision].
 
-Le tableau suivant illustre la correspondance directe entre les structures du vivant et leur traduction informatique :
 
-| Composant Biologique | Composant Formel | Rôle Fonctionnel |
-| :--- | :--- | :--- |
-| **Dendrites** | Entrées ($x_i$) | Canaux de réception des signaux externes. |
-| **Corps Cellulaire** | Sommation ($\sum$) | Noyau de calcul qui fusionne les informations. |
-| **Synapse** | Poids ($w_i$) | Modulateur de la force du signal (efficience). |
-| **Axone** | Sortie ($y$) | Canal de transmission du signal final. |
 
-L’apprentissage, qu’il soit biologique ou artificiel, repose sur la **plasticité synaptique**. Contrairement à une idée reçue, l'intelligence ne provient pas de l'ajout de nouveaux neurones, mais de l'ajustement de la "force" de connexion entre eux. En IA, apprendre consiste à modifier ces poids pour renforcer les liens utiles et inhiber les informations parasites.
+### 2.1.1 Une lente évolution biomimétique 🧬
 
-Cette architecture biologique, bien que d'une complexité chimique immense, a été simplifiée par les chercheurs pour devenir un modèle mathématique rigoureux capable de traiter des données numériques.
+L'architecture des modèles visuels d'aujourd'hui ne vient pas de nulle part. Elle est le fruit de plusieurs décennies de recherche visant à imiter le cortex visuel humain :
 
-## 2.2. Les Briques Élémentaires : Anatomie du Neurone Formel
+* **Les Fondations (1943) :** McCulloch et Pitts tentent de modéliser le neurone biologique comme une unité binaire logique, jetant les toutes premières bases du calcul neuronal.
+* **Le Perceptron (1958) :** Rosenblatt introduit le Perceptron, le premier modèle capable d'apprendre de ses erreurs pour faire de la classification binaire.
+* **Le Premier Hiver de l'IA (1969) :** Minsky et Papert démontrent les limites mathématiques du Perceptron face à des problèmes non-linéaires simples (comme la porte logique XOR), gelant les financements de la recherche pendant une décennie.
+* **La Renaissance (1970-1980) :** L'émergence de la rétropropagation (Backpropagation) permet enfin d'entraîner des réseaux multicouches, en optimisant leurs représentations internes.
+* **Le Neocognitron (1980) :** Fukushima propose une architecture hiérarchique utilisant des "champs récepteurs" locaux. C'est le précurseur direct des Réseaux de Neurones Convolutifs (CNN) modernes [@networkoptix_2024_computervision].
+* **La Consécration Industrielle (Années 1990) :** Yann LeCun stabilise l'architecture avec le modèle *LeNet*, utilisé par la poste américaine pour lire automatiquement les codes postaux manuscrits sur les enveloppes. C'est la première preuve formelle de viabilité à grande échelle [@networkoptix_2024_computervision].
 
-Un neurone artificiel est une unité de traitement qui transforme des stimuli en une décision numérique. Pour y parvenir, il s'appuie sur quatre composants critiques :
+### 2.1.2 La Rupture Stratégique : Des filtres manuels aux filtres appris ⚡
 
-* **Les Entrées ($x_i$)** : Ce sont les données brutes (ex : la luminosité d'un pixel). Techniquement, on ajoute souvent une entrée fictive $x_0 = -1$ pour intégrer le biais dans le calcul global.
-* **Les Poids ($w_i$)** : Ce sont les leviers de l'apprentissage. Un poids positif ($w_i > 0$) correspond à une **synapse excitatrice** (il amplifie l'information), tandis qu'un poids négatif ($w_i < 0$) agit comme une **synapse inhibitrice** (il freine le signal).
-* **Le Biais ($b$ ou $w_0$)** : C'est une valeur qui permet de déplacer le seuil de déclenchement du neurone. Pédagogiquement, il représente la "sensibilité" du neurone : un biais élevé permet au neurone de s'activer plus facilement, même avec des entrées faibles.
-* **La Sortie ($y$)** : C'est le signal final, la réponse du neurone après avoir traité l'information.
+Avant le Deep Learning, les ingénieurs en traitement d'image devaient créer mathématiquement leurs propres filtres (par exemple, le filtre de Sobel pour détecter des bords verticaux). Cette approche, appelée *Feature Engineering* manuel, était extrêmement limitée par l'intuition humaine. 
 
-Une fois ces composants réunis, ils entrent en action via une opération centrale qui simule l'intégration des signaux par le corps cellulaire : la sommation pondérée.
+La rupture fondamentale apportée par les Réseaux Convolutifs (CNN) réside dans le passage aux **filtres appris par optimisation**. Le réseau découvre de lui-même, par essai-erreur, quels filtres mathématiques sont les plus pertinents pour extraire les caractéristiques d'une image [@wikipedia_2026_cnn].
 
 ```{mermaid}
-graph LR
-    subgraph "Modèle du Neurone Artificiel"
-        direction LR
-        x1(("Entrée x₁")) -->|Poids w₁| Sum(("Σ (Somme)"))
-        x2(("Entrée x₂")) -->|Poids w₂| Sum
-        x3(("Entrée x₃")) -->|Poids w₃| Sum
-        b[/"Biais (b)"/] --> Sum
-        Sum -->|Signal s| Act["Fonction d'Activation (f)"]
-        Act --> y(("Sortie y"))
-    end
-    
-    style Sum fill:#f9f,stroke:#333,stroke-width:2px
-    style Act fill:#bbf,stroke:#333,stroke-width:2px
+timeline
+    title Évolution de la Vision par Ordinateur
+    1943 : Neurone logique (McCulloch/Pitts)
+    1958 : Le Perceptron (Rosenblatt)
+    1969 : L'Hiver de l'IA (Minsky/Papert)
+    1980 : Neocognitron (Fukushima)
+    1990 : LeNet & Codes postaux (Y. LeCun)
+    2012 : Révolution AlexNet
 ```
 
-## 2.3. Le Cœur du Calcul : La Sommation Pondérée
+### 2.1.3 Aide-mémoire 📝
+- [ ] **Biomimétisme :** L'IA visuelle s'inspire du cortex humain (champs récepteurs).
+- [ ] **Hiver de l'IA :** Périodes de stagnation dues aux limites techniques (ex: impossibilité de résoudre le XOR avec un neurone simple).
+- [ ] **Changement de paradigme :** On ne code plus les filtres visuels à la main, c'est la machine qui les apprend via la rétropropagation.
 
-Le neurone effectue une synthèse de tous les stimuli reçus. Il ne se contente pas d'additionner les entrées, il pondère chacune d'elles pour refléter son importance.
+### 2.1.4 Mini-Glossaire 📖
+- **Champ récepteur (Receptive Field) :** Région spécifique de l'image qu'un neurone particulier "regarde".
+- **Perceptron :** L'ancêtre du neurone artificiel moderne, initialement conçu comme une simple porte logique binaire.
+- **Rétropropagation (Backpropagation) :** L'algorithme central qui permet au réseau d'ajuster ses poids en calculant ses erreurs à l'envers (de la sortie vers l'entrée).
 
-**Le mécanisme étape par étape :**
-1. **Pondération** : Chaque entrée ($x_i$) est multipliée par son poids respectif ($w_i$).
-2. **Sommation** : Le neurone additionne tous ces produits.
-3. **Ajustement du Biais** : On ajoute le biais ($b$) pour obtenir le niveau d'activation brut.
+## 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️
 
-Mathématiquement, cela correspond au calcul d'un hyperplan séparateur :
-$$s = \sum_{i=1}^{n} w_i x_i + b$$
+Pourquoi ne pas simplement utiliser un réseau de neurones classique (MLP - Multi-Layer Perceptron) pour reconnaître des objets dans une image ? La réponse tient en un mot : **le fléau de la dimensionnalité** [@pyimagesearch_2021_cnn_layers].
 
-Le biais est ici crucial car il définit la "ligne de démarcation" (le seuil) à franchir. On peut aussi l'écrire $s = \sum w_i x_i - w_0$, où $w_0$ est le seuil de déclenchement que la somme des signaux doit impérativement dépasser pour que le neurone "s'allume".
+### 2.2.1 L'échec des réseaux classiques (MLP) ❌
 
-> **💡 Exemple Concret : La décision de jouer au tennis**
-> Imaginons un neurone qui doit décider si vous allez jouer au tennis ($1 = Oui$, $0 = Non$).
-> * $x_1$ (Il fait beau) = $1$. Son importance (poids $w_1$) est forte : $5$.
-> * $x_2$ (Vous êtes fatigué) = $1$. C'est un frein (poids inhibiteur $w_2$) : $-3$.
-> * Le Biais ($b$) est de $-2$ (votre flemme naturelle, il faut la surmonter).
-> * **Calcul :** $s = (1 \times 5) + (1 \times -3) - 2 = 0$.
-> La somme brute est nulle, l'information n'est pas assez forte pour surmonter le biais de flemme. Le neurone ne s'activera probablement pas.
+Dans un réseau classique, chaque neurone est connecté à tous les pixels de l'image. Imaginons une image standard de $250 \times 250$ pixels en couleur (RGB). Une seule couche dense nécessiterait :
+$$250 \times 250 \times 3 = 187\,500 \text{ poids (paramètres) par neurone.}$$
 
-Ce résultat de somme ($s$) est une valeur brute qui doit encore être filtrée pour devenir une décision exploitable.
+Pour un réseau avec seulement 100 neurones dans une couche cachée, nous atteignons déjà près de **19 millions de paramètres** à entraîner pour une seule couche ! Cette explosion de paramètres rend l'apprentissage instable, extrêmement lent et gourmand en mémoire vive [@pyimagesearch_2021_cnn_layers].
 
-## 2.4. La Prise de Décision : Les Fonctions d'Activation
+### 2.2.2 Les trois piliers stratégiques des CNN 🏛️
 
-La fonction d'activation est le filtre final. Elle définit la "personnalité" du neurone en transformant la somme pondérée en un signal structuré.
+Les CNN résolvent ce défi en exploitant la structure spatiale des images via trois propriétés fondamentales [@upgrad_2026_cnn_architecture; @wikipedia_2026_cnn] :
 
-*[Illustration : Insérez ici un graphe regroupant les courbes des principales fonctions d'activation, montrant bien l'échelon de Heaviside, la courbe en "S" de la Sigmoïde, et la cassure à zéro de la ReLU.]*
+1.  **Connectivité locale :** Contrairement au MLP, un neurone dans un CNN ne regarde pas toute l'image. Il ne traite qu'une petite zone limitée appelée **champ récepteur** (*receptive field*), imitant ainsi le fonctionnement du cortex visuel humain.
+2.  **Partage de poids (Shared weights) :** C'est le secret de l'efficacité. Au lieu d'apprendre un nouveau détecteur de bord pour chaque recoin de l'image, le réseau utilise le même filtre (noyau) sur toute la surface. Cela réduit drastiquement le nombre de paramètres et permet de détecter un motif, peu importe où il se trouve.
+3.  **Arrangement spatial en 3D :** Les données circulent sous forme de **tenseurs** (Largeur x Hauteur x Profondeur). La profondeur correspond ici aux canaux de couleur (RGB) ou au nombre de filtres appliqués [@pyimagesearch_2021_cnn_layers].
 
-| Fonction d'Activation | Comportement | Usage & Nuances Pédagogiques |
-| :--- | :--- | :--- |
-| **Seuil (Heaviside)** | Retourne **0** ou **1** | Idéal pour les décisions binaires strictes (Oui/Non). |
-| **Linéaire** | Retourne la valeur brute ($y=s$) | Utilisée pour des prédictions numériques simples (Régression). |
-| **Sigmoïde** | Écrase la sortie entre **0** et **1** | Interprète la sortie comme une **probabilité**. *Note : elle sature pour les grandes valeurs et n'est pas centrée sur zéro*. |
-| **ReLU** | Bloque à **0** si $s < 0$, sinon garde $s$ | Standard moderne. Elle résout le problème de l'**évanouissement du gradient**, permettant d'entraîner des réseaux très profonds. |
 
-Le choix de cette fonction est déterminant : alors que la Sigmoïde est parfaite pour une probabilité finale, la fonction **Tangente Hyperbolique (Tanh)** est souvent préférée en interne car elle est "zéro-centrée" (entre -1 et 1), ce qui facilite l'optimisation mathématique du réseau.
 
-## 2.5. Synthèse : Le Voyage d'une Donnée dans le Neurone
+### 2.2.3 Équivariance et Invariance 🔄
 
-Le parcours d'une information au sein du neurone peut être résumé en cinq étapes clés :
-1. **Réception** : Captation des entrées ($x_i$).
-2. **Pondération** : Multiplication par les poids (excitateurs ou inhibiteurs).
-3. **Sommation** : Fusion des signaux et intégration du biais ($b$).
-4. **Activation** : Passage dans le filtre (ex: ReLU ou Sigmoïde).
-5. **Transmission** : Envoi du signal de sortie ($y$).
-
-**Le "So What ?" : Les deux piliers de l'IA**
-* **Les Poids ($w$)** représentent la **mémoire** et la **connaissance**. Apprendre, c'est ajuster ces poids pour que le réseau reconnaisse des motifs.
-* **L'Activation ($f$)** permet d'introduire la **complexité**. Sans elle, le réseau ne serait qu'une simple calculatrice linéaire incapable de s'adapter au monde réel.
-
-Cependant, un neurone seul a ses limites : il ne peut résoudre que des problèmes dits **"linéairement séparables"**. Cela signifie qu'il peut séparer des groupes de données par une simple ligne droite.
-
-Face à un problème comme le **OU-Exclusif (XOR)**, où les données sont croisées, un neurone unique est impuissant. C'est ce "mur" technique qui a poussé les chercheurs à organiser les neurones en couches multiples (Perceptron Multicouche) pour faire émerger l'intelligence complexe.
+Un avantage majeur des CNN est leur **équivariance à la translation** : si un motif (comme un visage) se déplace dans l'image d'entrée, sa représentation dans le réseau se déplace de la même manière. Cependant, ils ne sont pas naturellement invariants à la rotation ou au zoom ; c'est ici qu'interviennent les couches de *Pooling* que nous verrons en section 2.3 [@wikipedia_2026_cnn].
 
 ```{mermaid}
 graph TD
-    subgraph "Limites du Neurone Simple vs Puissance du Réseau"
-        direction LR
-        N1(("Neurone Unique")) -.->|Ne peut tracer| L("Ligne Droite Uniquement")
-        L -.-> E1["Échoue sur le problème XOR"]
-        
-        R1(("Couche Cachée 1")) --> R2(("Couche Cachée 2"))
-        R2 --> S(("Sortie (Réseau)"))
-        S -.->|Peut tracer| C("Frontières Non-Linéaires")
-        C -.-> E2["Résout le problème XOR"]
-    end
+    A[Image Brute 2D/3D] --> B{Propriétés CNN}
+    B --> C[Connectivité Locale]
+    B --> D[Partage de Poids]
+    B --> E[Structure Tensorielle]
+    C --> F[Réduction Drastique des Paramètres]
+    D --> G[Détection de Motifs Partout]
+    E --> H[Conservation du Contexte Spatial]
+    F & G & H --> I[Apprentissage Efficace et Robuste]
 ```
 
-## 2.6. Aide-Mémoire pour l'Apprenant
+---
 
-**Ce qu'il faut retenir :**
-* **Le Signal 📡** : Les entrées sont les stimuli, la sortie est la décision finale.
-* **Le Poids ⚖️** : Il définit l'importance de l'info. L'apprentissage est l'ajustement de ces poids (plasticité).
-* **Le Seuil 🚪** : Le biais et la fonction d'activation décident si l'information est assez cruciale pour franchir la porte et être transmise.
+### 2.2.4 Aide-mémoire 📝
+- [ ] **Le Fléau de la Dimension :** Comprendre pourquoi trop de paramètres tuent l'apprentissage sur les images haute résolution.
+- [ ] **Localité :** Un neurone ne "voit" qu'une fraction de l'image (son champ récepteur).
+- [ ] **Partage de poids :** Un filtre appris est réutilisable sur toute l'image.
+- [ ] **Efficacité :** Les CNN utilisent beaucoup moins de mémoire qu'un MLP pour une performance visuelle bien supérieure.
+
+### 2.2.5 Mini-Glossaire 📖
+- **Champ récepteur (Receptive Field) :** La zone de l'image d'entrée qui influence l'activation d'un neurone spécifique.
+- **Tenseur :** Structure de données multidimensionnelle (généralisation des matrices) utilisée pour transporter l'information visuelle à travers les couches.
+- **Équivariance :** Propriété garantissant que si l'entrée change (translation), la sortie change de façon prévisible et proportionnelle.
+
+
+## 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬
+
+[cite_start]Un CNN transforme des pixels bruts en prédictions sémantiques par une extraction hiérarchique de caractéristiques[cite: 9]. Cette transformation repose sur une succession de couches spécialisées qui ont chacune un rôle stratégique dans la compression et l'interprétation de l'image.
+
+### 2.3.1 La Couche de Convolution (CONV) 🌀
+C'est le cœur du système. [cite_start]Mathématiquement, elle réalise un produit de Frobenius (somme du produit élément par élément) entre un **noyau** (kernel) glissant et l'entrée[cite: 8, 9]. 
+
+* [cite_start]**Rôle :** Extraction de traits fondamentaux (bords, textures) puis de formes complexes (motifs, objets)[cite: 7, 9].
+* [cite_start]**Sortie :** Elle génère des **cartes d'activation** (feature maps) qui signalent la présence et la localisation de patterns spécifiques dans l'image[cite: 8, 9].
+
+
+
+### 2.3.2 La Couche d'Activation (ReLU) ⚡
+[cite_start]La fonction $f(x) = \max(0, x)$ est systématiquement appliquée après la convolution[cite: 9].
+
+* [cite_start]**Rôle :** Introduire la non-linéarité indispensable pour apprendre des relations complexes entre les pixels[cite: 9].
+* [cite_start]**Avantage :** Elle résout le problème de la disparition du gradient (vanishing gradient) rencontré avec les fonctions Sigmoïde ou Tanh, ce qui permet un entraînement beaucoup plus rapide des réseaux profonds[cite: 9].
+
+### 2.3.3 La Couche de Pooling (POOL) 🎱
+[cite_start]Généralement insérée entre les couches convolutives, elle réduit la résolution spatiale des données[cite: 7, 9].
+
+* [cite_start]**Rôle :** Contrôler le surapprentissage (overfitting), réduire la charge de calcul et introduire une certaine invariance aux petites translations (un motif est reconnu même s'il bouge un peu)[cite: 8, 9].
+* [cite_start]**Types :** Le **Max Pooling** conserve uniquement le signal le plus fort d'une zone, tandis que l'**Average Pooling** calcule la moyenne pour lisser l'information[cite: 9].
+
+
+
+### 2.3.4 Couches Entièrement Connectées (FC) 🕸️
+[cite_start]Situées en fin de réseau, elles agrègent toutes les caractéristiques extraites précédemment pour prendre la décision finale[cite: 9].
+
+* [cite_start]**Rôle :** Effectuer le raisonnement global et la classification finale (ex: déterminer la classe de l'objet détecté)[cite: 9].
+
+### 2.3.5 Configuration Spatiale : Les Hyperparamètres 📏
+[cite_start]Le dimensionnement d'un CNN repose sur une configuration rigoureuse de la géométrie des couches[cite: 9]:
+
+* **Stride (Pas) :** Définit le saut du filtre. [cite_start]Un stride supérieur à 1 réduit la dimension de la sortie, agissant comme un compresseur de données[cite: 9].
+* [cite_start]**Padding (Remplissage) :** Ajout de pixels (souvent de valeur zéro) aux bordures pour éviter la perte d'information sur les contours et stabiliser la taille de sortie[cite: 9].
+
+::: {.warning header="Règle d'or de l'Architecte : La Formule de Sortie"}
+Pour une dimension d'entrée $W$, un filtre $F$, un padding $P$ et un stride $S$, la taille de sortie est donnée par :
+$$\text{Sortie} = \frac{W - F + 2P}{S} + 1$$
+[cite_start]Si le résultat n'est pas un entier, la configuration est considérée comme invalide car les neurones ne peuvent pas être répartis de manière symétrique sur l'image d'entrée[cite: 7, 9].
+:::
+
+```{mermaid}
+graph LR
+    A[Image Brute] --> B[Convolution]
+    B --> C[ReLU]
+    C --> D[Pooling]
+    D --> E[Convolution...]
+    E --> F[Flatten]
+    F --> G[Couches FC]
+    G --> H[Prédiction Finale]
+```
+
+### 2.3.6 Aide-mémoire 📝
+- [ ] [cite_start]**Convolution :** Comprendre l'extraction de traits via les noyaux (filtres)[cite: 9].
+- [ ] [cite_start]**ReLU :** Utiliser l'activation non-linéaire pour éviter la saturation des gradients[cite: 9].
+- [ ] [cite_start]**Pooling :** Réduire la taille spatiale pour contrôler le surapprentissage[cite: 9].
+- [ ] [cite_start]**Hyperparamètres :** Maîtriser le Stride et le Padding pour calculer la taille des tenseurs de sortie[cite: 9].
+
+### 2.3.7 Mini-Glossaire 📖
+- [cite_start]**Noyau (Kernel) :** Petite matrice de poids qui "glisse" sur l'image pour détecter des motifs spécifiques[cite: 9].
+- [cite_start]**Carte d'activation (Feature Map) :** Image résultant d'une convolution montrant les zones où un motif a été détecté[cite: 9].
+- [cite_start]**Max Pooling :** Opération de sous-échantillonnage sélectionnant la valeur maximale dans une fenêtre donnée[cite: 9].
+- **Flatten :** Étape consistant à "aplatir" un tenseur 3D en un vecteur 1D pour pouvoir l'injecter dans les couches FC.
+
+## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆
+
+Si l'on devait dater le début de l'ère moderne de l'Intelligence Artificielle, ce serait sans conteste l'année 2012. Lors du prestigieux concours ImageNet (qui consiste à classer des millions d'images dans des milliers de catégories), un réseau nommé **AlexNet** a littéralement pulvérisé les algorithmes de traitement d'image traditionnels. Il a prouvé au monde entier que la profondeur du réseau (*Deep Learning*) était la clé de la performance visuelle [@wikipedia_2026_alexnet].
+
+### 2.4.1 L'Architecture d'un Champion 🏗️
+
+AlexNet n'était pas fondamentalement différent du vieux *LeNet* des années 90 dans son concept, mais il l'était dans son échelle. Son architecture empilait **5 couches convolutives (CONV)** suivies de **3 couches entièrement connectées (FC)**, totalisant environ 60 millions de paramètres.
+
+Pour réussir cet exploit, ses créateurs (Alex Krizhevsky, Ilya Sutskever et Geoffrey Hinton) ont introduit plusieurs innovations cruciales pour l'industrie :
+
+1.  **L'adoption de ReLU :** Avant AlexNet, les réseaux utilisaient principalement Tanh ou la Sigmoïde. En utilisant ReLU, AlexNet a été entraîné plusieurs fois plus rapidement, contournant le problème du *vanishing gradient* [@upgrad_2026_cnn_architecture].
+2.  **L'invention du Dropout :** Face à un modèle aussi colossal, le surapprentissage (*overfitting*) était inévitable. Ils ont introduit le Dropout, une technique déconnectant aléatoirement des neurones pendant l'entraînement pour forcer le réseau à être plus robuste.
+3.  **L'entraînement Multi-GPU :** Le modèle était si lourd qu'il ne rentrait pas dans la mémoire vive (VRAM) d'une seule carte graphique de l'époque. Ils ont dû scinder le calcul sur deux puces NVIDIA GTX 580 en parallèle.
+
+::: {.info header="Anecdote d'Architecte : L'énigme des 224 pixels"}
+Dans de nombreux cours ou tutoriels, vous lirez qu'AlexNet prend en entrée des images de 224x224 pixels. Pourtant, si l'on applique scrupuleusement la formule mathématique de la couche convolutive (vue en 2.3) avec leur filtre de 11x11, un *stride* de 4 et aucun *padding*, le résultat avec 224 ne donne pas un nombre entier ! En réalité, le réseau recadrait secrètement les images à **227x227 pixels** lors du prétraitement pour que les mathématiques tombent juste [@pyimagesearch_2021_cnn_layers].
+:::
+
+### 2.4.2 Les Prémices de l'Apprentissage par Transfert (Transfer Learning) ♻️
+
+Une caractéristique fascinante d'AlexNet, et qui est devenue un standard aujourd'hui, est la possibilité de réutiliser le modèle. 
+Les couches de convolution agissent comme un fantastique extracteur de caractéristiques générales (lignes, textures). Les ingénieurs ont vite compris qu'ils pouvaient "couper" la dernière couche de classification d'AlexNet, garder tout le reste intact, et simplement réentraîner une nouvelle couche finale pour une tâche spécifique (par exemple, distinguer des pièces automobiles défectueuses). Cela s'appelle le **Fine-Tuning** (ou ajustement fin) [@wikipedia_2026_alexnet].
+
+---
+
+### 2.4.3 Aide-mémoire 📝
+- [ ] **2012 (ImageNet) :** L'année où le Deep Learning prouve sa supériorité absolue en vision.
+- [ ] **Innovations d'AlexNet :** Utilisation massive de ReLU, création du Dropout, et calcul distribué sur plusieurs GPU.
+- [ ] **Transfer Learning :** Réutiliser les couches convolutives d'un modèle pré-entraîné (comme AlexNet) pour une nouvelle tâche, en ne modifiant que la couche de sortie.
+
+### 2.4.4 Mini-Glossaire 📖
+- **ImageNet :** Base de données gigantesque de millions d'images annotées, utilisée pour la compétition annuelle évaluant les meilleurs modèles de vision.
+- **VRAM (Video Random Access Memory) :** La mémoire vive dédiée de la carte graphique, indispensable pour stocker les tenseurs et les poids du modèle pendant l'entraînement.
+- **Apprentissage par Transfert (Transfer Learning) :** Technique consistant à utiliser un modèle déjà entraîné sur un large dataset pour l'adapter rapidement à un problème de niche.
+
+## 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️
+
+Un CNN moderne comme AlexNet ou ResNet possède des millions, voire des milliards de paramètres. Cette capacité d'apprentissage immense est une arme à double tranchant. Si on laisse le réseau s'entraîner trop longtemps sur un jeu de données limité, il va faire du **Surapprentissage (Overfitting)**. 
+
+Au lieu de comprendre la *logique* globale d'un chat, il va mémoriser par cœur chaque pixel de *vos* images de chats d'entraînement, y compris le bruit de fond ou le filigrane en bas à droite. Résultat : une précision parfaite sur vos données d'entraînement (Train set), mais des performances catastrophiques dans la vraie vie (Test set) [@greatlearning_2025_overfitting; @nerchuko_2026_bias_variance].
+
+
+
+Pour garantir la "généralisation" du modèle, l'architecte doit déployer un arsenal de techniques de **régularisation** [@fabien_2026_prevent_overfitting].
+
+### 2.5.1 Le Dropout (Le Décrochage) 🔌
+
+Imaginez une entreprise où quelques employés brillants font tout le travail. Si l'un d'eux tombe malade, l'entreprise s'effondre. Le **Dropout** consiste à "désactiver" aléatoirement un certain pourcentage de neurones (souvent 50%) à chaque passage d'entraînement. 
+
+* **L'objectif :** Forcer le réseau à ne pas dépendre excessivement de quelques neurones spécifiques. Il doit répartir la connaissance et créer des représentations redondantes et robustes [@wikipedia_2026_cnn].
+* **Pratique :** Le Dropout n'est activé *que* pendant la phase d'entraînement. En production (inférence), tous les neurones sont allumés.
+
+### 2. La Normalisation par Lots (Batch Normalization) ⚖️
+
+Tout comme nous avons standardisé les données brutes en entrée (Chapitre 1), la **Batch Normalization (BN)** standardise les données *à l'intérieur* du réseau, entre les couches. 
+Elle recentre les activations de chaque mini-lot (mini-batch) autour d'une moyenne de zéro et d'une variance de 1.
+
+* **Avantage :** Elle évite que les valeurs ne s'envolent ou ne s'effondrent d'une couche à l'autre (réduisant le décalage interne), ce qui accélère fulgurante la convergence et stabilise le modèle. 
+* **Astuce d'Architecte :** Il est souvent recommandé de placer la couche de Batch Normalization *après* la convolution, mais *avant* l'activation ReLU [@pyimagesearch_2021_cnn_layers].
+
+### 2.5.3 L'Augmentation de Données (Data Augmentation) 🖼️
+
+La meilleure façon de combattre le surapprentissage est d'avoir plus de données. Si vous n'en avez pas, fabriquez-en !
+L'**Augmentation de Données** consiste à appliquer des transformations aléatoires à vos images d'entraînement à la volée : rotations, zooms, inversions horizontales (effet miroir), ou légères modifications colorimétriques. Le modèle voit ainsi une image légèrement différente à chaque fois, ce qui l'empêche de mémoriser les pixels exacts.
+
+### 2.5.4 La Pénalisation des Poids (Weight Decay L1/L2) 📉
+
+Une règle mathématique empirique stipule que des poids synaptiques très élevés sont souvent le symptôme d'un modèle qui surapprend. Le **Weight Decay** (souvent via la norme L2) ajoute une pénalité mathématique directement à la fonction de perte (Loss Function) proportionnellement à la taille des poids. Cela force l'optimiseur à maintenir les poids les plus petits et les plus simples possibles [@wikipedia_2026_cnn].
+
+---
+
+### 2.5.5 Aide-mémoire 📝
+- [ ] **Overfitting :** Le modèle apprend le bruit par cœur et perd sa capacité à généraliser.
+- [ ] **Dropout :** Éteindre des neurones au hasard pour forcer le travail d'équipe.
+- [ ] **Batch Norm :** Standardiser les flux de données entre les couches cachées.
+- [ ] **Data Augmentation :** Pivoter et recadrer les images pour multiplier artificiellement la taille du dataset.
+
+### 2.5.6 Mini-Glossaire 📖
+- **Régularisation :** Ensemble des techniques mathématiques et architecturales visant à empêcher un modèle de faire du surapprentissage.
+- **Inférence :** Phase d'utilisation du modèle en production (une fois qu'il a fini d'apprendre), où il se contente de faire des prédictions.
+- **Train set / Test set :** Séparation stricte des données. Le modèle s'entraîne sur le Train, mais n'est évalué que sur le Test, qu'il n'a jamais vu auparavant.
+
+## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭
+
+Aujourd'hui, les architectures convolutives ont quitté les laboratoires pour devenir l'épine dorsale de l'industrie moderne. Elles dominent des secteurs critiques : le diagnostic médical (détection de tumeurs sur IRM ou scanners), la conduite autonome (analyse en temps réel de l'environnement) et la cybersécurité (reconnaissance biométrique) [@networkoptix_2024_computervision].
+
+Cependant, en tant qu'architectes, nous devons être conscients que l'approche CNN atteint aujourd'hui certaines limites structurelles majeures.
+
+### 2.6.1 Les Murs de Verre du Deep Learning Visuel 🧊
+
+Malgré leurs performances surhumaines sur des tâches spécifiques, les CNN font face à trois défis majeurs dans les déploiements industriels :
+
+1.  **Gourmandise en données (Data Hunger) :** Un CNN n'a pas de "bon sens". Pour apprendre à distinguer un panneau "Stop" d'un panneau "Cédez le passage", il a besoin de dizaines de milliers d'exemples annotés manuellement, sous tous les angles et toutes les météos. Ce besoin en données est un immense goulot d'étranglement.
+2.  **L'Opacité ("Boîte Noire") :** C'est le défi juridique de la décennie. Si un modèle médical se trompe de diagnostic, ou si une voiture autonome cause un accident, il est mathématiquement très difficile de savoir *pourquoi* le réseau a pris cette décision. Ce manque d'interprétabilité freine massivement leur adoption dans les secteurs à haute responsabilité légale.
+
+### 2.6.2 Le Nouveau Challenger : Les Vision Transformers (ViT) 🤖
+
+Depuis peu, la suprématie absolue des CNN est remise en question par une technologie venue du monde du texte (NLP) : **Les Transformers**. 
+
+
+
+Contrairement aux CNN qui regardent l'image petit bout par petit bout (via les champs récepteurs locaux), les **Vision Transformers (ViT)** découpent l'image en "patchs" et utilisent un mécanisme d'**attention globale**. Ils comparent chaque patch avec tous les autres simultanément pour comprendre le contexte global de l'image dès la première couche [@networkoptix_2024_computervision].
+
+* **Le duel :** Les ViT sont souvent plus performants que les CNN sur des tâches complexes, mais ils nécessitent des ressources informatiques et des volumes de données encore plus gigantesques. 
+* **L'avenir :** Il réside très probablement dans l'hybridation : combiner l'efficacité spatiale et la légèreté des CNN avec la capacité de compréhension contextuelle des Transformers.
+
+C'est d'ailleurs cette architecture Transformer qui a donné naissance à l'IA Générative et aux LLM, ce qui nous amène directement à notre prochain chapitre !
+
+---
+
+### 2.6.3 Aide-mémoire 📝
+- [ ] **Applications :** Santé, automobile, sécurité. Les CNN sont partout.
+- [ ] **Limites :** Besoin massif de données labellisées et problème d'explicabilité (Boîte noire).
+- [ ] **ViT (Vision Transformers) :** La nouvelle architecture qui remplace la convolution par des mécanismes d'attention globale.
+
+### 2.6.4 Mini-Glossaire 📖
+- **Boîte noire (Black Box) :** Se dit d'un système d'IA dont on connaît les entrées et les sorties, mais dont le processus de décision interne est trop complexe pour être compris ou justifié par un humain.
+- **Vision Transformer (ViT) :** Architecture de réseau de neurones apparue en 2020, appliquant les principes des modèles de langage (attention) directement au traitement d'images.
+- **Hybridation :** Tendance actuelle consistant à fusionner plusieurs types d'architectures (ex: CNN + Transformer) pour cumuler leurs avantages respectifs.

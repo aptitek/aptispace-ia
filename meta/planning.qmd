@@ -1,0 +1,53 @@
+---
+title: "Planning"
+---
+
+# ⏳ Chronologie du Module
+
+::: {.info header="Note d'organisation"}
+Le module se déroule sur 5 jours consécutifs (35 heures). Chaque journée est découpée en une matinée théorique et une après-midi de mise en pratique intensive.
+:::
+
+## 📅 Vue d'ensemble (Gantt)
+
+```{mermaid}
+gantt
+    title Déroulement du Module Python & IA
+    dateFormat  YYYY-MM-DD
+    axisFormat %d/%m
+
+    section Séances
+    J1 - Fondations & Data Cleaning       :active, j1, 2026-05-18, 1d
+    J2 - Deep Learning & Vision           :j2, 2026-05-19, 1d
+    J3 - NLP & Révolution GenAI           :j3, 2026-05-20, 1d
+    J4 - Orchestration & Agents           :j4, 2026-05-21, 1d
+    J5 - Gouvernance & Soutenances        :j5, 2026-05-22, 1d
+
+    section Évaluations
+    Rendu TPs (Note 1)                    :milestone, m1, 2026-05-21, 0h
+    QCM Théorique (Note 2)                :milestone, m2, 2026-05-22, 0h
+    Soutenance Projet (Note 3)            :milestone, m3, 2026-05-22, 0h
+```
+
+# 📑 Détail des Sessions
+
+### Jour 1 : Nettoyer les écuries d'Augias des CSV
+* **09h00 - 12h30** : Concepts de l'IA, Tenseurs et Descente de gradient.
+* **13h30 - 17h00** : Pandas/NumPy et Feature Engineering sur données réelles.
+
+### Jour 2 : Apprendre à voir dans les matrices
+* **09h00 - 12h30** : Architectures CNN et traitement d'images (OpenCV).
+* **13h30 - 17h00** : Lab Keras : Entraînement et lutte contre l'overfitting.
+
+### Jour 3 : Murmurer à l'oreille des Transformers
+* **09h00 - 12h30** : Mécanismes d'attention et anatomie d'un LLM.
+* **13h30 - 17h00** : Atelier Prompt Engineering et Prompt Battle.
+
+### Jour 4 : Quand le code prend le contrôle
+* **09h00 - 12h30** : Framework Langchain et stratégies RAG.
+* **13h30 - 17h00** : Création d'agents autonomes et outils MCP.
+
+### Jour 5 : Garder la machine sur les rails
+* **09h00 - 11h00** : Éthique, Droit et Responsabilité.
+* **11h00 - 12h30** : Finalisation des prototypes.
+* **13h30 - 17h00** : Soutenances devant le "comité d'investissement".

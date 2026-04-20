@@ -1,0 +1,47 @@
+---
+title: "Syllabus"
+---
+
+# 📑 Plan de Cours
+
+## 1. Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV [cite: 31]
+- Concepts, enjeux et limites de l'IA.
+- Mathématiques : Tenseurs, fonctions d'activation et descente de gradient.
+- Manipulation de données avec Pandas et NumPy.
+- **Activité :** Feature Engineering sur un dataset "sale".
+
+## 2. Deep Learning & Vision : Apprendre à voir dans les matrices [cite: 31]
+- Architecture des réseaux de neurones (PMC) et réseaux convolutifs (CNN).
+- Prétraitement d'images avec OpenCV et Pillow.
+- Gestion de l'overfitting et de l'underfitting.
+- **Activité :** Entraînement d'un classifieur d'images avec Keras.
+
+## 3. NLP & GenAI : Murmurer à l'oreille des Transformers [cite: 31]
+- NLP classique vs Transformers et mécanismes d'attention.
+- Piliers du Prompt Engineering et gestion du contexte.
+- Sécurité : Hallucinations, biais et injections de prompt.
+- **Activité :** Prompt Battle thématique.
+
+## 4. Orchestration & Agents : Quand le code prend le contrôle [cite: 31]
+- Introduction à Langchain et aux System Prompts.
+- RAG (Retrieval Augmented Generation) et bases vectorielles.
+- Utilisation d'outils externes via les agents (MCP).
+- **Activité :** Création d'un agent anti-arnaqueurs.
+
+## 5. Gouvernance & Éthique : Garder la machine sur les rails [cite: 31]
+- Responsabilité, équité et les 6 piliers de la propriété de l'IA.
+- Stratégies pour gagner la confiance des utilisateurs.
+- **Activité :** Débat sur l'IA parfaite et soutenance finale.
+
+# 🎓 Modalités d'Évaluation [cite: 32]
+
+| Évaluation | Type | Poids | Format |
+| :--- | :--- | :--- | :--- |
+| **Note 1** | Travaux Pratiques (Images, Texte, Agents) [cite: 33] | 20% | Notebook (.ipynb) |
+| **Note 2** | QCM Théorique (ML/DL & GenAI) [cite: 34] | 30% | Quiz en ligne |
+| **Note 3** | Projet Final (Prototype IA complet) [cite: 35] | 50% | Dépôt GitHub + README |
+
+## Exigences de Rendu [cite: 36]
+- **Transparence IA :** Section obligatoire détaillant la méthodologie et la critique des outils utilisés. [cite: 35, 36]
+- **Preuves :** Captures d'écran et logs d'exécution obligatoires dans les notebooks. [cite: 36]
+- **Sécurité :** Zéro tolérance pour les clés d'API présentes dans le code ou l'historique Git (usage de `.env` requis). [cite: 36]

@@ -1,0 +1,27 @@
+---
+title: "Fiche Module : Python - Analyse des données & Agents d'IA"
+subtitle: "Code Module : PY-IA-M1"
+author: "Assistant de Cours v3"
+date: "2024-2025"
+---
+
+# 📋 Description Générale
+Ce module transforme des développeurs en architectes de solutions intelligentes. À travers un parcours intensif de 35 heures, les étudiants explorent l'intégralité du cycle de vie de l'IA : de la préparation de la donnée brute au déploiement d'agents autonomes. L'enjeu est de maîtriser les outils techniques (Deep Learning, LLM) tout en garantissant la sécurité et l'éthique des systèmes produits.
+
+# 🎯 Objectifs Pédagogiques
+- [ ] **Collecter et traiter** des volumes de données hétérogènes (Pandas, NumPy).
+- [ ] **Concevoir et entraîner** des modèles de Deep Learning pour la vision et le texte.
+- [ ] **Maîtriser l'IA Générative** via le Prompt Engineering et Langchain.
+- [ ] **Développer des agents** autonomes capables d'interagir avec des outils externes.
+- [ ] **Évaluer la gouvernance** (éthique, sécurité, responsabilité) des systèmes d'IA.
+
+# 🛠️ Spécificités & Moyens
+- **Public :** Mastère Développement, Data & IA - 4ème année (M1).
+- **Volume Horaire :** 35 heures (5 jours).
+- **Moyens techniques :**
+    - Stack : Python 3.x, Pandas, Scikit-learn, Tensorflow, Langchain.
+    - Environnement : Jupyter Notebook, VS Code.
+- **Prérequis :** Maîtrise de Python, bases en mathématiques, usage du terminal et anglais technique[cite: 2, 31].
+
+# 💡 Concept & Métaphore
+**Le Laboratoire d'Alchimie de la Donnée** : Le cours suit une progression où la donnée est traitée comme une matière brute que l'on purifie (Data Cleaning), que l'on dote de sens (Vision/NLP), à laquelle on insuffle une volonté (Agents) et que l'on soumet à une éthique (Gouvernance)[cite: 9, 31].
