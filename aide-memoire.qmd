@@ -1,0 +1,132 @@
+---
+title: "Aide-Mémoire Global 🧠"
+---
+
+Cet aide-mémoire centralise les schémas fondamentaux et les concepts critiques à retenir pour chaque chapitre de ce module.
+
+---
+
+## 1. Fondations de l'IA & Data
+
+### 🔑 À retenir
+- **Systèmes Experts vs Deep Learning :** Passage d'une logique basée sur des règles ("Si/Alors") à un apprentissage statistique par réseaux de neurones.
+- **Chaîne de valeur :** Hardware $\rightarrow$ Cloud $\rightarrow$ Modèles de base $\rightarrow$ Applications.
+- **Réseaux de Neurones :** 
+  - **Feedforward :** Flux de données de l'entrée vers la sortie pour prédire.
+  - **Backpropagation :** Flux d'erreur de la sortie vers l'entrée pour ajuster les poids et apprendre.
+- **Non-linéarité :** Introduite par les fonctions d'activation (ReLU, Softmax) pour modéliser des problèmes complexes.
+- **Optimisation :** L'algorithme *Adam* et le *Learning Rate* (taux d'apprentissage) dirigent la descente de gradient pour minimiser la fonction de coût.
+- **GIGO (Garbage In, Garbage Out) :** Une mauvaise donnée engendre un mauvais modèle. Toujours nettoyer et standardiser (Pandas/NumPy).
+
+### 📐 Schéma : Dynamique d'Apprentissage
+```{mermaid}
+graph LR
+    A[Données Brutes] --> B(Feedforward)
+    B --> C{Prédiction}
+    C --> D[Calcul de l'Erreur]
+    D --> E(Backpropagation)
+    E -->|Ajustement des poids| B
+```
+
+---
+
+## 2. Deep Learning & Vision (CNN)
+
+### 🔑 À retenir
+- **Le Fléau de la Dimension :** Un réseau classique (MLP) a trop de paramètres pour traiter des images HD.
+- **Les Piliers du CNN :** Connectivité locale (champ récepteur) et partage de poids (filtres réutilisables).
+- **Couches clés :** 
+  - **Convolution :** Extraction des traits via les noyaux.
+  - **ReLU :** Activation non-linéaire.
+  - **Pooling :** Réduction de la taille spatiale pour contrôler l'overfitting.
+- **Overfitting (Surapprentissage) :** Le modèle apprend le bruit par cœur. On le combat avec le *Dropout*, la *Batch Normalization* et la *Data Augmentation*.
+- **Transfer Learning :** Réutiliser les couches convolutives d'un modèle pré-entraîné (ex: AlexNet) pour une nouvelle tâche spécifique.
+- **ViT (Vision Transformers) :** Nouvelle architecture remplaçant la convolution par des mécanismes d'attention globale.
+
+### 📐 Schéma : Anatomie d'un CNN
+```{mermaid}
+graph LR
+    A[Image Brute] --> B[Convolution]
+    B --> C[ReLU]
+    C --> D[Pooling]
+    D --> E[Convolution...]
+    E --> F[Flatten]
+    F --> G[Couches Entièrement Connectées]
+    G --> H[Prédiction Finale]
+```
+
+---
+
+## 3. NLP & GenAI (Transformers)
+
+### 🔑 À retenir
+- **Féaturisation (BoW / TF-IDF) :** Transformation historique du texte en vecteurs, mais souffre du "problème de sparsité" (vecteurs creux).
+- **Espace Latent :** Représentation compressée et abstraite des caractéristiques (obtenue via un *Bottleneck* dans les Autoencodeurs).
+- **Le Transformer :** Architecture lisant toute la séquence en parallèle grâce au mécanisme d'attention (vs la lecture séquentielle des anciens RNN).
+- **Q, K, V (Query, Key, Value) :** Le triptyque de l'attention. Un mot pose une question (Q), les autres répondent avec leurs clés (K), et on extrait la valeur (V).
+- **Pilotage du LLM :**
+  - **Température :** Contrôle l'aplatissement de la courbe des probabilités (0 = strict, >1 = créatif).
+  - **Top-K / Top-P :** Garde-fous pour bloquer les mots absurdes.
+  - **Chain-of-Thought (CoT) :** Forcer le modèle à verbaliser ses étapes de calcul.
+- **Risques :** Hallucinations (inhérentes à l'architecture probabiliste) et Prompt Injection (détournement malveillant).
+
+### 📐 Schéma : Le Mécanisme de Self-Attention
+```{mermaid}
+graph TD
+    A[Mot : 'avocat'] --> B(Génération Q, K, V)
+    C[Mot : 'mangé'] --> D(Génération Q, K, V)
+    B --> E{Calcul du Produit Scalaire Q x K}
+    D --> E
+    E --> F[Application Softmax]
+    F --> G[Multiplication par V]
+    G --> H[Nouveau vecteur 'avocat' enrichi]
+```
+
+---
+
+## 4. Orchestration & Agents (LangChain & MCP)
+
+### 🔑 À retenir
+- **Orchestrateur (LangChain) :** Sépare la logique applicative du modèle IA sous-jacent.
+- **Chains vs Agents :** Les chaînes sont linéaires et prévisibles ; les agents sont dynamiques et autonomes.
+- **Le RAG (Retrieval-Augmented Generation) :** Système hybride soignant les hallucinations en forçant le modèle à lire des documents de référence (vectorisés) avant de répondre.
+- **ReAct (Reasoning and Acting) :** Boucle de raisonnement robuste de l'agent : *Pensée $\rightarrow$ Action $\rightarrow$ Observation*.
+- **MCP (Model Context Protocol) :** Standard universel pour connecter un LLM à n'importe quelle API ou base de données d'entreprise en toute sécurité.
+- **Gouvernance :** Toujours exiger un "Human-in-the-loop" pour les actions critiques et tracer les logs (LangSmith).
+
+### 📐 Schéma : Le Pipeline RAG Hybride
+```{mermaid}
+graph TD
+    A[Question Utilisateur] --> B(Embedding de la Question)
+    B --> C{Base Vectorielle}
+    C -->|Recherche Sémantique| D[Top Chunks Pertinents]
+    A -->|Recherche Mots-clés| D
+    D --> E[Modèle Re-ranker]
+    E --> F[Contexte Final purifié]
+    F --> G[LLM génère la réponse finalisée]
+```
+
+---
+
+## 5. Éthique, Sécurité et Gouvernance
+
+### 🔑 À retenir
+- **EU AI Act :** Premier règlement classant les IA par risque (Inacceptable = Interdiction, Haut Risque = Audit strict). Il impose ses standards via l'"Effet Bruxelles".
+- **Live Deepfakes :** L'illusion générée par l'IA interagit en temps réel, créant un "Arbitrage Advantage" pour les attaquants.
+- **Biais Algorithmique :** Déviation statistique mesurable (à corriger via des métriques de *Fairness*).
+- **Alignement :** DPO (Optimisation directe par préférences) remplace progressivement le RLHF pour aligner le modèle sur les valeurs humaines.
+- **XAI (Explainable AI) :** Outils comme SHAP permettant d'expliquer une décision d'IA mathématiquement.
+- **Paradoxe de Jevons & Green AI :** Plus l'IA est optimisée, plus on l'utilise, augmentant l'empreinte carbone globale. Il faut toujours préférer le plus petit modèle capable de réaliser la tâche.
+
+### 📐 Schéma : La Pyramide des Risques (EU AI Act)
+```{mermaid}
+graph TD
+    A[Risque Inacceptable\nInterdiction Totale] --> B[Haut Risque\nAudit & Contrôle Strict]
+    B --> C[Risque Limité\nObligation de Transparence]
+    C --> D[Risque Minimal\nPas de contraintes spécifiques]
+    
+    style A fill:#ff4d4d,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ff9900,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#ffcc00,stroke:#333,stroke-width:2px,color:#000
+    style D fill:#99cc33,stroke:#333,stroke-width:2px,color:#fff
+```

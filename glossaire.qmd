@@ -1,0 +1,119 @@
+---
+title: "Glossaire de l'Intelligence Artificielle 📖"
+---
+
+Ce glossaire regroupe les termes techniques et concepts clés abordés tout au long du module. Il est conçu comme une référence rapide pour vos révisions et vos projets.
+
+---
+
+### A
+- **AI Office :** L'organe de supervision créé par l'Union Européenne, chargé de surveiller particulièrement les grands modèles de fondation (GPAI). ([Chapitre 5](cours/5_ethique.qmd))
+- **Alignement :** Processus visant à s'assurer que les objectifs de l'IA ne divergent pas des valeurs humaines ou des consignes de sécurité. ([Chapitre 5](cours/5_ethique.qmd))
+- **Apprentissage par Transfert (Transfer Learning) :** Technique consistant à utiliser un modèle déjà entraîné sur un large dataset pour l'adapter rapidement à un problème de niche. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+
+### B
+- **Biais (Bias) :** Valeur ajoutée à la somme pondérée pour permettre de décaler la fonction d'activation, offrant plus de flexibilité au modèle. Désigne aussi les déviations statistiques liées aux données d'entraînement. ([Chapitre 1](cours/1_introduction.qmd) / [Chapitre 3](cours/3_genai.qmd))
+- **Boîte noire (Black Box) :** Se dit d'un système d'IA dont on connaît les entrées et les sorties, mais dont le processus de décision interne est trop complexe pour être compris ou justifié par un humain. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Bottleneck (Goulot d'étranglement) :** Couche la plus étroite d'un autoencodeur qui limite le flux d'information pour forcer la compression et l'extraction des caractéristiques essentielles. ([Chapitre 3](cours/3_genai.qmd))
+
+### C
+- **Carte d'activation (Feature Map) :** Image résultant d'une convolution montrant les zones où un motif spécifique (bord, texture, forme) a été détecté. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Champ récepteur (Receptive Field) :** Région spécifique de l'image d'entrée qu'un neurone particulier "regarde" et qui influence son activation. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Compliance by Design (Conformité dès la conception) :** Approche d'ingénierie consistant à intégrer les contraintes légales et éthiques dans le code et l'architecture du système dès le premier jour du projet. ([Chapitre 5](cours/5_ethique.qmd))
+- **Complexité $O(N^2)$ :** Notation mathématique indiquant que si la taille de l'entrée ($N$) augmente, le coût en ressources augmente au carré (typique du mécanisme d'attention standard). ([Chapitre 3](cours/3_genai.qmd))
+- **Corpus :** L'ensemble complet des documents textuels utilisés pour entraîner ou analyser un modèle NLP. ([Chapitre 3](cours/3_genai.qmd))
+
+### D
+- **DataFrame :** Structure de données tabulaire à deux dimensions (lignes et colonnes), au cœur de l'écosystème Pandas. ([Chapitre 1](cours/1_introduction.qmd))
+- **Data Poisoning (Empoisonnement de données) :** Type de cyberattaque visant à introduire des données corrompues dans le dataset d'une IA pour altérer volontairement son comportement futur. ([Chapitre 5](cours/5_ethique.qmd))
+- **Déterministe :** Un système qui, pour une même entrée, produira toujours rigoureusement la même sortie. ([Chapitre 3](cours/3_genai.qmd))
+- **Dying ReLU :** Un neurone bloqué à 0 qui ne s'active plus et ne participe plus à l'apprentissage suite à des gradients nuls. ([Chapitre 1](cours/1_introduction.qmd))
+
+### E
+- **Embedding :** Représentation numérique d'une donnée (mot, image) dans un espace vectoriel où la proximité mathématique équivaut à une proximité de sens. ([Chapitre 3](cours/3_genai.qmd) / [Chapitre 4](cours/4_orchestration.qmd))
+- **Empreinte Hydrique :** Quantité totale d'eau douce utilisée pour refroidir les serveurs pendant les calculs d'IA. ([Chapitre 5](cours/5_ethique.qmd))
+- **Équivariance :** Propriété garantissant que si l'entrée change (ex: translation), la sortie change de façon prévisible et proportionnelle. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Espace Latent :** Espace mathématique compressé où les données sont représentées par leurs caractéristiques abstraites et cachées. ([Chapitre 3](cours/3_genai.qmd))
+- **Essaim d'agents (Agent Swarm) :** Architecture où plusieurs agents autonomes spécialisés collaborent pour résoudre un problème commun. ([Chapitre 4](cours/4_orchestration.qmd))
+- **Extrapolation :** Capacité d'un modèle à traiter des données dépassant les limites (ex: longueur de texte) vues pendant l'entraînement. ([Chapitre 3](cours/3_genai.qmd))
+
+### F
+- **Feature Engineering :** Processus consistant à créer de nouvelles variables explicatives à partir de données brutes pour améliorer les performances de l'IA. ([Chapitre 1](cours/1_introduction.qmd))
+- **Flatten :** Étape consistant à "aplatir" un tenseur multidimensionnel en un vecteur unidimensionnel pour l'injecter dans des couches denses. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Fonction de Coût (Loss Function) :** Formule mathématique calculant l'écart entre les prédictions du réseau et la réalité. ([Chapitre 1](cours/1_introduction.qmd))
+
+### G
+- **GAN (Generative Adversarial Networks) :** Architecture IA opposant deux réseaux (un faussaire et un détective) pour créer des médias ultra-réalistes. ([Chapitre 5](cours/5_ethique.qmd))
+- **Green AI :** Mouvement visant à optimiser les processus d'IA pour réduire leur consommation d'énergie et leur empreinte carbone. ([Chapitre 5](cours/5_ethique.qmd))
+
+### H
+- **HNSW (Hierarchical Navigable Small World) :** Algorithme de recherche de voisinage ultra-rapide utilisé dans les bases de données vectorielles. ([Chapitre 4](cours/4_orchestration.qmd))
+- **Human-in-the-loop (HITL) :** Modèle d'interaction où le système nécessite l'intervention d'un humain pour valider des actions critiques. ([Chapitre 4](cours/4_orchestration.qmd))
+- **Hybridation :** Fusion de plusieurs types d'architectures (ex: CNN + Transformer) pour cumuler leurs avantages. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Hyperparamètre :** Réglage manuel (Learning Rate, Batch Size) défini *avant* l'entraînement, contrairement aux paramètres appris. ([Chapitre 1](cours/1_introduction.qmd))
+
+### I
+- **ImageNet :** Base de données de millions d'images annotées, référence pour les compétitions de vision par ordinateur. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Imputation :** Technique consistant à remplacer les données manquantes par des valeurs substituts cohérentes (moyenne, médiane). ([Chapitre 1](cours/1_introduction.qmd))
+- **Inférence :** Phase d'utilisation du modèle en production pour faire des prédictions sur de nouvelles données. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd) / [Chapitre 3](cours/3_genai.qmd))
+
+### J
+- **JSON-RPC 2.0 :** Protocole léger d'appel de procédure à distance utilisé par le standard MCP pour faire communiquer les briques d'IA. ([Chapitre 4](cours/4_orchestration.qmd))
+
+### K
+- **Kullback-Leibler (KL) Divergence :** Mesure mathématique utilisée (notamment dans les VAE) pour comparer deux distributions de probabilités. ([Chapitre 3](cours/3_genai.qmd))
+
+### L
+- **LangSmith :** Plateforme de l'écosystème LangChain dédiée au débogage, aux tests et au monitoring des applications LLM. ([Chapitre 4](cours/4_orchestration.qmd))
+- **LLM (Large Language Model) :** Modèle génératif profond capable de comprendre et de générer du texte à grande échelle. ([Chapitre 1](cours/1_introduction.qmd) / [Chapitre 3](cours/3_genai.qmd))
+
+### M
+- **Max Pooling :** Opération de sous-échantillonnage sélectionnant la valeur maximale dans une fenêtre donnée pour réduire la dimension spatiale. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Momentum :** Technique d'optimisation qui accumule les gradients passés pour accélérer la convergence et lisser la trajectoire. ([Chapitre 1](cours/1_introduction.qmd))
+
+### N
+- **Non-linéarité :** Capacité mathématique indispensable pour modéliser des relations complexes (introduite par les fonctions d'activation). ([Chapitre 1](cours/1_introduction.qmd))
+- **Noyau (Kernel) :** Petite matrice de poids qui "glisse" sur une image (convolution) pour détecter des motifs spécifiques. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Nucleus Sampling (Top-P) :** Technique d'échantillonnage sélectionnant le plus petit ensemble de mots dont la probabilité cumulée dépasse un seuil P. ([Chapitre 3](cours/3_genai.qmd))
+
+### O
+- **Observabilité :** Capacité à comprendre l'état interne d'un système complexe (IA) à partir de ses sorties (logs, traces, métriques). ([Chapitre 4](cours/4_orchestration.qmd))
+- **Orchestration :** Coordination de plusieurs composants (modèles, bases, API) pour réaliser une tâche complexe. ([Chapitre 4](cours/4_orchestration.qmd))
+- **OWASP (Open Worldwide Application Security Project) :** Fondation de référence publiant les standards de sécurité, incluant le Top 10 pour les LLM. ([Chapitre 3](cours/3_genai.qmd))
+
+### P
+- **Perceptron :** L'ancêtre du neurone artificiel moderne, conçu initialement comme une unité binaire logique. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **PII (Personally Identifiable Information) :** Données à caractère personnel que les modèles risquent de fuiter s'ils ne sont pas sécurisés. ([Chapitre 3](cours/3_genai.qmd))
+- **Poids (Weights) :** Coefficients numériques déterminant l'importance des connexions entre neurones, ajustés pendant l'apprentissage. ([Chapitre 1](cours/1_introduction.qmd))
+
+### R
+- **RAG (Retrieval-Augmented Generation) :** Système hybride couplant recherche documentaire et génération de texte pour garantir la fiabilité factuelle. ([Chapitre 3](cours/3_genai.qmd) / [Chapitre 4](cours/4_orchestration.qmd))
+- **Red AI :** Pratique consistant à obtenir une amélioration marginale de précision au prix d'une augmentation massive du calcul et de l'énergie. ([Chapitre 5](cours/5_ethique.qmd))
+- **Régularisation :** Ensemble des techniques (Dropout, L2) visant à empêcher un modèle de faire du surapprentissage (overfitting). ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Rétropropagation (Backpropagation) :** Algorithme central ajustant les poids du réseau en calculant l'erreur de la sortie vers l'entrée. ([Chapitre 1](cours/1_introduction.qmd) / [Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Reward Hacking :** Comportement où l'IA détourne sa fonction de récompense pour obtenir un score élevé sans accomplir la tâche réelle. ([Chapitre 5](cours/5_ethique.qmd))
+
+### S
+- **Self-Attention (Auto-attention) :** Mécanisme permettant à un modèle de pondérer l'importance de tous les éléments d'une séquence entre eux. ([Chapitre 3](cours/3_genai.qmd))
+- **Séquentiel vs Parallèle :** Exécution l'une après l'autre (RNN) vs exécution simultanée de toutes les tâches (Transformers). ([Chapitre 3](cours/3_genai.qmd))
+- **SHAP (Shapley Additive Explanations) :** Méthode mathématique pour interpréter l'importance de chaque variable dans une prédiction d'IA. ([Chapitre 5](cours/5_ethique.qmd))
+- **Similarité Cosinus :** Mesure de l'angle entre deux vecteurs ; plus il est petit, plus les sens sont proches. ([Chapitre 4](cours/4_orchestration.qmd))
+- **Social Scoring :** Pratique (interdite par l'AI Act) consistant à noter les citoyens selon leur comportement public. ([Chapitre 5](cours/5_ethique.qmd))
+- **SRAM (Static Random Access Memory) :** Mémoire cache ultra-rapide intégrée sur la puce du GPU, cruciale pour les performances (FlashAttention). ([Chapitre 3](cours/3_genai.qmd))
+- **Stop-words :** Mots fréquents (le, la, et) souvent filtrés car ils apportent peu de valeur sémantique. ([Chapitre 3](cours/3_genai.qmd))
+- **Structured Output :** Technique forçant le modèle à répondre dans un format informatique strict (ex: JSON). ([Chapitre 4](cours/4_orchestration.qmd))
+- **Swatting :** Cyberattaque utilisant souvent le clonage vocal pour déclencher des interventions policières injustifiées. ([Chapitre 5](cours/5_ethique.qmd))
+- **System Prompt :** Instructions de haut niveau définissant le rôle et les limites du modèle pour une session. ([Chapitre 4](cours/4_orchestration.qmd))
+- **Système Expert :** Programme basé sur des règles logiques strictes ("Si... Alors") et des bases de connaissances explicites. ([Chapitre 1](cours/1_introduction.qmd))
+
+### T
+- **Tenseur :** Structure de données multidimensionnelle (généralisation des matrices) utilisée pour transporter l'information dans les réseaux. ([Chapitre 1](cours/1_introduction.qmd) / [Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **Token :** L'unité lexicale de base manipulée par un LLM (souvent une syllabe ou un morceau de mot). ([Chapitre 3](cours/3_genai.qmd))
+- **Tokenisation de données (Sécurité) :** Processus remplaçant une donnée sensible par un jeton non sensible pour la protéger. ([Chapitre 4](cours/4_orchestration.qmd))
+- **TPU (Tensor Processing Unit) :** Processeur spécialisé développé par Google, optimisée pour le calcul matriciel intensif de l'IA. ([Chapitre 1](cours/1_introduction.qmd))
+- **Train set / Test set :** Séparation des données pour l'entraînement (Train) et l'évaluation finale (Test). ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+
+### V
+- **Vanishing Gradient (Disparition de gradient) :** Problème où le signal de correction devient trop faible pour mettre à jour les premières couches d'un réseau profond. ([Chapitre 1](cours/1_introduction.qmd))
+- **Vision Transformer (ViT) :** Architecture appliquant les principes d'attention des modèles de langage directement au traitement d'images. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
+- **VRAM (Video Random Access Memory) :** Mémoire dédiée de la carte graphique utilisée pour stocker les modèles et les calculs en cours. ([Chapitre 2](cours/2_reseaux_de_neurones.qmd))
