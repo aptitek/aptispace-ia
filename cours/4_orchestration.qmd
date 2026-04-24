@@ -50,16 +50,8 @@ graph TD
 
 ---
 
-### 4.1.3 Aide-mémoire 📝
-- [ ] **Modèle vs Application :** Le LLM n'est pas l'application, c'est le moteur de raisonnement interchangeable.
-- [ ] **Chains :** Pour les processus prévisibles et répétitifs.
-- [ ] **Agents :** Pour les tâches complexes nécessitant de l'autonomie.
-- [ ] **Framing Block :** Technique pour forcer l'IA à réfléchir avant d'agir.
+---
 
-### 4.1.4 Mini-Glossaire 📖
-- **Orchestration :** Coordination de plusieurs composants (modèles, bases de données, API) pour réaliser une tâche complexe.
-- **System Prompt :** Instructions de haut niveau définissant le rôle, les limites et la personnalité du modèle pour toute la session.
-- **Structured Output :** Technique forçant le modèle à répondre dans un format informatique (JSON/Zod) pour être lu par un programme classique.
 
 ## 4.2 Mécanique du RAG : De l'Ingestion à la Recherche Hybride 🏗️
 
@@ -106,16 +98,7 @@ graph TD
 
 ---
 
-### 4.2.4 Aide-mémoire 📝
-- [ ] **Chunking :** Ne jamais oublier le chevauchement (overlap) pour préserver le sens entre deux segments.
-- [ ] **Similarité Cosinus :** La méthode mathématique standard pour comparer deux vecteurs de sens.
-- [ ] **Re-ranking :** Étape indispensable pour ne pas polluer la fenêtre de contexte du LLM avec des documents moyennement pertinents.
-- [ ] **RAG vs Fine-Tuning :** Le RAG est préférable pour les données qui changent souvent (actualités, stocks, docs internes).
 
-### 4.2.5 Mini-Glossaire 📖
-- **Embedding :** Représentation numérique d'une donnée où la proximité mathématique équivaut à une proximité de sens.
-- **Similarité Cosinus :** Mesure de l'orientation relative de deux vecteurs ; plus l'angle est petit, plus les textes sont sémantiquement proches.
-- **HNSW (Hierarchical Navigable Small World) :** Algorithme de recherche de voisinage ultra-rapide utilisé dans les bases vectorielles.
 
 ## 4.3 Agents Autonomes et Model Context Protocol (MCP) : L'Intégration Universelle 🤖
 
@@ -173,16 +156,7 @@ graph TD
 
 ---
 
-### 4.3.5 Aide-mémoire 📝
-- [ ] **ReAct :** La boucle de raisonnement robuste (Pensée -> Action -> Observation).
-- [ ] **MCP (Model Context Protocol) :** Le standard universel pour connecter n'importe quel LLM à n'importe quelle source de données ou outil.
-- [ ] **Divulgation Progressive :** Optimisation consistant à ne révéler les détails d'un outil à l'agent que s'il en a explicitement besoin.
-- [ ] **Multi-Agents :** Diviser pour régner, en spécialisant les rôles de chaque agent sous la supervision d'un Leader.
 
-### 4.3.6 Mini-Glossaire 📖
-- **JSON-RPC 2.0 :** Protocole léger d'appel de procédure à distance (RPC) encodé en JSON, utilisé par le standard MCP pour faire communiquer les briques d'IA.
-- **Essaim d'agents (Agent Swarm) :** Architecture où plusieurs agents autonomes spécialisés collaborent et communiquent pour résoudre un problème commun.
-- **Tokenisation de données (Sécurité) :** Processus consistant à remplacer une donnée sensible par un jeton non sensible équivalent (sans signification mathématique), afin de la protéger lors d'un transit vers un modèle externe.
 
 ## 4.4 Sécurité, Gouvernance et Futur de l'Ingénierie Agentique 🛡️
 
@@ -210,14 +184,10 @@ Les premiers retours de l'industrie sur l'intégration de ces systèmes orchestr
 
 La convergence entre l'orchestration cyclique (LangGraph), le RAG haute fidélité et le standard d'intégration universel (MCP) transforme définitivement l'entreprise. Les modèles d'IA ne sont plus de simples gadgets conversationnels, ils deviennent de véritables collaborateurs numériques, capables d'automatiser des flux de travail complets tout en garantissant la souveraineté des données.
 
+### 4.5 Conclusion et Transition 🌉
+
+Cependant, donner les pleins pouvoirs à des agents autonomes connectés à nos bases de données soulève des questions existentielles : comment s'assurer que l'agent ne prenne pas de décisions biaisées, dangereuses ou illégales ? 
+
+C'est là qu'entrent en jeu les nouveaux cadres législatifs, la cybersécurité avancée et la durabilité énergétique, sujets que nous aborderons dans notre ultime **[Chapitre 5 : Gouvernance, Éthique et Sécurité](5_ethique.qmd)**.
+
 ---
-
-### 4.4.4 Aide-mémoire 📝
-- [ ] **Observabilité :** Tracer chaque étape du raisonnement (Pensée, Action, Résultat) pour pouvoir auditer l'agent.
-- [ ] **Human-in-the-loop :** Toujours exiger une validation humaine avant une action critique.
-- [ ] **Principe du moindre privilège :** Ne donnez pas les clés de toute l'entreprise à un agent qui doit juste trier des tickets ou lire des documents.
-
-### 4.4.5 Mini-Glossaire 📖
-- **Observabilité :** Capacité à comprendre l'état interne d'un système complexe à partir de ses sorties externes (logs, traces, métriques).
-- **LangSmith :** Plateforme de développement de l'écosystème LangChain dédiée au débogage, aux tests et au monitoring des applications LLM.
-- **Human-in-the-loop (HITL) :** Modèle d'interaction où le système IA nécessite l'intervention d'un être humain pour prendre des décisions finales ou valider des actions.

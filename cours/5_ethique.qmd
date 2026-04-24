@@ -44,17 +44,6 @@ Les fournisseurs américains ou asiatiques (OpenAI, Google, Anthropic) doivent o
 
 ---
 
-### 5.1.3 Aide-mémoire 📝
-- [ ] **Red AI vs Green AI :** Fin de la course à la puissance aveugle, début de l'ère de la responsabilité.
-- [ ] **EU AI Act :** Premier règlement mondial classant les IA par niveau de risque.
-- [ ] **Risque inacceptable :** Interdiction stricte des IA de notation sociale ou de manipulation mentale.
-- [ ] **Effet Bruxelles :** Le phénomène par lequel la législation européenne devient de facto la norme mondiale imposée aux géants de la Tech.
-
-### 5.1.4 Mini-Glossaire 📖
-- **Compliance by Design (Conformité dès la conception) :** Approche d'ingénierie consistant à intégrer les contraintes légales et éthiques dans le code et l'architecture du système dès le premier jour du projet.
-- **AI Office :** L'organe de supervision créé par l'Union Européenne, chargé de surveiller particulièrement les grands modèles de fondation (GPAI).
-- **Social Scoring :** Pratique consistant à évaluer et noter les citoyens selon leur comportement dans l'espace public (interdit en Europe par l'AI Act).
-
 ## 5.2 La Menace des Deepfakes : Sécurité et "Arbitrage Advantage" 🎭
 
 Le paysage des cyber-menaces a muté vers l'instantanéité. Nous avons quitté l'ère des deepfakes pré-enregistrés, souvent maladroits, pour entrer dans celle des **Live Deepfakes interactifs**. Propulsés par les Réseaux Antagonistes Génératifs (GAN) et des modèles de diffusion ultra-rapides, ces avatars peuvent désormais soutenir une conversation vidéo en temps réel [@hive_2025_deepfake].
@@ -95,17 +84,6 @@ La sécurité ne se limite plus à contrôler ce que le modèle *produit* (infé
 
 ---
 
-### 5.2.4 Aide-mémoire 📝
-- [ ] **Live Deepfakes :** L'illusion générée par l'IA n'est plus une vidéo pré-enregistrée, elle interagit désormais en temps réel.
-- [ ] **Arbitrage Advantage :** Le décalage temporel entre l'apparition d'une technique d'attaque IA et le déploiement de sa parade défensive.
-- [ ] **C2PA vs Watermarking :** Ne pas confondre les métadonnées cryptographiques (qui peuvent être falsifiées ou retirées) et le tatouage directement inscrit dans les données du média.
-- [ ] **Nightshade :** Outil de cyber-défense citoyenne permettant d'empoisonner les modèles d'IA qui tenteraient d'aspirer des œuvres protégées.
-
-### 5.2.5 Mini-Glossaire 📖
-- **Swatting :** Canular téléphonique consistant à faire intervenir les forces de police ou le SWAT chez un particulier sous un faux prétexte grave.
-- **GAN (Generative Adversarial Networks) :** Architecture IA opposant deux réseaux (un faussaire et un détective) pour créer des médias ultra-réalistes.
-- **Data Poisoning (Empoisonnement de données) :** Type de cyberattaque visant à introduire des données corrompues dans le dataset d'une IA pour altérer volontairement son comportement futur.
-
 ## 5.3 Éthique et Équité Algorithmique : La Logique de l'Alignement ⚖️
 
 L'équité n'est plus une option philosophique, c'est une exigence technique. Les biais algorithmiques sont souvent la sédimentation de préjugés historiques présents dans les données. Pour les corriger, l'architecte doit intervenir mathématiquement à l'aide de métriques précises [@evaluation_2026_systemique].
@@ -125,8 +103,6 @@ Une fois le modèle entraîné sur ses données brutes, il est souvent "sauvage"
     * *Défaut :* C'est un processus lourd, instable et sujet au "Reward Hacking" (l'IA apprend à flatter l'humain pour avoir une bonne note sans forcément dire la vérité) [@aws_2024_rlhf].
 * **DPO (Direct Preference Optimization) :** La révolution de 2024-2025 (utilisée pour Llama 3). Au lieu de créer un modèle de récompense complexe, on montre directement à l'IA des paires de réponses (une "bonne" et une "mauvaise"). On force mathématiquement le modèle à augmenter la probabilité de la bonne et à diminuer celle de la mauvaise en une seule étape [@toloka_2024_dpo].
 
-
-
 ### 5.3.3 L'Explicabilité (XAI) : Ouvrir la Boîte Noire 🔍
 
 Pour respecter l'EU AI Act, un modèle à haut risque doit pouvoir expliquer ses décisions. On utilise pour cela des outils de **XAI (Explainable AI)** [@iva_2025_xai] :
@@ -145,17 +121,6 @@ graph LR
 
 ---
 
-### 5.3.4 Aide-mémoire 📝
-- [ ] **Biais Algorithmique :** Ce n'est pas une opinion, c'est une déviation statistique mesurable.
-- [ ] **RLHF :** Apprentissage par renforcement basé sur le jugement humain (complexe).
-- [ ] **DPO :** Optimisation directe par préférences (simple, stable, moderne).
-- [ ] **XAI :** Techniques pour transformer une décision mathématique obscure en une explication compréhensible par un juge ou un client.
-
-### 5.3.5 Mini-Glossaire 📖
-- **Alignement :** Processus visant à s'assurer que les objectifs de l'IA ne divergent pas des valeurs humaines ou des consignes de sécurité.
-- **Reward Hacking :** Comportement où l'IA trouve une faille dans sa fonction de récompense pour obtenir un score élevé sans accomplir la tâche demandée.
-- **SHAP :** Méthode mathématique universelle pour interpréter l'importance de chaque variable dans une prédiction.
-
 ## 5.4 Durabilité Technologique : La Crise de la Mesure et le Paradoxe de Jevons 🌿
 
 La transition vers une **« Green AI »** est freinée par une infrastructure physique dont l'empreinte devient insoutenable. Depuis 2012, la demande en puissance de calcul a été multipliée par 300 000 [@bose_2025_greenai]. En tant qu'architectes, notre responsabilité est d'arbitrer entre la performance d'un modèle et son coût énergétique.
@@ -171,8 +136,6 @@ On imagine souvent que l'entraînement (le *training*) est le moment le plus én
 C'est le défi économique majeur de 2026. Le **Paradoxe de Jevons** stipule que l'amélioration de l'efficacité d'une ressource entraîne une *augmentation* de sa consommation totale au lieu de la réduire [@diab_2025_jevons].
 
 * **Application à l'IA :** Les nouvelles puces (comme la NVIDIA H100) sont beaucoup plus économes par calcul effectué. Mais comme le coût unitaire du calcul baisse, la demande explose : on met de l'IA partout (réfrigérateurs, jouets, mails inutiles), ce qui annule finalement les gains environnementaux [@evaluation_2026_systemique].
-
-
 
 ### 5.4.3 La Crise de la Mesure et le Greenwashing 🧼
 
@@ -197,16 +160,3 @@ graph TD
     E --> G[Impact Carbone Critique]
     F --> H[Impact Carbone Maîtrisé]
 ```
-
----
-
-### 5.4.4 Aide-mémoire 📝
-- [ ] **Inférence vs Training :** L'usage quotidien pèse beaucoup plus lourd que l'entraînement initial.
-- [ ] **Paradoxe de Jevons :** Plus l'IA est efficace, plus on l'utilise, plus la pollution globale risque d'augmenter.
-- [ ] **Green AI :** Préférer systématiquement le plus petit modèle capable de réaliser la tâche demandée.
-- [ ] **Mesure Physique :** Se méfier des estimations logicielles et privilégier les mesures de consommation réelle au compteur.
-
-### 5.4.5 Mini-Glossaire 📖
-- **Green AI :** Mouvement visant à optimiser les processus d'IA pour réduire leur consommation d'énergie et leur empreinte carbone.
-- **Red AI :** Pratique consistant à obtenir une amélioration marginale de précision au prix d'une augmentation massive de la puissance de calcul.
-- **Empreinte Hydrique :** Quantité totale d'eau douce utilisée (et évaporée) pour refroidir les serveurs pendant les calculs d'IA.
