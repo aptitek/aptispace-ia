@@ -1,0 +1,448 @@
+---
+title: "1. Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV"
+---
+
+::: {.info header="🧊 Icebreaker Séance 1 : Le Test de Turing inversé"}
+**Script pour l'enseignant :**
+"Bonjour à tous et bienvenue dans ce module intensif. Avant de coder, faisons une expérience. Sortez vos téléphones. Je vais afficher 3 textes au tableau. Votre mission : identifier lequel a été écrit par un humain, lequel par un modèle pré-entraîné des années 2010, et lequel par un LLM récent. 
+*Indice : l'IA d'aujourd'hui fait souvent moins de fautes de syntaxe que nous, mais manque parfois cruellement de bon sens.*"
+(Cet exercice sert à briser la glace et à introduire empiriquement la différence entre les anciennes et les nouvelles générations d'IA).
+:::
+
+## 1.1 Genèse et Écosystème de l'IA : D'Alan Turing aux LLMs 🌍 [[➕ Voir plus](11_genese_et_ecosysteme_de_lia__dalan_turing_aux_llms.qmd)]{.small}
+
+:::: {.timeline .vertical}
+
+::: {.event data-label="1950"}
+**Le Test de Turing** (Alan Turing)  
+*Fondation philosophique* : Les machines peuvent-elles penser ? Invention du "jeu de l'imitation".
+:::
+
+::: {.event data-label="1956"}
+**La Naissance** (McCarthy & Minsky)  
+*Concept* : Conférence de Dartmouth. Le terme "Intelligence Artificielle" est officiellement inventé.
+:::
+
+::: {.event data-label="Années 1980"}
+**L'Âge des Systèmes Experts**  
+*Logique pure* : Apogée puis déclin des programmes basés sur des règles strictes ("Si... Alors"). Premier hiver de l'IA.
+:::
+
+::: {.event data-label="1989-1997"}
+**Puissance brute et Apprentissage**  
+*Transition* : LeNet de Yann LeCun (1989) pose les bases du Deep Learning. Deep Blue bat Kasparov aux échecs (1997) par la force de calcul.
+:::
+
+::: {.event data-label="2016"}
+**La Révolution Deep Learning** (AlphaGo)  
+*Intuition artificielle* : L'IA de Google DeepMind bat le champion du monde de Go grâce à l'apprentissage par renforcement.
+:::
+
+::: {.event data-label="2022"}
+**L'Ère Générative** (ChatGPT)  
+*Basculement* : Démocratisation brutale des LLM (Large Language Models) par OpenAI. Début de la course aux armements.
+:::
+
+::: {.event data-label="2025-2026"}
+**Le Mur Matériel et Économique**  
+*Raisonnement & Krach* : Le modèle ultra-efficient de DeepSeek bouscule le monopole de Nvidia (2025). L'industrie fait face à une pénurie mondiale de mémoire vive (2026).
+:::
+
+::::
+
+## 1.2 Anatomie Fonctionnelle des Réseaux de Neurones 🧠 [[➕ Voir plus](12_anatomie_fonctionnelle_des_reseaux_de_neurones.qmd)]{.small}
+
+#### 1. L'Architecture en 3 Couches (Layers) 🧅
+*   📥 **Input Layer (Entrée) :** Réception. Capte les données brutes (pixels, texte, valeurs). Aucun calcul.
+*   🧠 **Hidden Layers (Cachées) :** Abstraction. Cœur de l'intelligence. Calculs matriciels pour extraire des motifs de plus en plus complexes (bords $\rightarrow$ formes $\rightarrow$ visage).
+*   📤 **Output Layer (Sortie) :** Verdict. Délivre la décision finale (probabilité, classification, valeur numérique).
+
+<div style="width: 100%;"><div style="position: relative; padding-bottom: 56.25%; padding-top: 0; height: 0;"><iframe title="Réseau de Neurones" frameborder="0" width="1200" height="675" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://view.genially.com/69144ab3e5ccc00eb91c4628" type="text/html" allowscriptaccess="always" allowfullscreen="true" scrolling="yes" allownetworking="all"></iframe> </div> </div>
+
+#### 2. La Danse du Signal (Le Cycle d'Apprentissage) 🔄
+*   ➡️ **Feedforward (Propagation) :** La donnée traverse le réseau de gauche à droite. Génère une prédiction (au début, totalement aléatoire).
+*   ⬅️ **Backpropagation (Rétropropagation) :** Le réseau calcule son erreur (Loss Function) et remonte le signal à l'envers pour ajuster les *poids* et les *biais* de chaque neurone. C'est ainsi que la machine "apprend".
+
+
+## 1.3 Les Fonctions d'Activation : Le Moteur de la Non-Linéarité ⚡ [[➕ Voir plus](13_les_fonctions_dactivation__le_moteur_de_la_non-linearite.qmd)]{.small}
+
+Sans fonction d'activation, même un réseau de neurones gigantesque ne serait qu'une simple régression linéaire. Ces fonctions agissent comme des portes et introduisent la **non-linéarité**, ce qui permet au modèle d'apprendre des choses complexes (comme les courbes d'un visage).
+
+**Les 4 "Classiques" en bref :**
+
+*   **Sigmoïde :** Ramène les valeurs entre 0 et 1. Idéale pour prédire une probabilité binaire (Oui/Non).
+*   **Tanh :** Ramène les valeurs entre -1 et 1. Souvent plus rapide que la sigmoïde.
+*   **ReLU :** La plus populaire. Elle agit comme un filtre : elle bloque les valeurs négatives (donne 0) et laisse passer les valeurs positives. 
+*   **Softmax :** Utilisée à la fin du réseau pour transformer les résultats en un pourcentage de probabilités (total = 100%).
+
+*(Testez ces fonctions en direct avec le curseur ci-dessous)*
+```{ojs}
+//| echo: false
+viewof x_val = Inputs.range([-5, 5], {value: 0, step: 0.1, label: "Valeur de x "})
+
+sigmoid = (x) => 1 / (1 + Math.exp(-x))
+tanh = (x) => Math.tanh(x)
+relu = (x) => Math.max(0, x)
+softmax = (x) => Math.exp(x) / (Math.exp(x) + Math.exp(0)) 
+
+data = {
+  const points = [];
+  for (let x = -5; x <= 5; x += 0.2) {
+    points.push({x: x, y: sigmoid(x), type: "Sigmoïde"});
+    points.push({x: x, y: tanh(x), type: "Tanh"});
+    points.push({x: x, y: relu(x), type: "ReLU"});
+    points.push({x: x, y: softmax(x), type: "Softmax"});
+  }
+  return points;
+}
+
+Plot.plot({
+  height: 300,
+  grid: true,
+  y: {domain: [-1.2, 5], label: "Activation"},
+  color: {legend: true, domain: ["Sigmoïde", "Tanh", "ReLU", "Softmax"], range: ["#e41a1c", "#4daf4a", "#377eb8", "#984ea3"]},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.line(data, {x: "x", y: "y", stroke: "type", strokeWidth: 2}),
+    Plot.dot([{x: x_val, y: sigmoid(x_val)}], {x: "x", y: "y", fill: "#e41a1c"}),
+    Plot.dot([{x: x_val, y: tanh(x_val)}], {x: "x", y: "y", fill: "#4daf4a"}),
+    Plot.dot([{x: x_val, y: relu(x_val)}], {x: "x", y: "y", fill: "#377eb8"}),
+    Plot.dot([{x: x_val, y: softmax(x_val)}], {x: "x", y: "y", fill: "#984ea3"})
+  ]
+})
+
+md` 
+* Sigmoïde(x) = **${sigmoid(x_val).toFixed(3)}** | Tanh(x) = **${tanh(x_val).toFixed(3)}** | ReLU(x) = **${relu(x_val).toFixed(3)}**`
+```
+
+**L'Ère Moderne (Spécial IA Générative) ✨**
+Aujourd'hui, les modèles avancés (comme ChatGPT ou BERT) utilisent des fonctions plus complexes et lissées pour de meilleures performances :
+
+*   **GELU :** La norme pour les *Transformers*.
+*   **SELU :** S'auto-normalise pour les réseaux très profonds.
+*   **Swish :** Développée par Google, idéale pour les très gros réseaux.
+
+*(Visualisation des fonctions modernes)*
+```{ojs}
+//| echo: false
+viewof x_modern = Inputs.range([-5, 5], {value: 0, step: 0.1, label: "Valeur de x (moderne) "})
+
+swish = (x) => x / (1 + Math.exp(-x))
+gelu = (x) => 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * Math.pow(x, 3))))
+selu = (x) => { const lambda = 1.0507; const alpha = 1.6733; return x > 0 ? lambda * x : lambda * alpha * (Math.exp(x) - 1); }
+
+data_modern = {
+  const points = [];
+  for (let x = -5; x <= 5; x += 0.2) {
+    points.push({x: x, y: swish(x), type: "Swish"});
+    points.push({x: x, y: gelu(x), type: "GELU"});
+    points.push({x: x, y: selu(x), type: "SELU"});
+  }
+  return points;
+}
+
+Plot.plot({
+  height: 300,
+  grid: true,
+  y: {domain: [-2, 5], label: "Activation"},
+  color: {legend: true, domain: ["Swish", "GELU", "SELU"], range: ["#ff7f00", "#f781bf", "#a65628"]},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.line(data_modern, {x: "x", y: "y", stroke: "type", strokeWidth: 2}),
+    Plot.dot([{x: x_modern, y: swish(x_modern)}], {x: "x", y: "y", fill: "#ff7f00"}),
+    Plot.dot([{x: x_modern, y: gelu(x_modern)}], {x: "x", y: "y", fill: "#f781bf"}),
+    Plot.dot([{x: x_modern, y: selu(x_modern)}], {x: "x", y: "y", fill: "#a65628"})
+  ]
+})
+```
+
+
+## 1.4 Optimisation et Apprentissage : La Descente de Gradient 🏔️ [[➕ Voir plus](14_optimisation_et_apprentissage__la_descente_de_gradient.qmd)]{.small}
+
+Si la fonction d'activation est le moteur de la non-linéarité, la descente de gradient est le volant qui dirige l'apprentissage. L'objectif d'un réseau de neurones est simple : trouver la combinaison exacte de millions (voire de milliards) de poids et de biais qui minimise les erreurs de prédiction.
+
+Mathématiquement, l'erreur globale du modèle est mesurée par une **Fonction de Coût** (ou *Loss Function*, notée $J(\theta)$). L'optimisation consiste à trouver le point le plus bas de cette fonction dans un espace multidimensionnel [@daniella_2024_gradient; @ibm_2026_gradient].
+
+### 1.4.1 Naviguer dans un paysage montagneux 🧗
+
+L'objectif d'un réseau de neurones est simple : ajuster ses millions de paramètres pour faire le moins d'erreurs possible. Pour y arriver, il utilise une technique appelée la **descente de gradient**.
+
+**L'analogie de la montagne 🧗**
+Imaginez que vous êtes au sommet d'une montagne, les yeux bandés, et que vous devez rejoindre le point le plus bas de la vallée (le point où l'erreur de l'IA est à zéro). Votre seule technique : tâter le sol avec votre pied pour sentir la pente, et faire un pas dans la direction qui descend le plus fort. 
+
+Mais ce paysage est trompeur :
+
+*   **Minima locaux :** Des petits creux où vous pourriez rester coincé, pensant être tout en bas.
+*   **Plateaux :** Des zones plates où la pente est invisible. 
+
+```{ojs}
+//| echo: false
+viewof x_sim = Inputs.range([-2.5, 2.5], {value: -2.1, step: 0.01, label: "Position de l'explorateur (x)"})
+
+f_2d = (x) => Math.pow(x, 4) - 4 * Math.pow(x, 2) + 0.5 * x + 10
+df_2d = (x) => 4 * Math.pow(x, 3) - 8 * x + 0.5
+
+data_plot = d3.range(-2.5, 2.51, 0.05).map(x => ({x: x, y: f_2d(x)}))
+
+Plot.plot({
+  height: 400,
+  grid: true,
+  y: {label: "Coût (Erreur)", domain: [0, 15]},
+  x: {label: "Paramètre (Poids)"},
+  marks: [
+    Plot.areaY(data_plot, {x: "x", y: "y", fill: "#f0f9ff", fillOpacity: 0.5}),
+    Plot.line(data_plot, {x: "x", y: "y", stroke: "#007bff", strokeWidth: 3}),
+    
+    // Annotations conceptualisées
+    Plot.text([{x: -1.45, y: 4.8, text: "Minimum Local ⬇️"}], {x: "x", y: "y", dy: -20, fontWeight: "bold", fontSize: 14}),
+    Plot.text([{x: 1.38, y: 3.5, text: "Minimum Global 🏆"}], {x: "x", y: "y", dy: -20, fontWeight: "bold", fontSize: 14}),
+    Plot.text([{x: 0.05, y: 10.2, text: "Plateau / Sommet ✋"}], {x: "x", y: "y", dy: -20, fontWeight: "bold", fontSize: 14}),
+    
+    // Le point actuel (la balle)
+    Plot.dot([{x: x_sim, y: f_2d(x_sim)}], {x: "x", y: "y", fill: "red", r: 8, stroke: "white", strokeWidth: 2}),
+    
+    // La pente (tangente)
+    Plot.link([{
+      x1: x_sim - 0.4, y1: f_2d(x_sim) - 0.4 * df_2d(x_sim),
+      x2: x_sim + 0.4, y2: f_2d(x_sim) + 0.4 * df_2d(x_sim)
+    }], {x1: "x1", y1: "y1", x2: "x2", y2: "y2", stroke: "red", strokeWidth: 2, strokeDasharray: "4,2"})
+  ]
+})
+
+md`**Analyse en temps réel :**  
+Pente actuelle (Gradient) : **${df_2d(x_sim).toFixed(3)}**  
+*${Math.abs(df_2d(x_sim)) < 0.6 ? "⚠️ **Zone de danger : La pente est presque nulle. L'IA risque de s'arrêter ici !**" : "L'IA peut continuer à descendre..."}*`
+```
+
+**Comment on descend concrètement ? 🏃**
+Pour être efficace sans saturer la mémoire des ordinateurs, on ne lit pas toutes les données d'un coup.
+
+| Algorithme | Fonctionnement | Avantages & Inconvénients |
+| :--- | :--- | :--- |
+| **Batch (Lot complet)** | Calcule l'erreur sur *toutes* les données avant d'avancer. | Trajectoire stable, mais beaucoup trop lent. |
+| **Stochastic (SGD)** | Avance après *chaque* donnée individuelle. | Ultra-rapide, mais trajectoire chaotique. |
+| **Mini-batch** | **Le compromis standard :** Avance par petits groupes de données (ex: 32). | Combine stabilité et rapidité. |
+
+**L'outil moderne : Adam 🛠️**
+Aujourd'hui, on ne descend plus aveuglément. On utilise l'algorithme **Adam**. Il simule une "boule de bowling" (l'inertie) qui dévale la pente, capable de remonter de petites bosses pour ne pas rester coincée, tout en adaptant sa vitesse intelligemment.
+
+::: {.warning header="Le Paramètre Critique : Le Taux d'Apprentissage (Learning Rate)"}
+Le *Learning Rate* détermine la taille de vos "pas" :
+- **Trop grand :** Vous enjambez la vallée et rebondissez partout sans jamais descendre.
+- **Trop petit :** Vous mettez des années à atteindre le fond, et le moindre caillou vous bloque.
+:::
+
+**[ACTION]** *Utilisez le panneau ci-dessous pour lâcher une balle mathématique dans notre paysage de coût. Modifiez l'inertie pour voir comment elle modifie la trajectoire !*
+
+```{ojs}
+//| echo: false
+//| warning: false
+
+Plotly = require("plotly.js-dist@2.24.1")
+
+function createPhysicsLandscape() {
+  // --- 1. Préparation du Conteneur HTML ---
+  const container = document.createElement("div");
+  container.style.fontFamily = "sans-serif";
+
+  // Panneau de contrôle
+  const controls = document.createElement("div");
+  controls.style.display = "flex";
+  controls.style.gap = "20px";
+  controls.style.alignItems = "center";
+  controls.style.marginBottom = "15px";
+  controls.style.padding = "15px";
+  controls.style.background = "#f8f9fa";
+  controls.style.borderRadius = "8px";
+  controls.style.border = "1px solid #ddd";
+
+  const btnDrop = document.createElement("button");
+  btnDrop.innerHTML = "🔴 Lâcher la Balle";
+  btnDrop.style.padding = "10px 20px";
+  btnDrop.style.background = "#e41a1c";
+  btnDrop.style.color = "white";
+  btnDrop.style.border = "none";
+  btnDrop.style.borderRadius = "6px";
+  btnDrop.style.fontWeight = "bold";
+  btnDrop.style.cursor = "pointer";
+
+  const labelMom = document.createElement("label");
+  labelMom.innerHTML = "<b>Inertie (Momentum) :</b> <span id='mom-val'>0.85</span><br><small>0 = Pas à pas | 0.9 = Grosse inertie</small>";
+  const sliderMom = document.createElement("input");
+  sliderMom.type = "range";
+  sliderMom.min = "0"; sliderMom.max = "0.95"; sliderMom.step = "0.05";
+  sliderMom.value = "0.85";
+  sliderMom.style.marginLeft = "10px";
+
+  labelMom.appendChild(sliderMom);
+  controls.appendChild(btnDrop);
+  controls.appendChild(labelMom);
+  container.appendChild(controls);
+
+  const plotDiv = document.createElement("div");
+  plotDiv.style.height = "500px";
+  container.appendChild(plotDiv);
+
+  // --- 2. Génération du Paysage Mathématique ---
+  const x = []; const y = []; const z = [];
+  for (let i = -2.5; i <= 2.5; i += 0.15) x.push(i);
+  for (let j = -2.5; j <= 2.5; j += 0.15) y.push(j);
+
+  // f(x,y) = x^4 - 4x^2 + y^2 + 0.5x
+  for (let j = 0; j < y.length; j++) {
+    const row = [];
+    for (let i = 0; i < x.length; i++) {
+      const xv = x[i]; const yv = y[j];
+      row.push(Math.pow(xv, 4) - 4 * Math.pow(xv, 2) + Math.pow(yv, 2) + 0.5 * xv);
+    }
+    z.push(row);
+  }
+
+  const surfaceTrace = {
+    x: x, y: y, z: z,
+    type: "surface", colorscale: "Viridis", showscale: false,
+    opacity: 0.9
+  };
+
+  // Traces pour la balle et son sillage
+  let ballTrace = {
+    x: [2.2], y: [1.5], z: [10],
+    mode: "markers", type: "scatter3d", name: "La Balle",
+    marker: { size: 10, color: "red", symbol: "circle" }
+  };
+
+  let trailTrace = {
+    x: [], y: [], z: [],
+    mode: "lines", type: "scatter3d", name: "Trajectoire",
+    line: { width: 4, color: "white" }
+  };
+
+  const layout = {
+    margin: { l: 0, r: 0, b: 0, t: 0 },
+    scene: {
+      xaxis: { title: "θ1" }, yaxis: { title: "θ2" }, zaxis: { title: "Coût" },
+      camera: { eye: { x: 1.6, y: 1.2, z: 0.8 } }
+    }
+  };
+
+  Plotly.newPlot(plotDiv, [surfaceTrace, trailTrace, ballTrace], layout, {responsive: true});
+
+  // --- 3. Moteur Physique (Simulation de la descente) ---
+  let animationTimer = null;
+
+  sliderMom.oninput = (e) => {
+    document.getElementById('mom-val').innerText = e.target.value;
+  };
+
+  btnDrop.onclick = () => {
+    if (animationTimer) clearInterval(animationTimer);
+
+    // Paramètres initiaux
+    let cx = 2.2; let cy = 2.0; // Point de départ en hauteur
+    let vx = 0; let vy = 0;      // Vitesse initiale
+    const lr = 0.03;             // Learning rate
+    const momentum = parseFloat(sliderMom.value);
+
+    let pathX = []; let pathY = []; let pathZ = [];
+
+    // Calcul de la trajectoire complète (150 étapes max pour éviter l'infini)
+    for (let i = 0; i < 150; i++) {
+      // Dérivées partielles (le Gradient)
+      let gradX = 4 * Math.pow(cx, 3) - 8 * cx + 0.5;
+      let gradY = 2 * cy;
+
+      // Mise à jour de la vitesse (avec inertie)
+      vx = momentum * vx + lr * gradX;
+      vy = momentum * vy + lr * gradY;
+
+      // Déplacement de la balle
+      cx = cx - vx;
+      cy = cy - vy;
+
+      // Empêcher la balle de sortir du graphique visuellement
+      if (cx < -2.5) cx = -2.5; if (cx > 2.5) cx = 2.5;
+      if (cy < -2.5) cy = -2.5; if (cy > 2.5) cy = 2.5;
+
+      let cz = Math.pow(cx, 4) - 4 * Math.pow(cx, 2) + Math.pow(cy, 2) + 0.5 * cx;
+      
+      pathX.push(cx); pathY.push(cy); pathZ.push(cz + 0.5); // +0.5 pour que la balle flotte un peu au dessus du sol
+    }
+
+    // Animation de la trajectoire
+    let frame = 0;
+    animationTimer = setInterval(() => {
+      if (frame >= pathX.length) {
+        clearInterval(animationTimer);
+        return;
+      }
+
+      // Mise à jour des coordonnées
+      ballTrace.x = [pathX[frame]];
+      ballTrace.y = [pathY[frame]];
+      ballTrace.z = [pathZ[frame]];
+
+      trailTrace.x = pathX.slice(0, frame + 1);
+      trailTrace.y = pathY.slice(0, frame + 1);
+      trailTrace.z = pathZ.slice(0, frame + 1);
+
+      // Rafraichissement ultra-rapide des traces sans toucher à la surface 3D
+      Plotly.react(plotDiv, [surfaceTrace, trailTrace, ballTrace], layout);
+      
+      frame++;
+    }, 40); // 25 images par seconde
+  };
+
+  return container;
+}
+
+createPhysicsLandscape()
+```
+
+## 1.5 L’Infrastructure de la Donnée : Nettoyage et Manipulation 🧹 [[➕ Voir plus](15_linfrastructure_de_la_donnee__nettoyage_et_manipulation.qmd)]{.small}
+
+En Machine Learning, il existe un adage universel : **"Garbage In, Garbage Out"** (GIGO). La performance d'un système d'IA est strictement plafonnée par la qualité de ses données d'entraînement. C'est pourquoi le nettoyage des données occupe souvent jusqu'à 80 % du temps d'un projet de Data Science [@singh_2026_pipeline].
+
+Injecter des données non standardisées dans un réseau de neurones peut avoir des conséquences désastreuses : cela biaise les gradients lors de la rétropropagation et peut forcer les fonctions d'activation (comme ReLU) dans leurs zones de saturation, provoquant la "mort" prématurée des neurones.
+
+### 1.5.1 Le Pipeline de Nettoyage Standard 🧼
+
+Un pipeline rigoureux s'articule autour de plusieurs étapes critiques pour purifier la donnée brute [@grignola_2026_cleaning] :
+
+1.  **Traitement des valeurs manquantes et doublons :** Imputation (remplacer les "trous" par la moyenne ou la médiane) ou suppression des lignes corrompues.
+2.  **Détection des valeurs aberrantes (Outliers) :**
+    * **Z-Score :** Mesure la distance d'un point par rapport à la moyenne, exprimée en écarts-types ($Z = \frac{x - \mu}{\sigma}$). Un score absolu supérieur à 3 indique souvent une anomalie sévère.
+    * **IQR (Interquartile Range) :** Méthode statistique robuste basée sur les quartiles pour filtrer les valeurs extrêmes sans être influencée par ces dernières.
+3.  **Standardisation et Normalisation :** Cette étape assure que chaque caractéristique (*feature*) contribue équitablement à l'apprentissage. Sans cela, une variable mesurée en millions (ex: le prix d'un bien) dominerait artificiellement une variable mesurée en pourcentages (ex: un taux d'intérêt) [@codesignal_2025_normalization].
+
+### 1.5.2 L'Arsenal Python : Pandas et NumPy 🐍
+
+Pour manipuler ces flux de données à l'échelle industrielle, Python s'appuie sur deux bibliothèques fondamentales [@leow_2018_numpy] :
+
+* **NumPy :** Le moteur mathématique. Il permet le calcul vectoriel haute performance (grâce à son implémentation en C sous le capot), indispensable pour appliquer des formules statistiques sur des millions de lignes de manière instantanée.
+* **Pandas :** L'outil d'analyse par excellence. Grâce à ses structures en `DataFrames`, il offre une syntaxe extrêmement agile pour filtrer, grouper et manipuler des données tabulaires (fichiers CSV, requêtes SQL).
+
+Voici la syntaxe attendue lors de vos sessions de travaux pratiques :
+
+```python
+import pandas as pd
+import numpy as np
+
+# TODO : Chargez le dataset des loyers "dirty_rentals.csv"
+df = pd.read_csv("___")
+
+# TODO : Remplacez les valeurs manquantes de la colonne 'surface' par la médiane
+mediane_surface = df['surface'].___()
+df['surface'].fillna(___, inplace=True)
+
+# Démonstration : Filtrage des valeurs aberrantes par Z-Score avec NumPy
+df['z_score_prix'] = np.abs((df['prix'] - df['prix'].mean()) / df['prix'].std())
+df_clean = df[df['z_score_prix'] < 3]
+```
+
+### 1.6 Conclusion et Transition 🌉
+
+Maintenant que nous avons posé les fondations mathématiques de l'apprentissage et que nous savons préparer nos données brutes, nous sommes prêts à attaquer notre premier cas d'usage concret : apprendre à un modèle à "voir" et comprendre des images. 
+
+Ce sera l'objet du **[Chapitre 2 : Deep Learning & Vision](../2_reseaux_de_neurones/index.qmd)**.

@@ -9,7 +9,7 @@ title: "2. Deep Learning & Vision : Apprendre à voir dans les matrices"
 Pour notre cerveau, distinguer le chien du gâteau prend une fraction de seconde. Pour un algorithme classique 'Si/Alors', c'est mathématiquement impossible à coder. Comment expliquer à un ordinateur ce qu'est une oreille avec des pixels ? C'est tout l'enjeu de la Vision par Ordinateur."
 :::
 
-## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️
+## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️ [[➕ Voir plus](21_perspective_historique__de_la_neurobiologie_aux_reseaux_artificiels.qmd)]{.small}
 
 La vision par ordinateur s'est imposée comme le pont technologique entre la perception biologique et l'intelligence artificielle. En tant qu'architecte système, il ne faut pas voir cette discipline comme un simple algorithme de tri, mais comme une tentative complexe d'extraction automatisée et de compréhension sémantique à partir de flux visuels purs [@networkoptix_2024_computervision].
 
@@ -35,7 +35,7 @@ timeline
 ---
 
 
-## 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️
+## 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️ [[➕ Voir plus](22_fondamentaux_et_superiorite_des_cnn_sur_les_modeles_traditionnels.qmd)]{.small}
 
 Pourquoi ne pas simplement utiliser un réseau de neurones classique (MLP - Multi-Layer Perceptron) pour reconnaître des objets dans une image ? La réponse tient en un mot : **le fléau de la dimensionnalité** [@pyimagesearch_2021_cnn_layers].
 
@@ -77,7 +77,7 @@ graph TD
 
 
 
-## 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬
+## 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬 [[➕ Voir plus](23_anatomie_technique_dun_cnn__convolution_activation_et_pooling.qmd)]{.small}
 
 [cite_start]Un CNN transforme des pixels bruts en prédictions sémantiques par une extraction hiérarchique de caractéristiques[cite: 9]. Cette transformation repose sur une succession de couches spécialisées qui ont chacune un rôle stratégique dans la compression et l'interprétation de l'image.
 
@@ -133,7 +133,7 @@ graph LR
 
 
 
-## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆
+## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆 [[➕ Voir plus](24_etude_de_cas__la_revolution_alexnet_2012.qmd)]{.small}
 
 Si l'on devait dater le début de l'ère moderne de l'Intelligence Artificielle, ce serait sans conteste l'année 2012. Lors du prestigieux concours ImageNet (qui consiste à classer des millions d'images dans des milliers de catégories), un réseau nommé **AlexNet** a littéralement pulvérisé les algorithmes de traitement d'image traditionnels. Il a prouvé au monde entier que la profondeur du réseau (*Deep Learning*) était la clé de la performance visuelle [@wikipedia_2026_alexnet].
 
@@ -160,7 +160,7 @@ Les couches de convolution agissent comme un fantastique extracteur de caractér
 
 
 
-## 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️
+## 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️ [[➕ Voir plus](25_defis_critiques__overfitting_et_techniques_de_regularisation.qmd)]{.small}
 
 Un CNN moderne comme AlexNet ou ResNet possède des millions, voire des milliards de paramètres. Cette capacité d'apprentissage immense est une arme à double tranchant. Si on laisse le réseau s'entraîner trop longtemps sur un jeu de données limité, il va faire du **Surapprentissage (Overfitting)**. 
 
@@ -199,7 +199,7 @@ Une règle mathématique empirique stipule que des poids synaptiques très élev
 ---
 
 
-## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭
+## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭 [[➕ Voir plus](26_horizon_actuel__applications_industrielles_et_limites.qmd)]{.small}
 
 Aujourd'hui, les architectures convolutives ont quitté les laboratoires pour devenir l'épine dorsale de l'industrie moderne. Elles dominent des secteurs critiques : le diagnostic médical (détection de tumeurs sur IRM ou scanners), la conduite autonome (analyse en temps réel de l'environnement) et la cybersécurité (reconnaissance biométrique) [@networkoptix_2024_computervision].
 
@@ -227,6 +227,6 @@ Contrairement aux CNN qui regardent l'image petit bout par petit bout (via les c
 
 C'est d'ailleurs cette architecture Transformer qui a donné naissance à l'IA Générative et aux LLM. Les modèles ne se contentent plus de *classifier* des données, ils sont capables d'en *créer* de nouvelles. 
 
-Ce changement de paradigme nous amène directement à notre **[Chapitre 3 : GenAI & NLP](3_genai.qmd)** !
+Ce changement de paradigme nous amène directement à notre **[Chapitre 3 : GenAI & NLP](../3_genai/index.qmd)** !
 
 ---

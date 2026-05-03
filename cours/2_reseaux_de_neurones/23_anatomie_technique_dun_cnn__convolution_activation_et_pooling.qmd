@@ -1,0 +1,5 @@
+---
+title: "Approfondissement : 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬"
+---
+
+Contenu détaillé à venir...

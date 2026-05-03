@@ -1,0 +1,51 @@
+---
+title: "Approfondissement : 1.3 Les Fonctions d'Activation : Le Moteur de la Non-Linéarité ⚡"
+---
+
+Imaginons un réseau de neurones avec des centaines de couches, mais sans fonction d'activation. Mathématiquement, la multiplication d'une matrice linéaire par une autre matrice linéaire donne une simple matrice linéaire (puisque $W_2(W_1X) = (W_2W_1)X = W'X$). Sans cette "porte" spéciale, notre réseau profond gigantesque ne serait rien de plus qu'un modèle de régression linéaire de base, incapable de comprendre la complexité du monde réel. 
+
+Les fonctions d'activation introduisent la **non-linéarité** indispensable à l'apprentissage profond [@daniella_2024_activation]. Le choix de la fonction dicte la vitesse de convergence et la stabilité du modèle pendant la descente de gradient.
+
+#### 1.3.1 Formules et Analyse des Classiques 📚
+
+1.  **Sigmoïde (ou Logistique)**
+    Elle écrase toute valeur d'entrée dans une plage entre 0 et 1.
+    *   **Formule :** $f(x) = \frac{1}{1 + e^{-x}}$
+    *   **Usage :** Idéale pour la classification binaire (le résultat s'interprète comme une probabilité). 
+    *   **Défaut majeur :** Sujette au problème du *Vanishing Gradient* (les valeurs extrêmes saturent la fonction, rendant la dérivée presque nulle et bloquant l'apprentissage des premières couches).
+
+2.  **Tanh (Tangente Hyperbolique)**
+    Similaire à la sigmoïde, mais centrée sur zéro.
+    *   **Formule :** $f(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$
+    *   **Plage :** $[-1, 1]$
+    *   **Avantage :** Permet une convergence souvent plus rapide que la sigmoïde car les activations moyennes sont proches de zéro, ce qui facilite la mise à jour des poids.
+
+3.  **ReLU (Rectified Linear Unit)**
+    La rockstar de la vision par ordinateur des années 2010.
+    *   **Formule :** $f(x) = \max(0, x)$
+    *   **Avantage :** Simplifie drastiquement les calculs et favorise l'activation éparse (tous les neurones ne s'activent pas en même temps). Ne sature pas dans le domaine positif.
+
+4.  **Softmax**
+    Placée exclusivement sur la couche de sortie pour la classification multi-classes.
+    *   **Formule :** $f(x_i) = \frac{e^{x_i}}{\sum_{j} e^{x_j}}$
+    *   **Mécanisme :** Elle convertit un vecteur de scores bruts (logits) en une distribution de probabilités dont la somme est mathématiquement garantie d'être égale à 1.
+
+::: {.warning header="Alerte Clinique : Le syndrome du Dying ReLU"}
+Le grand point faible de ReLU est sa stricte nullité pour $x \le 0$. Si une entrée est négative, le gradient devient $0$. Pendant la rétropropagation, ce neurone ne mettra plus jamais ses poids à jour : il est "mort". Des variantes comme **Leaky ReLU** ($f(x) = \max(0.01x, x)$) ajoutent une micro-pente négative pour maintenir un flux de gradient.
+:::
+
+#### 1.3.2 L'Ingénierie Moderne pour les LLMs ✨
+
+Avec l'avènement des architectures complexes (Transformers, LLM), les chercheurs ont optimisé les fonctions pour éviter les cassures de gradient et améliorer la stabilité [@baheti_2021_activation] :
+
+*   **GELU (Gaussian Error Linear Unit) :** 
+    Devenue la norme pour des modèles comme BERT, GPT ou RoBERTa. Au lieu d'une coupure stricte comme ReLU, elle pondère l'entrée par sa probabilité de survie selon une distribution cumulative gaussienne $\Phi(x)$. 
+    *Formule approximée :* $f(x) \approx 0.5x \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}}(x + 0.044715x^3)\right)\right)$
+
+*   **SELU (Scaled Exponential Linear Unit) :** 
+    Conçue pour les réseaux *Self-Normalizing*. Elle garantit que la moyenne et la variance des activations restent stables à travers des réseaux extrêmement profonds, limitant mathématiquement le *Vanishing* et *Exploding Gradient*.
+    *Formule :* $f(x) = \lambda \max(\alpha(e^x - 1), x)$ avec $\lambda \approx 1.0507$ et $\alpha \approx 1.6733$.
+
+*   **Swish :** 
+    Découverte par Google via recherche d'architecture neurale. Sa courbure non-monotone au niveau des valeurs négatives surpasse ReLU dans les architectures de plus de 40 couches.
+    *Formule :* $f(x) = x \cdot \sigma(x) = \frac{x}{1 + e^{-x}}$

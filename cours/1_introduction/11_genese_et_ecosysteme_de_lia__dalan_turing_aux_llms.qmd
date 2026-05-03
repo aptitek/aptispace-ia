@@ -1,0 +1,44 @@
+---
+title: "Approfondissement : 1.1 Genèse et Écosystème de l'IA : D'Alan Turing aux LLMs 🌍"
+---
+
+### 1.1.1 Une histoire du "Raisonnement" Artificiel : De la logique à la statistique 🕰️
+
+L'Intelligence Artificielle n'est pas née avec l'émergence d'Internet ; elle s'inscrit dans une perspective historique longue, jalonnée de ruptures technologiques et de cycles économiques (les fameux "hivers" et "étés" de l'IA).
+
+#### 1. Les fondations et l'IA Symbolique (1930 - 1990)
+Tout débute dans les années 1930 avec les travaux théoriques d'Alan Turing sur la calculabilité. En 1950, Turing publie son article fondateur posant la question *« Les machines peuvent-elles penser ? »* et invente le "jeu de l'imitation" [@turing_1950_mind]. Le terme "Intelligence Artificielle" est officiellement consacré quelques années plus tard, en 1956, lors de la célèbre conférence d'été de Dartmouth organisée par John McCarthy et Marvin Minsky [@wikipedia_2026_histoire].
+
+Jusqu'aux années 1990, l'industrie a privilégié l'**IA Symbolique** et les **Systèmes Experts** (comme MYCIN en médecine). Ces programmes visaient à reproduire le raisonnement humain par des règles logiques strictes sous la forme "Si [condition] Alors [action]". 
+
+> **Exemple emblématique** : La victoire de Deep Blue (IBM) contre le champion du monde d'échecs Garry Kasparov en 1997. Bien que spectaculaire, elle ne relevait pas de l'apprentissage automatique, mais d'une puissance de calcul massive couplée à un algorithme de recherche heuristique (Min-Max avec élagage alpha-bêta).
+
+Ces systèmes symboliques ont fini par montrer leurs limites. Face à l'ambiguïté du monde réel (reconnaître un chat sur une photo, comprendre l'ironie dans un texte), ces règles rigides s'effondrent, provoquant les premiers "hivers de l'IA" où les financements se tarissent face aux promesses non tenues.
+
+#### 2. La revanche du Connexionnisme : Le Deep Learning (1989 - 2016)
+Le tournant majeur s'opère grâce à l'augmentation de la puissance de calcul et l'explosion des données. On passe alors d'une IA "symbolique" (basée sur des règles codées par l'humain) à une IA "connexionniste" (basée sur l'apprentissage statistique) [@syracuse_2025_deepvsml; @pecheul_2023_turing].
+
+Bien que Yann LeCun ait prouvé la viabilité des réseaux de neurones (algorithme LeNet) dès 1989 aux Bell Labs, c'est en 2016 que le grand public prend conscience du basculement. L'IA AlphaGo de Google DeepMind écrase Lee Sedol au jeu de Go, un jeu réputé impossible à maîtriser par la seule force brute en raison du nombre incalculable de combinaisons. L'apprentissage par renforcement (Reinforcement Learning) prouve que la machine peut développer une forme "d'intuition" mathématique.
+
+#### 3. L'Ère Générative et les secousses économiques (2022 - 2026)
+En novembre 2022, OpenAI lance ChatGPT. Cette démocratisation brutale des Modèles de Langage (LLM) marque le début d'une course aux armements technologique mondiale.
+
+Cependant, cette course se heurte très vite aux réalités économiques et physiques. En janvier 2025, la sortie d'un modèle ultra-performant et très peu coûteux par la startup chinoise **DeepSeek** prouve que l'optimisation logicielle peut surpasser la force brute matérielle. Ce choc provoque une panique boursière historique, amputant la capitalisation de Nvidia de 600 milliards de dollars en une seule journée. Dès 2026, l'appétit féroce des data centers en IA provoque une pénurie mondiale de mémoire vive (RAM), questionnant la viabilité écologique et matérielle du modèle de développement en cours.
+
+
+### 1.1.2 La Chaîne de Valeur de l'IA Moderne ⛓️
+
+Aujourd'hui, l'IA n'est plus un simple exercice de laboratoire expérimental ; c'est une industrie lourde qui repose sur une infrastructure mondiale complexe, divisée en quatre couches interdépendantes [@modernintel_2026_architecture].
+```{mermaid}
+flowchart TD
+    A[Hardware & Puces\nNVIDIA, ASML, AMD, Google TPU] -->|Fournissent la puissance| B(Cloud & IaaS\nAWS, Azure, GCP, OVH)
+    B -->|Hébergent les calculs massifs| C{Créateurs de Modèles\nOpenAI, DeepMind, Mistral, DeepSeek}
+    C -->|Accès via API & Open Source| D[Applications Finales\nSpotify, ChatGPT, Shift Technology, Notion]
+    
+    style A fill:#f9d0c4,stroke:#333,stroke-width:2px
+    style B fill:#fcf3c0,stroke:#333,stroke-width:2px
+    style C fill:#c4e1f9,stroke:#333,stroke-width:2px
+    style D fill:#c4f9cc,stroke:#333,stroke-width:2px
+```
+
+Comprendre ces quatre piliers est vital pour l'architecte système comme pour le décideur économique. La dépendance à la couche "Hardware" (notamment la lithographie avec ASML et la conception avec Nvidia) montre que la **souveraineté matérielle devient aussi cruciale que la performance algorithmique**. Un modèle de pointe (couche 3) n'a aucune utilité sans les capacités de calcul (couche 1) et d'hébergement (couche 2) nécessaires à son entraînement et à son inférence.

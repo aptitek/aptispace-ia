@@ -8,7 +8,7 @@ title: "5. Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA
 L'IA n'est plus seulement une prouesse technique, c'est un enjeu de sécurité nationale et de droit. Aujourd'hui, on arrête de coder, on parle de lois, d'éthique et de gouvernance."
 :::
 
-## 5.1 De la "Red AI" au Cadre Réglementaire : L'EU AI Act ⚖️
+## 5.1 De la "Red AI" au Cadre Réglementaire : L'EU AI Act ⚖️ [[➕ Voir plus](51_de_la_red_ai_au_cadre_reglementaire__leu_ai_act.qmd)]{.small}
 
 L’intelligence artificielle traverse une phase de mutation structurelle majeure. L'industrie marque officiellement la fin de l’ère de la **« Red AI »** — cette course effrénée à la puissance de calcul où la performance brute primait sur toute considération éthique ou environnementale — pour entrer dans un paradigme de maturité réglementaire et de durabilité [@bose_2025_greenai]. 
 
@@ -32,7 +32,7 @@ graph TD
     style D fill:#99cc33,stroke:#333,stroke-width:2px,color:#fff
 ```
 
-* **Risque Inacceptable :** Ces systèmes sont purement et simplement interdits (avec des amendes allant jusqu'à 40 M€ ou 7% du CA mondial). Cela inclut la notation sociale (*social scoring*), la manipulation subliminale, ou la catégorisation biométrique déduisant des attributs sensibles (race, opinions politiques) [@fli_2024_aiact; @modelop_2026_compliance].
+* **Risque Inacceptable :** Ces systèmes sont purement et simplement interdits (avec des amendes allant jusqu'à 35 millions d'euros ou 7 % du chiffre d'affaires mondial, le montant le plus élevé étant retenu). Cela inclut la notation sociale (*social scoring*), la manipulation subliminale, ou la catégorisation biométrique déduisant des attributs sensibles (race, opinions politiques) [@fli_2024_aiact; @modelop_2026_compliance].
 * **Haut Risque (HRAIS) :** Concerne les secteurs critiques (santé, recrutement, infrastructures). Ces systèmes imposent une traçabilité totale via des journaux de logs, une gouvernance des données irréprochable et un système de gestion des risques itératif [@hcltech_2026_euai].
 * **Risque Limité :** Inclut les chatbots ou les générateurs de deepfakes. La règle d'or est la **transparence** : l'utilisateur doit être explicitement informé qu'il interagit avec une machine ou que le contenu a été généré artificiellement [@orrick_2025_transparency].
 
@@ -44,7 +44,7 @@ Les fournisseurs américains ou asiatiques (OpenAI, Google, Anthropic) doivent o
 
 ---
 
-## 5.2 La Menace des Deepfakes : Sécurité et "Arbitrage Advantage" 🎭
+## 5.2 La Menace des Deepfakes : Sécurité et "Arbitrage Advantage" 🎭 [[➕ Voir plus](52_la_menace_des_deepfakes__securite_et_arbitrage_advantage.qmd)]{.small}
 
 Le paysage des cyber-menaces a muté vers l'instantanéité. Nous avons quitté l'ère des deepfakes pré-enregistrés, souvent maladroits, pour entrer dans celle des **Live Deepfakes interactifs**. Propulsés par les Réseaux Antagonistes Génératifs (GAN) et des modèles de diffusion ultra-rapides, ces avatars peuvent désormais soutenir une conversation vidéo en temps réel [@hive_2025_deepfake].
 
@@ -84,7 +84,7 @@ La sécurité ne se limite plus à contrôler ce que le modèle *produit* (infé
 
 ---
 
-## 5.3 Éthique et Équité Algorithmique : La Logique de l'Alignement ⚖️
+## 5.3 Éthique et Équité Algorithmique : La Logique de l'Alignement ⚖️ [[➕ Voir plus](53_ethique_et_equite_algorithmique__la_logique_de_lalignement.qmd)]{.small}
 
 L'équité n'est plus une option philosophique, c'est une exigence technique. Les biais algorithmiques sont souvent la sédimentation de préjugés historiques présents dans les données. Pour les corriger, l'architecte doit intervenir mathématiquement à l'aide de métriques précises [@evaluation_2026_systemique].
 
@@ -101,7 +101,7 @@ Une fois le modèle entraîné sur ses données brutes, il est souvent "sauvage"
 
 * **RLHF (Reinforcement Learning from Human Feedback) :** La méthode historique (utilisée pour ChatGPT). Des humains notent des milliers de réponses de l'IA. On entraîne un "Modèle de Récompense" à imiter ces notes, puis on utilise ce modèle pour punir ou récompenser l'IA principale. 
     * *Défaut :* C'est un processus lourd, instable et sujet au "Reward Hacking" (l'IA apprend à flatter l'humain pour avoir une bonne note sans forcément dire la vérité) [@aws_2024_rlhf].
-* **DPO (Direct Preference Optimization) :** La révolution de 2024-2025 (utilisée pour Llama 3). Au lieu de créer un modèle de récompense complexe, on montre directement à l'IA des paires de réponses (une "bonne" et une "mauvaise"). On force mathématiquement le modèle à augmenter la probabilité de la bonne et à diminuer celle de la mauvaise en une seule étape [@toloka_2024_dpo].
+* **DPO (Direct Preference Optimization) :** Introduite en 2023, cette méthode a connu une adoption industrielle massive en 2024 (utilisée pour Llama 3). Au lieu de créer un modèle de récompense complexe, on montre directement à l'IA des paires de réponses (une "bonne" et une "mauvaise"). On force mathématiquement le modèle à augmenter la probabilité de la bonne et à diminuer celle de la mauvaise en une seule étape [@toloka_2024_dpo].
 
 ### 5.3.3 L'Explicabilité (XAI) : Ouvrir la Boîte Noire 🔍
 
@@ -121,7 +121,7 @@ graph LR
 
 ---
 
-## 5.4 Durabilité Technologique : La Crise de la Mesure et le Paradoxe de Jevons 🌿
+## 5.4 Durabilité Technologique : La Crise de la Mesure et le Paradoxe de Jevons 🌿 [[➕ Voir plus](54_durabilite_technologique__la_crise_de_la_mesure_et_le_paradoxe_de_jevons.qmd)]{.small}
 
 La transition vers une **« Green AI »** est freinée par une infrastructure physique dont l'empreinte devient insoutenable. Depuis 2012, la demande en puissance de calcul a été multipliée par 300 000 [@bose_2025_greenai]. En tant qu'architectes, notre responsabilité est d'arbitrer entre la performance d'un modèle et son coût énergétique.
 
@@ -129,7 +129,7 @@ La transition vers une **« Green AI »** est freinée par une infrastructure ph
 
 On imagine souvent que l'entraînement (le *training*) est le moment le plus énergivore. C'est une erreur de perspective.
 * **L'Inférence (L'usage) :** Elle représente jusqu'à **90 % de la consommation énergétique totale** sur toute la durée de vie d'un modèle [@bose_2025_greenai]. Chaque question posée à un LLM consomme de l'électricité et de l'eau (pour le refroidissement des data centers).
-* **Empreinte Hydrique :** L'entraînement de GPT-4 a nécessité environ 5,4 millions de litres d'eau. À chaque conversation de 20 à 50 questions, l'IA "boit" virtuellement l'équivalent d'une bouteille d'eau de 50 cl [@evaluation_2026_systemique].
+* **Empreinte Hydrique :** L'entraînement de GPT-3 a nécessité environ 5,4 millions de litres d'eau dans les datacenters de Microsoft (la consommation de GPT-4 étant estimée nettement supérieure bien que gardée confidentielle). À chaque conversation de 20 à 50 questions, l'IA "boit" virtuellement l'équivalent d'une bouteille d'eau de 50 cl [@evaluation_2026_systemique].
 
 ### 5.4.2 Le Paradoxe de Jevons : Le piège de l'efficacité 🪤
 

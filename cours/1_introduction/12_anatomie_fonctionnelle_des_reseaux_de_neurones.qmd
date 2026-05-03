@@ -1,0 +1,38 @@
+---
+title: "Approfondissement : 1.2 Anatomie Fonctionnelle des Réseaux de Neurones 🧠"
+---
+
+Pour l'architecte système, un réseau de neurones n'est pas une "boîte noire" magique, mais une superposition de couches mathématiques organisées de manière hiérarchique pour extraire du sens à partir de données brutes. Cette architecture, qui mime grossièrement le fonctionnement des neurones biologiques, permet de hiérarchiser l'information : plus on descend profondément dans les couches du réseau, plus la représentation de la donnée devient abstraite et porteuse de sens [@modernintel_2026_architecture].
+
+### 1.2.1 La Structure en Couches (Layers) 🧅
+
+Un réseau de neurones artificiel standard se compose de trois types de compartiments fondamentaux, organisés séquentiellement :
+
+
+1.  **Input Layer (Couche d'Entrée) :** Elle constitue le point de contact avec le monde extérieur. Elle reçoit les données brutes (appelées *features*, comme les pixels d'une image ou les mots d'une phrase). Elle n'effectue aucun calcul complexe ; son rôle unique est de formater et de transmettre le signal numérique aux couches suivantes.
+2.  **Hidden Layers (Couches Cachées) :** C'est ici que réside la véritable "intelligence" et la capacité d'abstraction du modèle. Ces couches effectuent des calculs matriciels en cascade pour identifier des motifs. La modularité de ces couches est la clé de ce qu'on appelle l'Apprentissage Profond (*Deep Learning*) : la première couche va par exemple identifier des contrastes, la seconde des bords, la troisième des formes géométriques, jusqu'à reconnaître un visage complet.
+3.  **Output Layer (Couche de Sortie) :** Elle consolide les calculs des couches précédentes pour livrer le verdict final. Selon le besoin métier, ce sera une probabilité (ex: classification avec 98% de chances que l'image soit un chat) ou une valeur numérique continue (ex: régression pour estimer le prix de vente d'un appartement).
+
+### 1.2.2 Dynamique du Signal : L'aller-retour de l'apprentissage 🔄
+
+Le signal informatique au sein d'un réseau ne se contente pas de traverser les couches à sens unique. Pour qu'il y ait apprentissage, le signal effectue une danse en deux temps, absolument indispensable [@ibm_2026_gradient] :
+
+
+*   **La Propagation Avant (Feedforward) :** Les données entrent par la couche d'entrée (à gauche), traversent les "portes" mathématiques et génèrent une prédiction à la sortie. À ce stade, si le réseau n'a pas encore été entraîné, cette prédiction est mathématiquement aléatoire.
+*   **La Rétropropagation de l'erreur (Backpropagation) :** C'est le véritable moteur de l'apprentissage. Le réseau compare sa prédiction initiale avec la réalité (la "bonne réponse" attendue). Il calcule l'écart ou l'erreur (via une fonction de coût, ou *loss function*), puis renvoie cette information en sens inverse, de la couche de sortie vers la couche d'entrée. Lors de ce trajet retour, le réseau va ajuster millimètre par millimètre les **poids** (l'importance donnée à une connexion) et les **biais** des neurones pour réduire l'erreur au prochain essai [@daniella_2024_gradient].
+
+::: {.success header="Le saviez-vous ?"}
+L'activation d'un neurone est dictée par ce que l'on appelle une "Fonction d'Activation" (ou *Transfer Function*, comme ReLU ou Sigmoid). Elle agit comme une porte mathématique non-linéaire qui décide si le signal entrant est suffisamment "fort" ou pertinent pour être transmis à la couche suivante. Sans ces fonctions, un réseau de neurones, même infiniment profond, ne serait qu'une simple régression linéaire incapable de résoudre des problèmes complexes.
+:::
+```{mermaid}
+graph LR
+    A[Données Brutes] --> B(Feedforward : Calculs)
+    B --> C{Prédiction du réseau}
+    C -->|Comparaison avec la réalité| D[Calcul de l'Erreur / Loss]
+    D --> E(Backpropagation : Retour)
+    E -->|Ajustement des Poids & Biais| B
+    
+    style A fill:#f9d0c4,stroke:#333,stroke-width:2px
+    style C fill:#c4e1f9,stroke:#333,stroke-width:2px
+    style D fill:#fcf3c0,stroke:#333,stroke-width:2px
+```

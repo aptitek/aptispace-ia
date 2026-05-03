@@ -1,0 +1,46 @@
+---
+title: "Approfondissement : 1.4 Optimisation et Apprentissage : La Descente de Gradient 🏔️"
+---
+
+L'apprentissage d'un réseau de neurones est un problème d'optimisation non-convexe. Mathématiquement, l'erreur globale du modèle est quantifiée par une **Fonction de Coût** (*Loss Function*), notée $J(\theta)$, où $\theta$ représente le vecteur de tous les poids et biais du réseau. L'objectif est de trouver le paramètre optimal $\theta^*$ tel que $\theta^* = \arg\min J(\theta)$ [@daniella_2024_gradient; @ibm_2026_gradient].
+
+#### 1.4.1 La règle de mise à jour 🧗
+
+Pour minimiser $J(\theta)$, on calcule son gradient $\nabla J(\theta)$, qui indique la direction de la plus forte pente montante. On met à jour les poids en se déplaçant dans la direction opposée :
+$$ \theta_{t+1} = \theta_t - \eta \nabla J(\theta_t) $$
+*Où $\eta$ est le taux d'apprentissage (Learning Rate), un hyperparamètre crucial contrôlant la taille du pas.*
+
+Ce paysage multidimensionnel est cependant extrêmement complexe [@ruder_2016_gradient] :
+*   **Minima locaux :** Des points où $\nabla J(\theta) = 0$ mais qui ne sont pas le minimum global.
+*   **Plateaux :** Des régions où la dérivée est proche de $0$, provoquant un ralentissement extrême de l'apprentissage (Vanishing Gradient).
+*   **Points de selle (Saddle Points) :** Des points où la pente est nulle, agissant comme un minimum dans une dimension et un maximum dans une autre. Dans les espaces en très haute dimension (comme les réseaux profonds), les points de selle sont statistiquement beaucoup plus fréquents que les minima locaux.
+
+#### 1.4.2 Les Stratégies d'Échantillonnage 🏃
+
+Le calcul du gradient exact sur l'ensemble du dataset est mathématiquement idéal mais informatiquement irréalisable. On divise donc le processus :
+
+1.  **Batch Gradient Descent :** Calcule le gradient sur l'ensemble des $N$ données. 
+    *   $\nabla J(\theta) = \frac{1}{N} \sum_{i=1}^{N} \nabla L(x_i, y_i, \theta)$. Convergence déterministe mais très coûteuse en VRAM.
+2.  **Stochastic Gradient Descent (SGD) :** Calcule le gradient sur une seule donnée ($N=1$). 
+    *   La forte variance introduit un "bruit" bénéfique qui aide à s'échapper des minima locaux, mais empêche une convergence stricte au fond de la vallée.
+3.  **Mini-batch GD :** Calcule le gradient sur un sous-ensemble $m$ (ex: $m=64$). C'est le standard industriel qui permet de paralléliser les calculs sur les cœurs des GPU (Tensor Cores) tout en gardant une variance acceptable.
+
+#### 1.4.3 Optimiseurs Avancés : Momentum et Adam 🛠️
+
+Pour surmonter les points de selle et les ravins étroits (où le gradient oscille fortement), des mécanismes inertiels ont été ajoutés [@ruder_2016_gradient] :
+
+*   **Le Momentum :** Simule l'inertie physique. Au lieu d'utiliser uniquement le gradient actuel, on accumule une moyenne mobile exponentielle des gradients passés (la "vitesse" $v$).
+    $v_t = \gamma v_{t-1} + \eta \nabla J(\theta_t)$
+    $\theta_{t+1} = \theta_t - v_t$
+    *(Où $\gamma \approx 0.9$ est le coefficient de friction).*
+
+*   **Adam (Adaptive Moment Estimation) :** Le standard absolu aujourd'hui. Il combine le concept du Momentum (1er moment) avec l'estimation de la variance non centrée des gradients (2ème moment, comme RMSProp). Il calcule un taux d'apprentissage **spécifique et adaptatif pour chaque paramètre individuel**, ce qui le rend redoutable dans les paysages clairsemés et complexes.
+
+::: {.warning header="Dynamique du Taux d'Apprentissage (Learning Rate)"}
+Le taux d'apprentissage $\eta$ ne doit souvent pas être statique. 
+
+- S'il est **trop grand**, l'algorithme diverge (l'erreur explose).
+- S'il est **trop petit**, la convergence stagne sur les plateaux [@ibm_2026_gradient].
+
+En pratique, on utilise des **Schedulers** (comme le *Cosine Annealing*) pour commencer avec un grand $\eta$ (pour explorer rapidement) et le réduire progressivement (pour s'affiner au fond du minimum global).
+:::

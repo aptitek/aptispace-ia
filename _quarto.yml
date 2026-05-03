@@ -4,6 +4,9 @@ project:
   type: website
   output-dir: _site
   pre-render: bash _extensions/aptitek/download-fonts/download_fonts.sh
+  post-render: 
+    - find cours -type d -name "*_files" -exec rm -rf {} +
+    - find cours -type d -name "*_cache" -exec rm -rf {} +
   resources:
     - "lab/**"
     - "assets/**"
@@ -13,6 +16,7 @@ bibliography: bibliography.bib
 filters:
   - filetree
   - card
+  - timeline
 
 website:
   title: "ia"

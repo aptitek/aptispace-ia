@@ -6,3 +6,7 @@ _site
 **/*.pyc
 /fonts/
 bin/act
+
+# Quarto generated intermediate files
+*_files/
+*_cache/

@@ -1,0 +1,5 @@
+---
+title: "Approfondissement : 3.2 Les Espaces Latents et la Compression : Autoencodeurs (AE) et VAE 🗜️"
+---
+
+Contenu détaillé à venir...
