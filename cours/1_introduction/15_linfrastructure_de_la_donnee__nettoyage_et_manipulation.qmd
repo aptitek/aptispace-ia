@@ -2,4 +2,54 @@
 title: "Approfondissement : 1.5 L’Infrastructure de la Donnée : Nettoyage et Manipulation 🧹"
 ---
 
-Contenu détaillé à venir...
+<div style="width: 100%;"><div style="position: relative; padding-bottom: 56.25%; padding-top: 0; height: 0;"><iframe title="C'est quoi la Data science ? (K-Means)" frameborder="0" width="1200" height="675" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://view.genially.com/692c310a95ba19c812c12b8b" type="text/html" allowscriptaccess="always" allowfullscreen="true" scrolling="yes" allownetworking="all"></iframe> </div> </div>
+
+La qualité des données dicte la limite de performance théorique de tout modèle de Machine Learning. Un pipeline rigoureux s'articule autour de plusieurs opérations statistiques critiques [@grignola_2026_cleaning].
+
+#### 1.5.1 Mathématiques du Pipeline de Nettoyage 🧼
+
+1.  **Traitement des valeurs manquantes et doublons :** 
+    L'imputation statistique permet de conserver la donnée. Selon la distribution, on privilégiera la moyenne $\mu$ (pour une distribution normale) ou la médiane (plus robuste face aux asymétries) pour combler les valeurs nulles (*NaN*).
+
+2.  **Détection des valeurs aberrantes (Outliers) :**
+    *   **Méthode du Z-Score :** 
+        Elle suppose que les données suivent une loi normale $\mathcal{N}(\mu, \sigma^2)$. Le Z-Score mesure la distance d'un point par rapport à la moyenne empirique, exprimée en nombre d'écarts-types :
+        $$ Z = \frac{x - \mu}{\sigma} $$
+        *Seuil critique :* Selon la règle empirique (68-95-99.7), $|Z| > 3$ indique que la donnée a moins de 0.3% de chances d'appartenir à cette distribution naturelle, justifiant souvent son exclusion.
+    *   **Méthode IQR (Interquartile Range) :** 
+        Méthode non-paramétrique. On calcule l'écart interquartile $IQR = Q_3 - Q_1$. Un point est considéré aberrant s'il sort des bornes : $[Q_1 - 1.5 \times IQR \ ; \ Q_3 + 1.5 \times IQR]$. L'avantage est que l'IQR lui-même n'est pas faussé par la présence d'outliers extrêmes.
+
+3.  **Standardisation et Normalisation :** 
+    Cette étape empêche les caractéristiques (*features*) à forte amplitude de dominer la fonction de coût ou les calculs de distance (comme dans les algorithmes KNN ou SVM) [@codesignal_2025_normalization].
+    *   *Standardisation (Z-score scaling) :* $x' = \frac{x - \mu}{\sigma}$ (Résultat : moyenne = 0, variance = 1).
+    *   *Min-Max Scaling :* $x' = \frac{x - \min(x)}{\max(x) - \min(x)}$ (Résultat : plage stricte entre 0 et 1).
+
+#### 1.5.2 L'Écosystème Vectoriel : Pandas et NumPy 🐍
+
+En Python, les boucles `for` natives sont extrêmement lentes pour le traitement de données massives. On fait donc appel à la **vectorisation** [@leow_2018_numpy].
+
+*   **NumPy (Numerical Python) :** 
+    C'est le moteur mathématique de bas niveau. Ses tableaux (`ndarrays`) sont stockés de manière contiguë en mémoire et ses fonctions sont pré-compilées en langage C. Cela permet d'appliquer des opérations mathématiques (comme le calcul du Z-Score global) simultanément sur toute la mémoire, en évitant l'interpréteur Python.
+*   **Pandas :** 
+    Construit au-dessus de NumPy, il introduit la structure de `DataFrame` (des matrices étiquetées). Pandas gère l'alignement des index, les fusions temporelles, et offre une API de haut niveau pour l'agrégation et le filtrage conditionnel (ex: requêtes de style SQL directement sur des fichiers CSV).
+
+**Implémentation d'un nettoyage par Z-Score :**
+
+```python
+import pandas as pd
+import numpy as np
+
+# Importation vectorisée du dataset
+df = pd.read_csv("dirty_rentals.csv")
+
+# Imputation par la médiane (robuste aux asymétries)
+mediane_surface = df['surface'].median()
+df['surface'].fillna(mediane_surface, inplace=True)
+
+# Détection vectorisée des outliers via NumPy
+# On calcule l'écart-type et la moyenne sur l'axe entier en temps constant
+df['z_score_prix'] = np.abs((df['prix'] - df['prix'].mean()) / df['prix'].std())
+
+# Filtrage par masque booléen (garde les éléments sous le seuil critique de 3)
+df_clean = df[df['z_score_prix'] < 3]
+```

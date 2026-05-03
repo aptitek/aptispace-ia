@@ -7,7 +7,7 @@ title: "Approfondissement : 1.1 Genèse et Écosystème de l'IA : D'Alan Turing 
 L'Intelligence Artificielle n'est pas née avec l'émergence d'Internet ; elle s'inscrit dans une perspective historique longue, jalonnée de ruptures technologiques et de cycles économiques (les fameux "hivers" et "étés" de l'IA).
 
 #### 1. Les fondations et l'IA Symbolique (1930 - 1990)
-Tout débute dans les années 1930 avec les travaux théoriques d'Alan Turing sur la calculabilité. En 1950, Turing publie son article fondateur posant la question *« Les machines peuvent-elles penser ? »* et invente le "jeu de l'imitation" [@turing_1950_mind]. Le terme "Intelligence Artificielle" est officiellement consacré quelques années plus tard, en 1956, lors de la célèbre conférence d'été de Dartmouth organisée par John McCarthy et Marvin Minsky [@wikipedia_2026_histoire].
+Tout débute dans les années 1930 avec les travaux théoriques d'Alan Turing sur la calculabilité. En 1950, Turing publie son article fondateur posant la question *« Les machines peuvent-elles penser ? »* et invente le "jeu de l'imitation". Le terme "Intelligence Artificielle" est officiellement consacré quelques années plus tard, en 1956, lors de la célèbre conférence d'été de Dartmouth organisée par John McCarthy et Marvin Minsky [@wikipedia_2026_histoire].
 
 Jusqu'aux années 1990, l'industrie a privilégié l'**IA Symbolique** et les **Systèmes Experts** (comme MYCIN en médecine). Ces programmes visaient à reproduire le raisonnement humain par des règles logiques strictes sous la forme "Si [condition] Alors [action]". 
 
