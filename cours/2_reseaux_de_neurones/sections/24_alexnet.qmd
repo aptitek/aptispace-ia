@@ -1,0 +1,12 @@
+## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆 
+
+
+Si l'on devait dater le début de l'ère moderne de l'IA, ce serait 2012 avec le réseau **AlexNet** qui a pulvérisé les modèles traditionnels au concours ImageNet [@wikipedia_2026_alexnet].
+
+*   **L'adoption de ReLU :** Contourne le *vanishing gradient*, entraînement beaucoup plus rapide [@upgrad_2026_cnn_architecture].
+*   **L'invention du Dropout :** Technique contre le surapprentissage.
+*   **L'entraînement Multi-GPU :** Modèle scindé sur deux puces NVIDIA GTX 580 car trop lourd pour la VRAM de l'époque.
+
+::: {.warning header="Anecdote d'Architecte : L'énigme des 224 pixels"}
+Les tutoriels disent qu'AlexNet prend des images de 224x224. Mais avec un filtre de 11, un stride de 4 et un padding de 0, la formule (vue au-dessus) ne tombe pas juste ! En réalité, le réseau recadrait secrètement à **227x227 pixels** pour satisfaire les mathématiques [@pyimagesearch_2021_cnn_layers].
+:::

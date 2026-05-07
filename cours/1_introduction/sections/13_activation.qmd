@@ -1,0 +1,150 @@
+## 1.3 Les Fonctions d'Activation : Le Moteur de la Non-Linéarité ⚡ 
+
+[](zoom/13_activation.qmd){.zoom}
+
+Sans fonction d'activation, même un réseau de neurones gigantesque ne serait qu'une simple régression linéaire. Ces fonctions agissent comme des portes et introduisent la **non-linéarité**, ce qui permet au modèle d'apprendre des choses complexes (comme les courbes d'un visage).
+
+### 1.3.1 Les 4 "Classiques" en bref :
+
+*   **Sigmoïde :** Ramène les valeurs entre 0 et 1. Idéale pour prédire une probabilité binaire (Oui/Non).
+*   **Tanh :** Ramène les valeurs entre -1 et 1. Souvent plus rapide que la sigmoïde.
+*   **ReLU :** La plus populaire. Elle agit comme un filtre : elle bloque les valeurs négatives (donne 0) et laisse passer les valeurs positives. 
+*   **Softmax :** Utilisée à la fin du réseau pour transformer les résultats en un pourcentage de probabilités (total = 100%).
+
+
+::: {.graph header="Fonctions d'Activations Classiques"}
+
+::: {.controls}
+```{ojs}
+//| echo: false
+viewof x_val = ui.slider({
+  label: "Valeur de x",
+  value: 0,
+  min: -5,
+  max: 5,
+  step: 0.1
+})
+
+sigmoid = (x) => 1 / (1 + Math.exp(-x))
+tanh = (x) => Math.tanh(x)
+relu = (x) => Math.max(0, x)
+softmax = (x) => Math.exp(x) / (Math.exp(x) + Math.exp(0) + Math.exp(1)) // Cas 3-classes (x vs 0 vs 1)
+
+data = {
+  const points = [];
+  for (let x = -5; x <= 5; x += 0.2) {
+    points.push({x: x, y: sigmoid(x), type: "Sigmoïde"});
+    points.push({x: x, y: tanh(x), type: "Tanh"});
+    points.push({x: x, y: relu(x), type: "ReLU"});
+    points.push({x: x, y: softmax(x), type: "Softmax"});
+  }
+  return points;
+}
+```
+
+:::
+
+::: {.render}
+```{ojs}
+//| echo: false
+Plot.plot({
+  height: 400,
+  background: "transparent",
+  grid: true,
+  y: {domain: [-1.1, 1.1], label: "Activation"},
+  color: {legend: true, domain: ["Sigmoïde", "Tanh", "ReLU", "Softmax"], range: [theme.red, theme.green, theme.blue, theme.magenta]},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.line(data, {x: "x", y: "y", stroke: "type", strokeWidth: 2}),
+    Plot.dot([{x: x_val, y: sigmoid(x_val)}], {x: "x", y: "y", fill: theme.red}),
+    Plot.dot([{x: x_val, y: tanh(x_val)}], {x: "x", y: "y", fill: theme.green}),
+    Plot.dot([{x: x_val, y: relu(x_val)}], {x: "x", y: "y", fill: theme.blue}),
+    Plot.dot([{x: x_val, y: softmax(x_val)}], {x: "x", y: "y", fill: theme.magenta})
+  ]
+})
+```
+:::
+
+::: {.results}
+```{ojs}
+//| echo: false
+ui.card(md`| Sigmoïde(x) | Tanh(x) | ReLU(x) | Softmax(x) |
+|:---:|:---:|:---:|:---:|
+| **${sigmoid(x_val).toFixed(3)}** | **${tanh(x_val).toFixed(3)}** | **${relu(x_val).toFixed(3)}** | **${softmax(x_val).toFixed(3)}** |`, {
+  title: "Valeurs d'Activation"
+})
+```
+:::
+:::
+
+
+### 1.3.2 L'Ère Moderne (Spécial IA Générative) ✨
+Aujourd'hui, les modèles avancés (comme ChatGPT ou BERT) utilisent des fonctions plus complexes et lissées pour de meilleures performances :
+
+*   **GELU :** La norme pour les *Transformers*.
+*   **SELU :** S'auto-normalise pour les réseaux très profonds.
+*   **Swish :** Développée par Google, idéale pour les très gros réseaux.
+
+::: {.graph header="Fonctions d'Activations Modernes"}
+
+::: {.controls}
+```{ojs}
+//| echo: false
+viewof x_modern = ui.slider({
+  label: "Valeur de x (moderne)",
+  value: 0,
+  min: -5,
+  max: 5,
+  step: 0.1
+})
+
+swish = (x) => x / (1 + Math.exp(-x))
+gelu = (x) => 0.5 * x * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (x + 0.044715 * Math.pow(x, 3))))
+selu = (x) => { const lambda = 1.0507; const alpha = 1.6733; return x > 0 ? lambda * x : lambda * alpha * (Math.exp(x) - 1); }
+
+data_modern = {
+  const points = [];
+  for (let x = -5; x <= 5; x += 0.2) {
+    points.push({x: x, y: swish(x), type: "Swish"});
+    points.push({x: x, y: gelu(x), type: "GELU"});
+    points.push({x: x, y: selu(x), type: "SELU"});
+  }
+  return points;
+}
+```
+:::
+
+::: {.render}
+```{ojs}
+//| echo: false
+Plot.plot({
+  height: 400,
+  background: "transparent",
+  grid: true,
+  y: {domain: [-2, 0.7], label: "Activation"},
+  x: {domain: [-3, 3], label: "x"},
+  color: {legend: true, domain: ["Swish", "GELU", "SELU"], range: [theme.orange, theme.magenta, theme.red]},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.line(data_modern, {x: "x", y: "y", stroke: "type", strokeWidth: 3}),
+    Plot.dot([{x: x_modern, y: swish(x_modern)}], {x: "x", y: "y", fill: theme.orange}),
+    Plot.dot([{x: x_modern, y: gelu(x_modern)}], {x: "x", y: "y", fill: theme.magenta}),
+    Plot.dot([{x: x_modern, y: selu(x_modern)}], {x: "x", y: "y", fill: theme.red})
+  ]
+})
+```
+:::
+
+::: {.results}
+```{ojs}
+//| echo: false
+ui.card(md`| Swish(x) | GELU(x) | SELU(x) |
+|:---:|:---:|:---:|
+| **${swish(x_modern).toFixed(3)}** | **${gelu(x_modern).toFixed(3)}** | **${selu(x_modern).toFixed(3)}** |`, {
+  title: "Valeurs d'Activation (Modernes)"
+})
+```
+:::
+:::

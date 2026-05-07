@@ -26,25 +26,25 @@ Bienvenue dans le module d'**Intelligence Artificielle**. Ce cours intensif a po
 
 Ce module est structuré en 5 parties progressives, complétées par un [**Glossaire Global**](glossaire.qmd) 📖 et un [**Aide-Mémoire**](aide-memoire.qmd) 🧠 :
 
-### 1. [Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV](cours/1_introduction.qmd) 🧹
+### 1. [Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV](cours/1_introduction/index.qmd) 🧹
 * **Théorie :** Histoire de l'IA, anatomie des réseaux, fonctions d'activation, descente de gradient, et pipeline de nettoyage des données.
 * **Pratique :** Rappels Python, manipulation des tenseurs, génération de données avec NumPy, entraînement d'une régression linéaire.
 * **Évaluation :** Quizz "Cluedo en groupe".
 
-### 2. [Deep Learning & Vision : Apprendre à voir dans les matrices](cours/2_reseaux_de_neurones.qmd) 👁️
+### 2. [Deep Learning & Vision : Apprendre à voir dans les matrices](cours/2_reseaux_de_neurones/index.qmd) 👁️
 * **Théorie :** Architecture des CNN, révolution AlexNet, Transfer Learning, et lutte contre l'Overfitting.
 * **Pratique :** Initiation à TensorFlow/Keras, réglage des hyperparamètres, gestion des fonctions de perte et métriques.
 * **Évaluation :** Quizz "Mot de passe" et Projet d'étude de cas (Kaggle).
 
-### 3. [NLP & GenAI : Murmurer à l'oreille des Transformers](cours/3_genai.qmd) 💬
+### 3. [NLP & GenAI : Murmurer à l'oreille des Transformers](cours/3_genai/index.qmd) 💬
 * **Théorie :** Du Bag of Words aux Transformers, mécanisme de Self-Attention, tokenisation, prompt engineering, failles de sécurité.
 * **Pratique :** Compétition de "Prompt Battle" et exploration avancée de l'espace latent.
 
-### 4. [Orchestration & Agents : Quand le code prend le contrôle](cours/4_orchestration.qmd) 🤖
+### 4. [Orchestration & Agents : Quand le code prend le contrôle](cours/4_orchestration/index.qmd) 🤖
 * **Théorie :** Framework LangChain, architecture RAG, bases vectorielles, recherche hybride, framework ReAct, et protocole MCP.
 * **Pratique :** Création d'agents autonomes, manipulation de contexte, intégration d'outils et de MCP.
 * **Évaluation :** Quizz "Complétez la chaîne" et Projet "Agent anti-arnaqueurs".
 
-### 5. [Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA](cours/5_ethique.qmd) ⚖️
+### 5. [Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA](cours/5_ethique/index.qmd) ⚖️
 * **Théorie :** EU AI Act, menace des Live Deepfakes, équité algorithmique, alignement (RLHF/DPO), durabilité et Paradoxe de Jevons.
 * **Évaluation :** Débat "Quelle sera l'IA parfaite ?" et Quizz "Jeopardy".

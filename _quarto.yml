@@ -19,6 +19,7 @@ filters:
   - card
   - timeline
   - embed
+  - aptitek/zoom
 
 website:
   title: "ia"

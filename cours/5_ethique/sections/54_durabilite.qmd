@@ -1,0 +1,40 @@
+## 5.4 Durabilité Technologique : La Crise de la Mesure et le Paradoxe de Jevons 🌿 
+
+
+La transition vers une **« Green AI »** est freinée par une infrastructure physique dont l'empreinte devient insoutenable. Depuis 2012, la demande en puissance de calcul a été multipliée par 300 000 [@bose_2025_greenai]. En tant qu'architectes, notre responsabilité est d'arbitrer entre la performance d'un modèle et son coût énergétique.
+
+### 5.4.1 Le Cycle de Vie : L'iceberg de la consommation 🧊
+
+On imagine souvent que l'entraînement (le *training*) est le moment le plus énergivore. C'est une erreur de perspective.
+* **L'Inférence (L'usage) :** Elle représente jusqu'à **90 % de la consommation énergétique totale** sur toute la durée de vie d'un modèle [@bose_2025_greenai]. Chaque question posée à un LLM consomme de l'électricité et de l'eau (pour le refroidissement des data centers).
+* **Empreinte Hydrique :** L'entraînement de GPT-3 a nécessité environ 5,4 millions de litres d'eau dans les datacenters de Microsoft (la consommation de GPT-4 étant estimée nettement supérieure bien que gardée confidentielle). À chaque conversation de 20 à 50 questions, l'IA "boit" virtuellement l'équivalent d'une bouteille d'eau de 50 cl [@evaluation_2026_systemique].
+
+### 5.4.2 Le Paradoxe de Jevons : Le piège de l'efficacité 🪤
+
+C'est le défi économique majeur de 2026. Le **Paradoxe de Jevons** stipule que l'amélioration de l'efficacité d'une ressource entraîne une *augmentation* de sa consommation totale au lieu de la réduire [@diab_2025_jevons].
+
+* **Application à l'IA :** Les nouvelles puces (comme la NVIDIA H100) sont beaucoup plus économes par calcul effectué. Mais comme le coût unitaire du calcul baisse, la demande explose : on met de l'IA partout (réfrigérateurs, jouets, mails inutiles), ce qui annule finalement les gains environnementaux [@evaluation_2026_systemique].
+
+### 5.4.3 La Crise de la Mesure et le Greenwashing 🧼
+
+Un obstacle majeur à la durabilité est la difficulté technique de mesurer précisément l'empreinte carbone.
+* **Sous-estimation logicielle :** Les outils comme *CodeCarbon* sous-estiment souvent la consommation réelle de 20 à 40 % car ils ne prennent pas en compte l'énergie perdue dans les systèmes de refroidissement ou les serveurs auxiliaires [@bose_2025_greenai].
+* **L'Arbitrage Architectural :** Utiliser un modèle géant (GPAI) pour une tâche simple (ex: classer un email) consomme **15 à 30 fois plus d'énergie** qu'un petit modèle spécialisé [@bose_2025_greenai].
+
+::: {.warning header="Recommandation Stratégique : Minimum Viable Governance"}
+Pour une IA responsable, adoptez le **MVG** :
+1. **Inventaire :** Recenser tous les modèles utilisés.
+2. **Contrôle :** Automatiser des tests d'équité et de sobriété.
+3. **Reporting :** Publier les chiffres réels (incluant l'inférence) pour une transparence totale [@modelop_2026_compliance].
+:::
+
+```{mermaid}
+graph TD
+    A[Choix du Modèle] --> B{Niveau de tâche ?}
+    B -->|Complexe| C[Modèle Géant / LLM]
+    B -->|Simple| D[Petit Modèle Spécialisé]
+    C --> E[Consommation Élevée\nRisque Paradoxe de Jevons]
+    D --> F[Sobriété Numérique\nGreen AI]
+    E --> G[Impact Carbone Critique]
+    F --> H[Impact Carbone Maîtrisé]
+```

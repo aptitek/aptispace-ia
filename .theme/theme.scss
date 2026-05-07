@@ -598,6 +598,33 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     font-size: 1.05em;
 }
 
+// Custom Zoom Link System
+.zoom {
+    display: inline-block;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85em;
+    font-weight: 700;
+    border: 1.5px solid $sol-blue;
+    border-radius: 6px;
+    color: $sol-blue !important;
+    text-decoration: none !important;
+    transition: all 0.25s ease;
+    margin: 1rem 0;
+    background-color: transparent;
+    font-family: $font-family-base;
+
+    &:hover {
+        background-color: $sol-blue;
+        color: $sol-base3 !important;
+        box-shadow: 0 4px 12px rgba($sol-blue, 0.2);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
 .ratio-16x9 {
     @extend %viz-canvas;
     padding-bottom: 56.25%;

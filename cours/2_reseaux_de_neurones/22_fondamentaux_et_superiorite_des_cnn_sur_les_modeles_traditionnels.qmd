@@ -1,5 +1,0 @@
----
-title: "Approfondissement : 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️"
----
-
-Contenu détaillé à venir...

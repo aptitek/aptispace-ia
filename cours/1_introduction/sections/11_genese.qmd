@@ -1,0 +1,49 @@
+## 1.1 Genèse et Écosystème de l'IA : D'Alan Turing aux LLMs 🌍 
+
+[](zoom/11_genese.qmd){.zoom}
+
+:::: {.timeline .vertical}
+
+::: {.event data-label="1950"}
+| Alan Turing | Le Test de Turing |
+|:---|:---|
+| ![](../../assets/alan_turing.jpg){width=80px} | *Fondation philosophique* : Les machines peuvent-elles penser ? Invention du "jeu de l'imitation". |
+:::
+
+::: {.event data-label="1956"}
+| McCarthy & Minsky | La Naissance |
+|:---|:---|
+| ![](../../assets/mcarthy_minsky.jpg){width=80px} | *Concept* : Conférence de Dartmouth. Le terme "Intelligence Artificielle" est officiellement inventé. |
+:::
+
+::: {.event data-label="Années 1980"}
+| Edward Feigenbaum | L'Âge des Systèmes Experts |
+|:---|:---|
+| ![](../../assets/feigenbaum.jpg){width=80px} | *Logique pure* : Apogée puis déclin des programmes basés sur des règles strictes ("Si... Alors"). Premier hiver de l'IA. |
+:::
+
+::: {.event data-label="1989-1997"}
+| Yann LeCun | Puissance brute et Apprentissage |
+|:---|:---|
+| ![](../../assets/yann_lecun.jpg){width=80px} | *Transition* : LeNet de Yann LeCun (1989) pose les bases du Deep Learning. Deep Blue bat Kasparov aux échecs (1997) par la force de calcul. |
+:::
+
+::: {.event data-label="2016"}
+| Google DeepMind | La Révolution Deep Learning |
+|:---|:---|
+| ![](../../assets/google.svg){width=80px} | *Intuition artificielle* : L'IA de Google DeepMind bat le champion du monde de Go grâce à l'apprentissage par renforcement. |
+:::
+
+::: {.event data-label="2022"}
+| OpenAI | L'Ère Générative |
+|:---|:---|
+| ![](../../assets/openai.svg){width=80px} | *Basculement* : Démocratisation brutale des LLM (Large Language Models) par OpenAI. Début de la course aux armements. |
+:::
+
+::: {.event data-label="2025-2026"}
+| DeepSeek | Le Mur Matériel et Économique |
+|:---|:---|
+| ![](../../assets/deepseek.svg){width=80px} | *Raisonnement & Krach* : Le modèle ultra-efficient de DeepSeek bouscule le monopole de Nvidia (2025). L'industrie fait face à une pénurie mondiale de mémoire vive (2026). |
+:::
+
+::::

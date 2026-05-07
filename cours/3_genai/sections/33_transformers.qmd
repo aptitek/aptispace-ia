@@ -1,0 +1,42 @@
+## 3.3 La Révolution des Transformers et le Mécanisme d'Attention ⚡ 
+
+
+Avant 2017, pour traiter du texte, l'industrie utilisait des architectures dites "récurrentes" (RNN ou LSTM). Ces modèles lisaient le texte exactement comme nous le faisons : un mot après l'autre, de gauche à droite. 
+
+Cependant, cette approche posait deux problèmes majeurs :
+1.  **Impossibilité de paralléliser :** Puisqu'il faut attendre d'avoir lu le mot $N$ pour lire le mot $N+1$, les cartes graphiques (GPU) ne pouvaient pas exploiter toute leur puissance de calcul simultané.
+2.  **L'amnésie (Vanishing Gradient) :** Sur un très long paragraphe, arrivé au dernier mot, le modèle avait souvent "oublié" le sujet exact de la première phrase [@fagundes_2025_positional].
+
+La publication du papier de recherche *Attention is All You Need* (Google, 2017) a brisé ce plafond de verre en introduisant l'architecture **Transformer** et son mécanisme de **Self-Attention** (Auto-Attention).
+
+### 3.3.1 Le Mécanisme de Self-Attention : Q, K, V 🔍
+
+Dans un Transformer, le modèle ne lit plus de gauche à droite. Il regarde **tous les mots de la phrase en même temps**. Pour comprendre le sens d'un mot (token), le mécanisme d'attention lui permet d'examiner tous les autres mots pour déterminer leur importance relative [@meaning_2026_architecture].
+
+Pour calculer cette attention, le modèle projette chaque mot en trois vecteurs distincts, inspirés des systèmes de base de données :
+
+* **Queries (Q - La Requête) :** Ce que le token recherche (ex: "Je suis le verbe 'manger', je cherche qui fait l'action").
+* **Keys (K - La Clé) :** Ce que le token contient ou représente (ex: "Je suis le mot 'chat', je suis un nom, sujet potentiel").
+* **Values (V - La Valeur) :** Le contenu sémantique réel à transmettre si la requête correspond à la clé.
+
+La formule mathématique fondamentale (Scaled Dot-Product Attention) s'écrit :
+$$ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V $$
+
+::: {.info header="Note technique"}
+Le facteur d'échelle $\sqrt{d_k}$ est crucial. Sans lui, pour des vecteurs de très grande dimension, le produit scalaire $QK^T$ deviendrait si grand qu'il saturerait la fonction softmax, bloquant ainsi l'apprentissage (gradient nul) [@articsledge_2026_positional].
+:::
+
+::: {.info header="L'Astuce d'Architecte : FlashAttention"}
+Le calcul de l'attention classique est extrêmement lourd. En 2022, une optimisation nommée **FlashAttention** a révolutionné l'entraînement. Les ingénieurs se sont rendu compte que le goulot d'étranglement n'était pas le calcul en lui-même, mais les allers-retours de données entre la mémoire vive (HBM) et la puce du GPU. FlashAttention calcule l'attention par blocs directement dans la mémoire cache ultra-rapide (SRAM), accélérant l'entraînement de près de 300 % [@meaning_2026_architecture].
+:::
+
+```{mermaid}
+graph TD
+    A[Mot : 'avocat'] --> B(Génération Q, K, V)
+    C[Mot : 'mangé'] --> D(Génération Q, K, V)
+    B --> E{Calcul du Produit Scalaire Q x K}
+    D --> E
+    E --> F[Application Softmax]
+    F --> G[Multiplication par V]
+    G --> H[Nouveau vecteur 'avocat' enrichi par le contexte]
+```

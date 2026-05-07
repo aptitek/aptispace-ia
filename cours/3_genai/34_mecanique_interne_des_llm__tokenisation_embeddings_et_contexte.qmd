@@ -1,5 +1,0 @@
----
-title: "Approfondissement : 3.4 Mécanique Interne des LLM : Tokenisation, Embeddings et Contexte ⚙️"
----
-
-Contenu détaillé à venir...

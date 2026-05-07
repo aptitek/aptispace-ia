@@ -1,0 +1,16 @@
+## 1.2 Anatomie Fonctionnelle des Réseaux de Neurones 🧠 
+
+[](zoom/12_anatomie.qmd){.zoom}
+
+### 1.2.1 L'Architecture en 3 Couches (Layers) 🧅
+
+*   📥 **Input Layer (Entrée) :** Réception. Capte les données brutes (pixels, texte, valeurs). Aucun calcul.
+*   🧠 **Hidden Layers (Cachées) :** Abstraction. Cœur de l'intelligence. Calculs matriciels pour extraire des motifs de plus en plus complexes (bords $\rightarrow$ formes $\rightarrow$ visage).
+*   📤 **Output Layer (Sortie) :** Verdict. Délivre la décision finale (probabilité, classification, valeur numérique).
+
+[Réseau de Neurones](https://view.genially.com/69144ab3e5ccc00eb91c4628){.embed}
+
+
+### 1.2.2 La Danse du Signal (Le Cycle d'Apprentissage) 🔄
+*   ➡️ **Feedforward (Propagation) :** La donnée traverse le réseau de gauche à droite. Génère une prédiction (au début, totalement aléatoire).
+*   ⬅️ **Backpropagation (Rétropropagation) :** Le réseau calcule son erreur (Loss Function) et remonte le signal à l'envers pour ajuster les *poids* et les *biais* de chaque neurone. C'est ainsi que la machine "apprend".

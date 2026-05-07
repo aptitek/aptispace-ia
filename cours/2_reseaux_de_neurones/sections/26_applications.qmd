@@ -1,0 +1,43 @@
+## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭 
+
+
+### 2.6.2 Le Nouveau Challenger : Les Vision Transformers (ViT) 🤖
+
+Contrairement aux CNN qui regardent l'image petit bout par petit bout, les **Vision Transformers (ViT)** découpent l'image en "patchs" et utilisent un mécanisme d'**attention globale**. Ils comparent chaque patch avec tous les autres simultanément [@networkoptix_2024_computervision].
+
+::: {.graph .horizontal header="Comparaison Architecturale : Local vs Global"}
+
+::: {.render header="Filtre Local (CNN)"}
+```{ojs}
+//| echo: false
+html`
+<div class="viz-container-sm viz-cnn-grid" style="position: relative;">
+  <div class="viz-cnn-window"></div>
+  ${Array(16).fill(0).map(() => `<div style="border: 1px solid rgba(0,172,193,0.1);"></div>`).join('')}
+</div>
+`
+```
+:::
+
+::: {.separator}
+VS
+:::
+
+::: {.render header="Attention Globale (ViT)"}
+```{ojs}
+//| echo: false
+html`
+<div class="viz-container-sm viz-vit-grid" style="position: relative;">
+  ${Array(9).fill(0).map((_, i) => `<div style="background: rgba(108, 113, 196, 0.1); border: 1px solid ${theme.violet}; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;"><span style="position: absolute; width: ${i===4 ? '200%' : '0'}; height: 2px; background: ${theme.magenta}; z-index: 10; animation: flashNet 2s infinite;"></span></div>`).join('')}
+  <div class="viz-vit-ring"></div>
+</div>
+`
+```
+:::
+
+:::{.results}
+::: {.info header="Comparaison Architecturale : Local vs Global"}
+Observez la différence de philosophie. À gauche, le CNN scanne laborieusement l'image. À droite, le Transformer connecte toutes les informations simultanément.
+:::
+:::
+:::

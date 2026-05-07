@@ -1,0 +1,35 @@
+## 5.3 Éthique et Équité Algorithmique : La Logique de l'Alignement ⚖️ 
+
+
+L'équité n'est plus une option philosophique, c'est une exigence technique. Les biais algorithmiques sont souvent la sédimentation de préjugés historiques présents dans les données. Pour les corriger, l'architecte doit intervenir mathématiquement à l'aide de métriques précises [@evaluation_2026_systemique].
+
+### 5.3.1 Métriques de "Fairness" et Arbitrages Politiques 📏
+
+Le choix d'une métrique d'équité est un acte d'ingénierie chargé de sens. Il n'existe pas de solution parfaite, seulement des compromis [@fairlearn_2026_metrics] :
+
+* **Parité Démographique (Demographic Parity) :** On exige que le taux de succès soit égal pour tous les groupes (ex: 50% de prêts accordés aux hommes, 50% aux femmes), peu importe les qualifications initiales. C'est un outil puissant pour corriger des sous-représentations historiques [@geeksforgeeks_2025_fairness].
+* **Égalité des Chances (Equal Opportunity) :** On se concentre uniquement sur les individus "qualifiés". On s'assure qu'un candidat compétent a la même probabilité d'être choisi, qu'il appartienne à un groupe A ou B [@fairlearn_2026_metrics].
+
+### 5.3.2 Mécaniques d'Alignement : Du RLHF au DPO 🎯
+
+Une fois le modèle entraîné sur ses données brutes, il est souvent "sauvage" (toxique ou imprévisible). Pour l'aligner sur les valeurs humaines, deux technologies s'affrontent [@evaluation_2026_systemique] :
+
+* **RLHF (Reinforcement Learning from Human Feedback) :** La méthode historique (utilisée pour ChatGPT). Des humains notent des milliers de réponses de l'IA. On entraîne un "Modèle de Récompense" à imiter ces notes, puis on utilise ce modèle pour punir ou récompenser l'IA principale. 
+    * *Défaut :* C'est un processus lourd, instable et sujet au "Reward Hacking" (l'IA apprend à flatter l'humain pour avoir une bonne note sans forcément dire la vérité) [@aws_2024_rlhf].
+* **DPO (Direct Preference Optimization) :** Introduite en 2023, cette méthode a connu une adoption industrielle massive en 2024 (utilisée pour Llama 3). Au lieu de créer un modèle de récompense complexe, on montre directement à l'IA des paires de réponses (une "bonne" et une "mauvaise"). On force mathématiquement le modèle à augmenter la probabilité de la bonne et à diminuer celle de la mauvaise en une seule étape [@toloka_2024_dpo].
+
+### 5.3.3 L'Explicabilité (XAI) : Ouvrir la Boîte Noire 🔍
+
+Pour respecter l'EU AI Act, un modèle à haut risque doit pouvoir expliquer ses décisions. On utilise pour cela des outils de **XAI (Explainable AI)** [@iva_2025_xai] :
+
+* **SHAP (Shapley Additive Explanations) :** Une méthode issue de la théorie des jeux qui attribue à chaque donnée d'entrée (âge, revenu, historique) un score précis représentant sa contribution à la décision finale [@iva_2025_xai].
+* **LIME :** Crée un modèle simple et local "autour" d'une décision complexe pour expliquer pourquoi, dans ce cas précis, l'IA a répondu "A" plutôt que "B" [@wikipedia_2026_xai].
+
+```{mermaid}
+graph TD
+    A[Modèle Boîte Noire] --> B{Besoin d'explication}
+    B --> C[Outils Post-hoc : SHAP/LIME]
+    B --> D[Modèles Intrinsèques : Arbres de décision]
+    C --> E[Rapport d'explicabilité pour l'audit]
+    D --> E
+```

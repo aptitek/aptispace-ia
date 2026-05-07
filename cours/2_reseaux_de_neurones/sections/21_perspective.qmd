@@ -1,0 +1,32 @@
+## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️ 
+
+
+La vision par ordinateur s'est imposée comme le pont technologique entre la perception biologique et l'intelligence artificielle. En tant qu'architecte système, il ne faut pas voir cette discipline comme un simple algorithme de tri, mais comme une tentative complexe d'extraction automatisée et de compréhension sémantique à partir de flux visuels purs [@networkoptix_2024_computervision].
+
+:::: {.timeline .vertical}
+
+::: {.event data-label="1980"} 
+| Fukushima | Le Neocognitron |
+|:---|:---|
+| ![](../../assets/fukushima.jpg){width=100px} | *Concept* : Fukushima propose une architecture hiérarchique utilisant des "champs récepteurs" locaux. C'est le précurseur direct des CNN modernes. |
+:::
+
+::: {.event data-label="Années 1990"}
+| Yann LeCun | La Consécration Industrielle |
+|:---|:---|
+| ![](../../assets/yann_lecun.jpg){width=100px} | *Application* : Stabilisation avec le modèle *LeNet*, utilisé par la poste américaine pour lire automatiquement les codes postaux. Première preuve de viabilité à grande échelle [@networkoptix_2024_computervision]. |
+:::
+
+::: {.event data-label="2012"}
+| Équipe Hinton | La Révolution AlexNet |
+|:---|:---|
+| ![](../../assets/alexnet.jpg){width=100px} | *Basculement* : AlexNet pulvérise les algorithmes traditionnels au concours ImageNet, prouvant que la profondeur (Deep Learning) est la clé [@wikipedia_2026_alexnet]. |
+:::
+
+::::
+
+### 2.1.2 La Rupture Stratégique : Des filtres manuels aux filtres appris ⚡
+
+Avant le Deep Learning, les ingénieurs devaient créer mathématiquement leurs propres filtres (ex: filtre de Sobel pour les bords verticaux). Cette approche, le *Feature Engineering* manuel, était extrêmement limitée par l'intuition humaine.
+
+La rupture fondamentale des Réseaux Convolutifs (CNN) réside dans le passage aux **filtres appris par optimisation**. Le réseau découvre par essai-erreur quels filtres mathématiques sont les plus pertinents pour extraire les caractéristiques d'une image [@wikipedia_2026_cnn].

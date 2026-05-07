@@ -1,0 +1,34 @@
+## 5.1 De la "Red AI" au Cadre Réglementaire : L'EU AI Act ⚖️ 
+
+
+L’intelligence artificielle traverse une phase de mutation structurelle majeure. L'industrie marque officiellement la fin de l’ère de la **« Red AI »** — cette course effrénée à la puissance de calcul où la performance brute primait sur toute considération éthique ou environnementale — pour entrer dans un paradigme de maturité réglementaire et de durabilité [@bose_2025_greenai]. 
+
+L'explosion des capacités génératives a industrialisé la manipulation de l'information. La confiance numérique n'est plus une simple valeur abstraite, c'est devenu un actif stratégique qui doit être protégé par un cadre légal contraignant [@hive_2025_deepfake].
+
+### 5.1.1 La Pyramide des Risques de l'EU AI Act 📐
+
+L'Union Européenne a frappé un grand coup en août 2024 avec l'entrée en vigueur de l'**EU AI Act**. Il s'agit du premier cadre juridique global régulant l'IA selon une approche strictement proportionnelle au risque encouru par les citoyens [@hcltech_2026_euai]. 
+
+La philosophie du texte est claire : l'innovation technologique ne doit en aucun cas sacrifier la dignité humaine, la démocratie ou l'État de droit [@evaluation_2026_systemique]. L'AI Act segmente les systèmes en quatre catégories :
+
+```{mermaid}
+graph TD
+    A[Risque Inacceptable\nInterdiction Totale] --> B[Haut Risque\nAudit & Contrôle Strict]
+    B --> C[Risque Limité\nObligation de Transparence]
+    C --> D[Risque Minimal\nPas de contraintes spécifiques]
+    
+    style A fill:#ff4d4d,stroke:#333,stroke-width:2px,color:#fff
+    style B fill:#ff9900,stroke:#333,stroke-width:2px,color:#fff
+    style C fill:#ffcc00,stroke:#333,stroke-width:2px,color:#000
+    style D fill:#99cc33,stroke:#333,stroke-width:2px,color:#fff
+```
+
+* **Risque Inacceptable :** Ces systèmes sont purement et simplement interdits (avec des amendes allant jusqu'à 35 millions d'euros ou 7 % du chiffre d'affaires mondial, le montant le plus élevé étant retenu). Cela inclut la notation sociale (*social scoring*), la manipulation subliminale, ou la catégorisation biométrique déduisant des attributs sensibles (race, opinions politiques) [@fli_2024_aiact; @modelop_2026_compliance].
+* **Haut Risque (HRAIS) :** Concerne les secteurs critiques (santé, recrutement, infrastructures). Ces systèmes imposent une traçabilité totale via des journaux de logs, une gouvernance des données irréprochable et un système de gestion des risques itératif [@hcltech_2026_euai].
+* **Risque Limité :** Inclut les chatbots ou les générateurs de deepfakes. La règle d'or est la **transparence** : l'utilisateur doit être explicitement informé qu'il interagit avec une machine ou que le contenu a été généré artificiellement [@orrick_2025_transparency].
+
+### 5.1.2 Le "So What ?" : L'Effet Bruxelles 🌍
+
+Pourquoi ce texte européen intéresse-t-il le monde entier ? À cause de ce que les économistes appellent l'**Effet Bruxelles** (Brussels Effect). 
+
+Les fournisseurs américains ou asiatiques (OpenAI, Google, Anthropic) doivent obligatoirement s'aligner sur ces standards européens s'ils souhaitent accéder au vaste marché unique. Le coût de la non-conformité est tel (sanctions massives et exclusion de marché) qu'il force une convergence technologique mondiale vers la sécurité dès la phase d'entraînement du modèle (*Compliance by Design*) [@modelop_2026_compliance].

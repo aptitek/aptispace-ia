@@ -1,5 +1,0 @@
----
-title: "Approfondissement : 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️"
----
-
-Contenu détaillé à venir...
