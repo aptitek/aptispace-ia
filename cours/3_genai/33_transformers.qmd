@@ -1,4 +1,4 @@
-## 3.3 La Révolution des Transformers et le Mécanisme d'Attention ⚡ 
+## ⚡ La Révolution des Transformers et le Mécanisme d'Attention 
 
 
 Avant 2017, pour traiter du texte, l'industrie utilisait des architectures dites "récurrentes" (RNN ou LSTM). Ces modèles lisaient le texte exactement comme nous le faisons : un mot après l'autre, de gauche à droite. 
@@ -9,7 +9,7 @@ Cependant, cette approche posait deux problèmes majeurs :
 
 La publication du papier de recherche *Attention is All You Need* (Google, 2017) a brisé ce plafond de verre en introduisant l'architecture **Transformer** et son mécanisme de **Self-Attention** (Auto-Attention).
 
-### 3.3.1 Le Mécanisme de Self-Attention : Q, K, V 🔍
+### 🎯 Le Mécanisme de Self-Attention
 
 Dans un Transformer, le modèle ne lit plus de gauche à droite. Il regarde **tous les mots de la phrase en même temps**. Pour comprendre le sens d'un mot (token), le mécanisme d'attention lui permet d'examiner tous les autres mots pour déterminer leur importance relative [@meaning_2026_architecture].
 

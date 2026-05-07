@@ -1,9 +1,9 @@
-## 4.3 Agents Autonomes et Model Context Protocol (MCP) : L'Intégration Universelle 🤖 
+## 🤖 Agents Autonomes et Model Context Protocol (MCP)
 
 
 Si le RAG donne la mémoire à l'IA, les **Agents** lui donnent des mains. Un agent autonome est un LLM orchestré de manière à pouvoir interagir avec son environnement. Il ne se contente pas de répondre à une question ; il évalue la situation, choisit un outil approprié (une calculatrice, un terminal bash, une API météo), s'en sert, observe le résultat, et ajuste sa stratégie.
 
-### 4.3.1 Le Cerveau de l'Agent : Le Framework ReAct 🧠
+### 🧠 Le Cerveau de l'Agent
 
 Pour qu'un LLM puisse utiliser des outils sans se perdre, on utilise un cadre de raisonnement appelé **ReAct (Reasoning and Acting)** [@ibm_2026_react]. 
 
@@ -13,7 +13,7 @@ Contrairement à la simple "Chain-of-Thought" (qui n'est qu'une réflexion inter
 3. **Observation :** Le système retourne `{"temp": 15, "condition": "Rain"}`.
 4. **Thought :** "Il pleut à Paris. Je peux maintenant formuler ma réponse à l'utilisateur."
 
-### 4.3.2 Le Défi de l'Intégration et la Révolution MCP 🔌
+### 🔌 Le Défi de l'Intégration et la Révolution MCP
 
 Jusqu'à récemment, l'intégration des outils posait un problème d'échelle (fragmentation "N x M"). Chaque fournisseur (OpenAI, Anthropic, Google) nécessitait du code personnalisé pour se connecter à chaque application d'entreprise (Slack, GitHub, Salesforce).
 
@@ -26,7 +26,7 @@ L'architecture MCP repose sur trois entités communiquant via le format JSON-RPC
 
 
 
-### 4.3.3 Divulgation Progressive et Sécurité 🔒
+### 🔒 Divulgation Progressive et Sécurité
 
 Un défi majeur avec les agents est la consommation de tokens. Si vous fournissez un millier de schémas d'outils au LLM pour qu'il sache ce qu'il peut faire, vous saturez sa fenêtre de contexte.
 
@@ -36,7 +36,7 @@ L'implémentation performante de MCP utilise la **Divulgation Progressive (Progr
 Le client MCP agit également comme un pare-feu. Lors d'une transaction, si le serveur MCP renvoie des données sensibles (PII), le client peut intercepter et masquer (tokeniser) ces données avant même qu'elles n'atteignent le LLM hébergé dans le Cloud, garantissant ainsi la conformité de l'entreprise [@anthropic_2025_mcpcode].
 :::
 
-### 4.3.4 L'Orchestration Multi-Agents 🐝
+### 🐝 L'Orchestration Multi-Agents
 
 Pour les tâches titanesques, un seul agent devient instable. On recourt alors à une architecture **Leader-Worker** (ou "essaim d'agents").
 Un agent Leader analyse la requête globale et délègue les sous-tâches à des agents spécialisés (un agent Codeur, un agent Testeur, un agent Rédacteur). Ils communiquent entre eux via le protocole A2A (Agent-to-Agent) orchestré par LangGraph, redéfinissant ainsi l'ingénierie logicielle [@kumar_2026_agentic].

@@ -1,9 +1,9 @@
-## 5.2 La Menace des Deepfakes : Sécurité et "Arbitrage Advantage" 🎭 
+## 🎭 La Menace des Deepfakes
 
 
 Le paysage des cyber-menaces a muté vers l'instantanéité. Nous avons quitté l'ère des deepfakes pré-enregistrés, souvent maladroits, pour entrer dans celle des **Live Deepfakes interactifs**. Propulsés par les Réseaux Antagonistes Génératifs (GAN) et des modèles de diffusion ultra-rapides, ces avatars peuvent désormais soutenir une conversation vidéo en temps réel [@hive_2025_deepfake].
 
-### 5.2.1 L'Arbitrage Advantage et ses conséquences 📉
+### 📉 L'Arbitrage Advantage et ses conséquences
 
 Les acteurs malveillants exploitent aujourd'hui ce que l'on nomme l'**« arbitrage advantage »** : ils tirent un profit maximal du fossé technologique existant entre leurs immenses capacités de génération et l'absence actuelle de solutions de détection viables en temps réel du côté des victimes [@hive_2025_deepfake]. 
 
@@ -12,7 +12,7 @@ Cette asymétrie technologique permet le déploiement de scénarios redoutables 
 * **Swatting par Audio Synthétique :** Mimétisme de voix pour signaler de fausses prises d'otages à la police, saturant et détournant les services d'urgence de leurs véritables missions.
 * **Manipulation des Marchés :** Diffusion de fausses analyses vidéo par des avatars de figures financières connues pour provoquer des krachs boursiers éclair.
 
-### 5.2.2 L'Integrity Clash : Conflit de Provenance (C2PA vs SynthID) ⚔️
+### 💥 L'Integrity Clash
 
 Pour contrer ces attaques et garantir l'authenticité d'un fichier numérique, l'industrie tente d'imposer deux technologies qui finissent parfois par s'affronter :
 1. **C2PA (Coalition for Content Provenance and Authenticity) :** Un standard ouvert fonctionnant comme un "manifeste cryptographique" attaché au fichier. Il trace l'historique complet du fichier (qui l'a créé, avec quel appareil, quelles retouches ont été faites) [@paladinai_2025_c2pa].
@@ -30,7 +30,7 @@ graph TD
     style F fill:#ff4d4d,stroke:#333,stroke-width:2px,color:#fff
 ```
 
-### 5.2.3 Sécurité de l'Entraînement : Poison et Mémorisation 💉
+### 🔐 Sécurité de l'Entraînement
 
 La sécurité ne se limite plus à contrôler ce que le modèle *produit* (inférence), elle s'attaque désormais à ce que le modèle *ingère* (entraînement).
 

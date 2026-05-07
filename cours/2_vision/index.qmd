@@ -1,5 +1,5 @@
 ---
-title: "2. Deep Learning & Vision : Apprendre à voir dans les matrices"
+title: "👁️ Deep Learning & Vision"
 ---
 
 ::: {.info header="🧊 Icebreaker Séance 2 : Le paradoxe du Chihuahua"}
@@ -33,7 +33,7 @@ Pour notre cerveau, distinguer le chien du gâteau prend une fraction de seconde
 
 ---
 
-## 2.7 Conclusion et Transition 🌉
+## 🌉 Conclusion et Transition
 
 C'est d'ailleurs cette architecture Transformer qui a donné naissance à l'IA Générative et aux LLM. Les modèles ne se contentent plus de *classifier* des données, ils sont capables d'en *créer* de nouvelles. 
 

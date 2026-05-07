@@ -1,11 +1,12 @@
 ---
-title: "3. NLP & GenAI : Murmurer à l'oreille des Transformers"
+title: "💬 GenAI & NLP"
 ---
 
-::: {.danger header="🧊 Icebreaker Séance 3 : La machine à probabilités"}
+::: {.info header="🧊 Icebreaker Séance 3 : La chambre chinoise"}
 **Script pour l'enseignant :**
-"Bonjour à tous ! Aujourd'hui, nous entrons dans l'ère du langage. Je vais vous donner une phrase incomplète : *'Le chat a bu tout le bol de...'*. 
-Mentalement, quel est le mot qui vous vient ? 'Lait', probablement. Pourquoi ? Parce que statistiquement, dans votre expérience du monde, c'est le plus probable. L'IA générative moderne ne 'comprend' pas ce qu'est un chat ou du lait. Elle excelle simplement à prédire mathématiquement le mot suivant. Mais avant d'arriver à cette prouesse, il a fallu apprendre à la machine à compter les mots."
+"Bonjour à tous ! Aujourd'hui, on parle à la machine. Mais attention : est-ce que le modèle *comprend* ce qu'il dit ?
+*(Introduire brièvement l'expérience de pensée de la Chambre Chinoise de John Searle)*.
+Si je vous donne un livre de règles qui dit 'si tu vois ce symbole 🍎, réponds 🍏', vous pouvez converser sans comprendre un seul mot. Les LLM sont-ils juste d'immenses dictionnaires de probabilités ou y a-t-il une étincelle de compréhension ? Explorons le mécanisme de l'Attention pour le découvrir."
 :::
 
 {{< include 31_fondations.qmd >}}
@@ -32,10 +33,8 @@ Mentalement, quel est le mot qui vous vient ? 'Lait', probablement. Pourquoi ? P
 
 ---
 
-## 3.7 Conclusion et Transition 🌉
+## 🌉 Conclusion et Transition
 
-Pour résoudre le problème critique des hallucinations tout en maintenant la puissance générative des LLM, l'industrie converge vers une nouvelle architecture : le **RAG (Retrieval-Augmented Generation)**. 
+Le langage est une interface puissante, mais elle reste passive. Pour que l'IA devienne véritablement utile, elle doit pouvoir **agir** : utiliser des outils, naviguer sur le web, et prendre des décisions autonomes.
 
-Au lieu de demander au modèle de répondre de mémoire (où il risque d'halluciner), on le connecte à une source de données externe vérifiée. L'IA ne se contente plus de générer du texte, elle devient capable de piloter des outils et de chercher de l'information. 
-
-Nous explorerons en détail le fonctionnement technique de ce pipeline et des agents autonomes au **[Chapitre 4 : Orchestration & Agents](../4_orchestration/index.qmd)**.
+Nous explorerons en détail le fonctionnement technique de ce pipeline et des agents autonomes au **[Chapitre 4 : Orchestration & Agents](../4_agents/index.qmd)**.

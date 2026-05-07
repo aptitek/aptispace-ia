@@ -1,9 +1,9 @@
-## 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️ 
+## 🚨 Défis Critiques
 
 
 Un CNN moderne possède des millions de paramètres. S'il s'entraîne trop longtemps, il fait du **Surapprentissage (Overfitting)** : il mémorise par cœur le Train set, mais échoue sur le Test set [@greatlearning_2025_overfitting; @nerchuko_2026_bias_variance].
 
-### 2.5.1 Le Dropout (Le Décrochage) 🔌
+### 🔌 Le Dropout (Le Décrochage)
 
 Le Dropout désactive aléatoirement un certain pourcentage de neurones à chaque passage pour forcer le réseau à répartir la connaissance [@wikipedia_2026_cnn].
 
@@ -101,7 +101,7 @@ Plot.plot({
 :::
 
 
-### 2.5.3 L'Augmentation de Données (Data Augmentation) 🖼️
+### 🖼️ L'Augmentation de Données (Data Augmentation)
 
 La meilleure façon de combattre le surapprentissage est d'appliquer des transformations aléatoires à vos images d'entraînement à la volée. Le modèle voit une image légèrement différente à chaque fois [@wikipedia_2026_cnn].
 

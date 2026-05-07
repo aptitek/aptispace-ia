@@ -1,8 +1,8 @@
-## 1.1 Genèse et Écosystème de l'IA : D'Alan Turing aux LLMs 🌍 
+## 📜 Genèse et Écosystème de l'IA
 
 L'Intelligence Artificielle n'est pas née avec l'émergence d'Internet ; elle s'inscrit dans une perspective historique longue, jalonnée de ruptures technologiques et de cycles économiques (les fameux "hivers" et "étés" de l'IA) [@wikipedia_2026_histoire].
 
-### 1.1.1 Une histoire du "Raisonnement" Artificiel : De la logique à la statistique 🕰️
+### 🕰️ Une histoire du "Raisonnement" Artificiel
 
 Pour comprendre où nous en sommes, il faut d'abord visualiser les étapes clés qui nous ont menés des premières machines à calculer aux agents autonomes actuels.
 
@@ -52,7 +52,7 @@ Pour comprendre où nous en sommes, il faut d'abord visualiser les étapes clés
 
 ::::
 
-#### De l'IA Symbolique au Connexionnisme 🧱
+#### 🧱 De l'IA Symbolique au Connexionnisme
 
 Jusqu'aux années 1990, l'industrie a privilégié l'**IA Symbolique** et les **Systèmes Experts**. Ces programmes visaient à reproduire le raisonnement humain par des règles logiques strictes sous la forme "Si [condition] Alors [action]". 
 
@@ -62,7 +62,7 @@ La victoire de **Deep Blue** (IBM) contre Garry Kasparov en 1997 ne relevait pas
 
 Le tournant majeur s'opère par la suite grâce à l'augmentation de la puissance de calcul et l'explosion des données. On passe alors d'une IA "symbolique" (basée sur des règles codées par l'humain) à une IA "connexionniste" (basée sur l'apprentissage statistique) [@syracuse_2025_deepvsml]. C'est la naissance du **Deep Learning** moderne, capable de développer une forme "d'intuition" mathématique plutôt que de simplement suivre des rails scriptés.
 
-### 1.1.2 La Chaîne de Valeur de l'IA Moderne ⛓️
+### ⛓️ La Chaîne de Valeur de l'IA Moderne
 
 Aujourd'hui, l'IA n'est plus un simple exercice de laboratoire expérimental ; c'est une industrie lourde qui repose sur une infrastructure mondiale complexe, divisée en quatre couches interdépendantes [@modernintel_2026_architecture].
 

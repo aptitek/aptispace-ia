@@ -1,9 +1,9 @@
-## 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️ 
+## 🏗️ Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 
 
 
 Pourquoi ne pas simplement utiliser un réseau de neurones classique (MLP - Multi-Layer Perceptron) pour reconnaître des objets ? La réponse tient en un mot : **le fléau de la dimensionnalité** [@pyimagesearch_2021_cnn_layers].
 
-### 2.2.1 L'échec des réseaux classiques (MLP) ❌
+### ❌ L'échec des réseaux classiques (MLP)
 
 Dans un réseau classique, chaque neurone est connecté à tous les pixels. Imaginons une image de 250x250 pixels en couleur (RGB). L'explosion des paramètres rend l'apprentissage instable, lent et gourmand en mémoire vive 
 
@@ -89,7 +89,7 @@ cnn_total_weights = 3 * 3 * 3 * 100;
 :::
 :::
 
-### 2.2.2 Les three piliers stratégiques des CNN 🏛️
+### 🏛️ Les trois piliers stratégiques des CNN
 
 Les CNN exploitent la structure spatiale via three propriétés [@upgrad_2026_cnn_architecture; @wikipedia_2026_cnn] :
 

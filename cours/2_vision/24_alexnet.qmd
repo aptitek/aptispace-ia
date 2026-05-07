@@ -1,4 +1,4 @@
-## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆 
+## Étude de Cas
 
 
 Si l'on devait dater le début de l'ère moderne de l'IA, ce serait 2012 avec le réseau **AlexNet** qui a pulvérisé les modèles traditionnels au concours ImageNet [@wikipedia_2026_alexnet].

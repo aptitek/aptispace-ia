@@ -1,7 +1,7 @@
 cloudflare-project: "aptispace-ia"
 
 project:
-  type: website
+  type: book
   output-dir: _site
   pre-render: bash _extensions/aptitek/download-fonts/download_fonts.sh
   post-render: 
@@ -21,35 +21,45 @@ filters:
   - embed
   - aptitek/zoom
 
-website:
-  title: "ia"
-  # DÉSACTIVER l'indexation (Anti-Google)
+book:
+  title: "Intelligence Artificielle"
+  author: "Aptitek"
   search: false
   site-url: "https://ia.apti.space"
-
+  # number-sections est configuré dans les formats individuels
   
   sidebar:
-    # --- CONFIGURATION BRANDING ---
-    logo: "assets/logo.svg"          # Chemin vers l'image
+    logo: "assets/logo.svg"
     logo-href: "/"
-    logo-alt: "Aptitek"              # Texte alternatif pour l'accessibilité
-    # ------------------------------
+    logo-alt: "Aptitek"
     style: "docked"
     search: false
-    
-    contents: auto
+  
+  chapters:
+    - index.qmd
+    - part: "🔭 Fondations & Vision"
+      chapters:
+        - cours/1_intro/index.qmd
+        - cours/2_vision/index.qmd
+    - part: "🎭 Génération & Orchestration"
+      chapters:
+        - cours/3_genai/index.qmd
+        - cours/4_agents/index.qmd
+    - part: "🔮 Éthique & Futur"
+      chapters:
+        - cours/5_ethique/index.qmd
+    - references.qmd
 
 format:
   html:
     theme:
-      - solar        # On garde la structure de base propre
+      - solar
       - .theme/theme.scss
     mainfont: "Recursive"
     monofont: "Recursive"
-    # Active la coloration syntaxique Solarized native pour le code
     highlight-style: solarized
-    toc: true            # Table des matières automatique
-    code-copy: true      # Bouton "copier" sur les blocs de code
+    toc: true
+    code-copy: true
     code-tools:
       source: true
       toggle: false
@@ -57,17 +67,17 @@ format:
     mermaid:
       theme: neutral
     html-math-method: katex
-    
-    # Injection pour bloquer les robots d'indexation
+    number-sections: true
     header-includes: |
       <meta name="robots" content="noindex, nofollow">
-
     include-after-body: assets/fix_links.html
+    css: .theme/book_custom.css
 
-  typst:
-    toc: true
-    number-sections: true
-    font-paths:
-      - "fonts"
-    mainfont: "Recursive Sans Linear"
-    papersize: a4
+# Le format Typst est temporairement désactivé car non supporté nativement par les projets "book" dans cette version de Quarto
+#  typst:
+#    toc: true
+#    number-sections: true
+#    font-paths:
+#      - "fonts"
+#    mainfont: "Recursive Sans Linear"
+#    papersize: a4

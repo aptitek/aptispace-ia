@@ -1,9 +1,9 @@
-## 3.6 Risques Critiques et Sécurité des Systèmes d'IA 🛡️ 
+## 🛡️ Risques Critiques et Sécurité des Systèmes d'IA 
 
 
 L'intégration industrielle des Modèles de Langage (LLM) ne se limite pas à régler la température ou à trouver le bon prompt. En tant qu'architecte système, vous allez déployer ces modèles dans des environnements de production critiques (banque, santé, service client). Or, ces architectures probabilistes présentent des vulnérabilités inédites en ingénierie logicielle.
 
-### 3.6.1 Hallucinations et Biais : Les défauts inhérents 🍄
+### 😵‍💫 Hallucinations et Biais
 
 Il est crucial de comprendre que l'**hallucination** n'est pas un "bug" du modèle, c'est une propriété émergente de son architecture probabiliste. Le modèle ne cherche pas la *vérité*, il cherche la *suite statistique la plus probable* de votre phrase. S'il ne connaît pas une information, il va mathématiquement générer une réponse fluide et syntaxiquement parfaite, mais factuellement fausse [@sorbon_2024_llm].
 
@@ -12,7 +12,7 @@ Les **biais**, quant à eux, sont le reflet direct du jeu de données d'entraîn
 * **Biais culturels :** Une vision du monde souvent occidentalo-centrée.
 * **Biais de sélection :** Sur-représentation de certains groupes sociaux très actifs en ligne au détriment d'autres [@meaning_2026_architecture].
 
-### 3.6.2 La Sécurité : L'OWASP Top 10 pour LLM 🔒
+### 🔐 La Sécurité
 
 La cybersécurité classique protégeait les bases de données (injections SQL). La cybersécurité de l'IA générative doit protéger le modèle lui-même. Le projet OWASP a identifié les failles critiques des LLM :
 

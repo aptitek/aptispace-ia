@@ -1,27 +1,27 @@
-## 3.5 Pilotage du Modèle : Paramétrage et Prompt Engineering 🎮 
+## 🕹️ Pilotage du Modèle
 
 
 L'inférence (la phase où l'utilisateur pose une question et où le modèle répond) n'est pas une recherche d'information dans une base de données. C'est un **échantillonnage probabiliste** au sein d'une distribution mathématique. Le réseau calcule les probabilités de tous les mots du vocabulaire, puis "tire au sort" le mot suivant.
 
 En modifiant les paramètres de ce tirage au sort, on peut changer radicalement le comportement et la "personnalité" du modèle.
 
-### 3.5.1 La Température (T) et le Softmax 🌡️
+### 🌡️ La Température (T) et le Softmax
 
-La Température est le levier le plus connu. Mathématiquement, elle s'insère directement dans la fonction d'activation Softmax (voir définition au [Chapitre 1](../1_introduction/index.qmd#131-les-classiques-de-la-littérature-neuronale-)) placée sur la toute dernière couche du LLM :
+La Température est le levier le plus connu. Mathématiquement, elle s'insère directement dans la fonction d'activation Softmax (voir définition au [Chapitre 1](../1_intro/index.qmd#131-les-classiques-de-la-littérature-neuronale-)) placée sur la toute dernière couche du LLM :
 $$ p_i = \frac{\exp(L_i / T)}{\sum \exp(L_j / T)} $$
 
 L'impact de la variable $T$ (Température) est fondamental [@iz_2025_temperature] :
 * **$T \to 0$ (Basse) :** La distribution de probabilité se "pince" sur le token le plus probable. Le tirage au sort disparaît presque, le modèle devient **déterministe**. C'est le réglage idéal pour générer du code informatique, analyser des logs ou extraire des faits stricts [@meaning_2026_architecture].
 * **$T > 1$ (Haute) :** La distribution s'aplatit. Les mots qui avaient une faible probabilité d'apparaître voient leur score artificiellement gonflé. Cela augmente la variabilité et donne une illusion de **créativité**, mais multiplie les risques de phrases incohérentes [@sorbon_2024_llm].
 
-### 3.5.2 Les Stratégies Nucleus : Top-K et Top-P 🎯
+### ⚖️ Les Stratégies Nucleus
 
 Même avec une température bien réglée, il reste toujours une "longue traîne" de mots absurdes qui ont une probabilité de 0.0001% d'être tirés. Pour éviter les déraillements catastrophiques, on tronque la distribution avant le tirage au sort :
 
 * **Top-K :** Le modèle ne conserve que les $K$ meilleurs candidats (ex: le top 40 des mots les plus probables) et ramène la probabilité de tous les autres à zéro.
 * **Top-P (Nucleus Sampling) :** Plus dynamique que le Top-K. Le modèle additionne les probabilités des meilleurs tokens en descendant dans la liste. Dès que la somme atteint le seuil $P$ (ex: 0.95, soit 95% de la masse de probabilité), il coupe la liste. Cela permet de garder beaucoup de mots si le contexte est flou, ou très peu de mots si le contexte est évident [@sorbon_2024_llm].
 
-### 3.5.3 Le Prompt Engineering : Cadrer l'espace de probabilité ✍️
+### ✍️ Le Prompt Engineering
 
 Le **Prompt Engineering** n'est pas de la "magie" ou de la simple rédaction. Techniquement, c'est l'art de fournir un contexte initial suffisamment riche pour orienter la distribution de probabilité de l'attention vers le sous-domaine de réponse souhaité [@souchere_2025_prompt].
 

@@ -1,11 +1,12 @@
 ---
-title: "5. Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA"
+title: "⚖️ Éthique & Gouvernance"
 ---
 
-::: {.danger header="🧊 Icebreaker Séance 5 : Allo, c'est le grand patron ?"}
+::: {.info header="🧊 Icebreaker Séance 5 : Le dilemme du Tramway version IA"}
 **Script pour l'enseignant :**
-"Bonjour à tous. Imaginez la scène : vous êtes directeur financier. Vous êtes en visioconférence sur Teams avec votre PDG. Il vous demande de virer d'urgence 5 millions d'euros pour une acquisition secrète. Il a la bonne voix, le bon visage, les bons tics de langage. Vous validez le virement. Le lendemain, vous découvrez que votre vrai PDG dormait dans un avion. Vous venez de parler à un Live Deepfake. 
-L'IA n'est plus seulement une prouesse technique, c'est un enjeu de sécurité nationale et de droit. Aujourd'hui, on arrête de coder, on parle de lois, d'éthique et de gouvernance."
+"Pour cette dernière séance, oublions le code une minute.
+*(Présenter une variante moderne du dilemme du tramway impliquant une voiture autonome et des données de capteurs bruitées)*.
+Si l'IA doit choisir entre deux issues catastrophiques, qui est responsable ? Le développeur ? Le constructeur ? L'utilisateur ? Et si l'IA refuse de choisir ? Bienvenue dans la complexité de la gouvernance algorithmique."
 :::
 
 {{< include 51_reglementation.qmd >}}
@@ -24,8 +25,10 @@ L'IA n'est plus seulement une prouesse technique, c'est un enjeu de sécurité n
 
 ---
 
-## 5.5 Conclusion et Clôture du Cours 🎓
+## 🎓 Conclusion du Module
 
-Ce module nous a permis de traverser l'écosystème de l'IA, de ses fondations mathématiques à ses implications sociétales les plus profondes. En tant qu'architectes et décideurs, vous avez désormais les clés pour non seulement comprendre ces technologies, mais aussi pour les déployer de manière éthique, sécurisée et durable.
+Félicitations ! Vous avez parcouru le chemin qui mène des fondations mathématiques à la création d'agents autonomes, tout en gardant un œil critique sur les enjeux de société. 
 
-L'IA n'est plus une fin en soi, mais un outil puissant pour augmenter les capacités humaines. À vous de l'utiliser avec discernement et responsabilité.
+Vous êtes maintenant armés pour devenir des **Architectes de l'IA**, capables de concevoir des systèmes robustes, éthiques et performants.
+
+Pour aller plus loin, n'oubliez pas de consulter le [**Glossaire**](../../glossaire.qmd) et l'[**Aide-Mémoire**](../../aide-memoire.qmd).

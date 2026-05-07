@@ -1,9 +1,9 @@
-## 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬 
+## 🔍 Anatomie Technique d'un CNN
 
 
 Un CNN transforme des pixels bruts en prédictions sémantiques.
 
-### 2.3.1 & 2.3.3 Convolution et Pooling : Démystification Visuelle 🌀🎱
+### 🌀 Convolution et Pooling
 
 La **Couche de Convolution** réalise un produit de Frobenius entre un noyau glissant et l'entrée pour extraire des traits. La **Couche de Pooling** (ex: Max Pooling) réduit la résolution spatiale pour contrôler le surapprentissage tout en conservant le signal le plus fort.
 
@@ -101,7 +101,7 @@ Le plus grand est **${maxVal}**, c'est lui qui survit au Pooling !
 :::
 
 
-### 2.3.5 Configuration Spatiale : Les Hyperparamètres 📏
+### 📐 Configuration Spatiale
 
 Le dimensionnement d'un CNN repose sur une configuration géométrique stricte.
 

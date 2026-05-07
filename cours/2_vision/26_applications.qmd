@@ -1,7 +1,7 @@
-## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭 
+## Horizon Actuel
 
 
-### 2.6.2 Le Nouveau Challenger : Les Vision Transformers (ViT) 🤖
+### Le Nouveau Challenger
 
 Contrairement aux CNN qui regardent l'image petit bout par petit bout, les **Vision Transformers (ViT)** découpent l'image en "patchs" et utilisent un mécanisme d'**attention globale**. Ils comparent chaque patch avec tous les autres simultanément [@networkoptix_2024_computervision].
 

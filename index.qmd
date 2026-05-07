@@ -1,6 +1,8 @@
 ---
-title: "Intelligence Artificielle : De la Théorie à l'Ingénierie Agentique"
+number-sections: false
 ---
+
+# 🧠 Intelligence Artificielle {.unnumbered}
 
 Bienvenue dans le module d'**Intelligence Artificielle**. Ce cours intensif a pour objectif de vous faire passer du stade de "consommateur" d'IA à celui d'**architecte système**. Nous allons déconstruire les boîtes noires, comprendre la mathématique sous-jacente, et construire des agents autonomes capables d'interagir avec le monde réel.
 
@@ -24,27 +26,27 @@ Bienvenue dans le module d'**Intelligence Artificielle**. Ce cours intensif a po
 
 ## 🗺️ Navigation dans le Module
 
-Ce module est structuré en 5 parties progressives, complétées par un [**Glossaire Global**](glossaire.qmd) 📖 et un [**Aide-Mémoire**](aide-memoire.qmd) 🧠 :
+Ce module est structuré en 5 parties progressives, complétées par un [📖 **Glossaire Global**](glossaire.qmd) et un [🧠 **Aide-Mémoire**](aide-memoire.qmd) :
 
-### 1. [Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV](cours/1_introduction/index.qmd) 🧹
+### [🧹 Fondations de l'IA & Data](cours/1_intro/index.qmd)
 * **Théorie :** Histoire de l'IA, anatomie des réseaux, fonctions d'activation, descente de gradient, et pipeline de nettoyage des données.
 * **Pratique :** Rappels Python, manipulation des tenseurs, génération de données avec NumPy, entraînement d'une régression linéaire.
 * **Évaluation :** Quizz "Cluedo en groupe".
 
-### 2. [Deep Learning & Vision : Apprendre à voir dans les matrices](cours/2_reseaux_de_neurones/index.qmd) 👁️
+### [👁️ Deep Learning & Vision](cours/2_vision/index.qmd)
 * **Théorie :** Architecture des CNN, révolution AlexNet, Transfer Learning, et lutte contre l'Overfitting.
 * **Pratique :** Initiation à TensorFlow/Keras, réglage des hyperparamètres, gestion des fonctions de perte et métriques.
 * **Évaluation :** Quizz "Mot de passe" et Projet d'étude de cas (Kaggle).
 
-### 3. [NLP & GenAI : Murmurer à l'oreille des Transformers](cours/3_genai/index.qmd) 💬
+### [💬 NLP & GenAI](cours/3_genai/index.qmd)
 * **Théorie :** Du Bag of Words aux Transformers, mécanisme de Self-Attention, tokenisation, prompt engineering, failles de sécurité.
 * **Pratique :** Compétition de "Prompt Battle" et exploration avancée de l'espace latent.
 
-### 4. [Orchestration & Agents : Quand le code prend le contrôle](cours/4_orchestration/index.qmd) 🤖
+### [🤖 Orchestration & Agents](cours/4_agents/index.qmd)
 * **Théorie :** Framework LangChain, architecture RAG, bases vectorielles, recherche hybride, framework ReAct, et protocole MCP.
 * **Pratique :** Création d'agents autonomes, manipulation de contexte, intégration d'outils et de MCP.
 * **Évaluation :** Quizz "Complétez la chaîne" et Projet "Agent anti-arnaqueurs".
 
-### 5. [Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA](cours/5_ethique/index.qmd) ⚖️
+### [⚖️ Éthique & Gouvernance](cours/5_ethique/index.qmd)
 * **Théorie :** EU AI Act, menace des Live Deepfakes, équité algorithmique, alignement (RLHF/DPO), durabilité et Paradoxe de Jevons.
 * **Évaluation :** Débat "Quelle sera l'IA parfaite ?" et Quizz "Jeopardy".

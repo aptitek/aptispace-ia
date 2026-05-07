@@ -1,16 +1,16 @@
-## 4.4 Sécurité, Gouvernance et Futur de l'Ingénierie Agentique 🛡️ 
+## 🛡️ Sécurité, Gouvernance et Futur de l'Ingénierie Agentique 
 
 
 L'autonomie des agents introduit un nouveau paradigme de risque. Contrairement à un simple script déterministe qui plantera s'il rencontre une erreur, un agent IA tentera de contourner le problème, parfois en prenant des initiatives inattendues. Une gouvernance stricte est donc impérative.
 
-### 4.4.1 L'Observabilité et la Mémoire (LangSmith & LangMem) 👁️
+### 👁️ L'Observabilité et la Mémoire (LangSmith & LangMem)
 
 La règle d'or de l'ingénierie agentique est l'**observabilité**. Vous ne pouvez pas déployer un agent autonome en production sans avoir la capacité de tracer chaque décision qu'il prend [@kumar_2026_agentic].
 
 * **LangSmith (Traçage) :** Cet outil agit comme la "boîte noire" d'un avion. Il enregistre chaque appel au modèle, chaque outil utilisé, la latence, le coût en tokens et la "pensée" de l'agent. C'est indispensable pour le débogage et l'auditabilité.
 * **LangMem (État à long terme) :** Permet à l'agent d'avoir une mémoire persistante entre différentes sessions. L'agent peut ainsi apprendre de ses erreurs passées et personnaliser ses interactions futures sans saturer sa fenêtre de contexte immédiate.
 
-### 4.4.2 Principes de Sécurité et d'Isolation 🔒
+### 🔒 Principes de Sécurité et d'Isolation
 
 Pour éviter les catastrophes (comme un agent qui déciderait de supprimer une base de données de production pour "faire de la place"), l'architecture doit intégrer des garde-fous [@mcp_2025_spec] :
 
@@ -19,7 +19,7 @@ Pour éviter les catastrophes (comme un agent qui déciderait de supprimer une b
 
 
 
-### 4.4.3 Perspectives : L'ère des collaborateurs numériques 🚀
+### Perspectives
 
 Les premiers retours de l'industrie sur l'intégration de ces systèmes orchestrés sont spectaculaires. On observe notamment une réduction de 93 % du temps de diagnostic (*Time-to-root-cause*) sur des incidents logiciels complexes et un gain allant jusqu'à 200 heures d'ingénierie par mois grâce aux essaims d'agents [@kumar_2026_agentic].
 

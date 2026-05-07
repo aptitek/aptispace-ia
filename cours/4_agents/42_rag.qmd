@@ -1,9 +1,9 @@
-## 4.2 Mécanique du RAG : De l'Ingestion à la Recherche Hybride 🏗️ 
+## 📚 Mécanique du RAG
 
 
 Le **RAG (Retrieval-Augmented Generation)** est la réponse structurelle aux hallucinations des modèles. Au lieu de compter sur la mémoire statistique du LLM, on transforme celui-ci en un lecteur capable de consulter une bibliothèque privée avant de répondre [@ibm_2026_rag]. 
 
-### 4.2.1 Le Pipeline d'Ingestion : Préparer la matière brute 📥
+### 🏭 Le Pipeline d'Ingestion
 
 Avant de pouvoir poser une question, il faut transformer vos documents (PDF, Word, sites web) dans un format compréhensible par l'IA. C'est l'étape d'ingestion [@state_2026_agenticreport] :
 
@@ -12,7 +12,7 @@ Avant de pouvoir poser une question, il faut transformer vos documents (PDF, Wor
     * *Overlap (Chevauchement) :* On garde un petit bout de la fin du chunk A au début du chunk B pour ne pas perdre le contexte aux frontières.
 * **L'Embedding (Vectorisation) :** Chaque morceau de texte est passé dans un modèle spécialisé qui le transforme en une suite de chiffres (un vecteur). Ce vecteur représente le "sens" mathématique du texte [@state_2026_agenticreport].
 
-### 4.2.2 Le Stockage : Les Bases de Données Vectorielles 🗄️
+### 📦 Le Stockage
 
 Les vecteurs sont stockés dans des bases de données spécifiques (Pinecone, Milvus, ChromaDB). Le choix de l'indexation est un arbitrage crucial entre vitesse et coût [@state_2026_agenticreport] :
 
@@ -23,7 +23,7 @@ Les vecteurs sont stockés dans des bases de données spécifiques (Pinecone, Mi
 
 
 
-### 4.2.3 La Recherche Hybride : Le meilleur des deux mondes 🔍
+### 🔍 La Recherche Hybride
 
 Lorsqu'un utilisateur pose une question, le système ne se contente plus d'une simple recherche par mots-clés. Il effectue une **Recherche Hybride** [@state_2026_agenticreport] :
 

@@ -1,9 +1,9 @@
-## 3.2 Les Espaces Latents et la Compression : Autoencodeurs (AE) et VAE 🗜️ 
+## 🌪️ Les Espaces Latents et la Compression
 
 
 Pour dépasser les limites du TF-IDF et du Bag of Words, les chercheurs ont cherché à créer des représentations **denses**. L'idée est de projeter des milliers de mots dans un espace mathématique de dimension inférieure (quelques centaines de dimensions seulement) où la proximité entre deux points reflète une proximité de sens. C'est ce qu'on appelle l'**Espace Latent** [@geeksforgeeks_2026_latent].
 
-### 3.2.1 L'Autoencodeur (AE) : Le Goulot d'Étranglement ⌛
+### 🥪 L'Autoencodeur (AE)
 
 Un autoencodeur est un réseau de neurones conçu pour une tâche particulière : essayer de sortir exactement ce qu'on lui donne en entrée. Quel intérêt ? Le secret réside dans son architecture en "sablier".
 
@@ -15,7 +15,7 @@ Un autoencodeur est un réseau de neurones conçu pour une tâche particulière 
 Les autoencodeurs classiques sont "déterministes". Ils créent des points isolés dans l'espace latent. Si vous essayez de générer une donnée à partir d'un point situé entre deux exemples connus, le décodeur produira souvent du bruit sans aucun sens [@bandaru_2025_vae].
 :::
 
-### 3.2.2 Les Autoencodeurs Variationnels (VAE) : L'IA Probabiliste 🎲
+### 🎲 Les Autoencodeurs Variationnels (VAE)
 
 Pour rendre l'espace latent "génératif", on utilise les **VAE**. Au lieu de prédire un point fixe dans l'espace, l'encodeur prédit deux paramètres : une **moyenne ($\mu$)** et une **variance ($\sigma^2$)** [@codecademy_2026_vae].
 
@@ -26,7 +26,7 @@ Pour rendre l'espace latent "génératif", on utilise les **VAE**. Au lieu de pr
 Grâce aux VAE, l'espace latent devient continu. Si vous avez un point "Chat" et un point "Chien", vous pouvez naviguer entre les deux et le décodeur pourrait théoriquement générer une créature hybride cohérente. C'est le premier pas vers la création de contenu par l'IA.
 :::
 
-### 3.2.3 Vers le Discret : VQ-VAE et dVAE 🧩
+### 💎 Vers le Discret
 
 Dans les systèmes modernes (comme DALL-E ou certains modèles de compression audio), on utilise des versions "quantifiées" (**VQ-VAE**). Au lieu d'avoir un espace continu infini, on utilise un **Codebook** (un dictionnaire de vecteurs types). L'IA choisit le vecteur le plus proche dans son dictionnaire pour représenter une information, ce qui rend les modèles plus stables et plus performants pour la génération de haute qualité [@bandaru_2025_vae].
 

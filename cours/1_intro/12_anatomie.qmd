@@ -1,8 +1,8 @@
-## 1.2 Anatomie Fonctionnelle des Réseaux de Neurones 🧠 
+## 🧠 Anatomie Fonctionnelle des Réseaux de Neurones 
 
 Pour l'architecte système, un réseau de neurones n'est pas une "boîte noire" magique, mais une superposition de couches mathématiques organisées de manière hiérarchique pour extraire du sens à partir de données brutes [@modernintel_2026_architecture]. 
 
-### 1.2.1 La Structure en Couches (Layers) 🧅
+### 🧅 La Structure en Couches (Layers)
 
 Cette architecture mime grossièrement le fonctionnement des neurones biologiques et permet de hiérarchiser l'information : plus on descend profondément dans les couches du réseau, plus la représentation de la donnée devient abstraite.
 
@@ -12,7 +12,7 @@ Cette architecture mime grossièrement le fonctionnement des neurones biologique
 
 [Réseau de Neurones](https://view.genially.com/69144ab3e5ccc00eb91c4628){.embed}
 
-### 1.2.2 La Danse du Signal (Le Cycle d'Apprentissage) 🔄
+### 🔄 La Danse du Signal (Le Cycle d'Apprentissage)
 
 Le signal informatique ne se contente pas de traverser les couches à sens unique. Pour qu'il y ait apprentissage, il effectue un cycle en deux temps [@ibm_2026_gradient] :
 

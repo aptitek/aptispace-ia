@@ -1,5 +1,5 @@
 ---
-title: "1. Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV"
+title: "🧹 Fondations de l'IA & Data"
 ---
 
 ::: {.info header="🧊 Icebreaker Séance 1 : Le Test de Turing inversé"}
@@ -29,8 +29,8 @@ title: "1. Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV"
 
 ---
 
-## 1.6 Conclusion et Transition 🌉
+## 🌉 Conclusion et Transition
 
 Maintenant que nous avons posé les fondations mathématiques de l'apprentissage et que nous savons préparer nos données brutes, nous sommes prêts à attaquer notre premier cas d'usage concret : apprendre à un modèle à "voir" et comprendre des images. 
 
-Ce sera l'objet du **[Chapitre 2 : Deep Learning & Vision](../2_reseaux_de_neurones/index.qmd)**.
+Ce sera l'objet du **[Chapitre 2 : Deep Learning & Vision](../2_vision/index.qmd)**.

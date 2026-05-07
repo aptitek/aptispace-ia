@@ -1,10 +1,10 @@
-## 1.5 L’Infrastructure de la Donnée : Nettoyage et Manipulation 🧹 
+## 🧹 L’Infrastructure de la Donnée
 
 [C'est quoi la Data science ? (K-Means)](https://view.genially.com/692c310a95ba19c812c12b8b){.embed}
 
 La qualité des données dicte la limite de performance théorique de tout modèle de Machine Learning. Un pipeline rigoureux s'articule autour de plusieurs opérations statistiques critiques [@grignola_2026_cleaning]. 
 
-### 1.5.1 Le Pipeline de Nettoyage Standard 🧼
+### 🧼 Le Pipeline de Nettoyage Standard
 
 Avant même de penser à l'intelligence artificielle, il faut s'assurer que les données qu'on lui fournit sont propres. Un modèle nourri avec des données erronées donnera des prédictions absurdes (le fameux principe du *Garbage In, Garbage Out*).
 
@@ -188,7 +188,7 @@ Bien que ces deux méthodes cherchent des anomalies, elles n'utilisent pas la m�
 **En résumé :** Utilisez le **Z-Score** pour des données "propres" qui suivent une courbe en cloche (Gaussienne), et l'**IQR** quand vos données sont très "sales" ou asymétriques.
 :::
 
-### 1.5.2 L'Arsenal Python : Pandas et NumPy 🐍
+### 🐍 L'Arsenal Python
 
 Pour traiter des millions de lignes sans lenteur, on utilise la **vectorisation** [@leow_2018_numpy]. NumPy exécute ses calculs en langage C de bas niveau, évitant les boucles Python natives lentes.
 

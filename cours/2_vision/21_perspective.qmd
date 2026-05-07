@@ -1,4 +1,4 @@
-## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️ 
+## Perspective Historique
 
 
 La vision par ordinateur s'est imposée comme le pont technologique entre la perception biologique et l'intelligence artificielle. En tant qu'architecte système, il ne faut pas voir cette discipline comme un simple algorithme de tri, mais comme une tentative complexe d'extraction automatisée et de compréhension sémantique à partir de flux visuels purs [@networkoptix_2024_computervision].
@@ -25,7 +25,7 @@ La vision par ordinateur s'est imposée comme le pont technologique entre la per
 
 ::::
 
-### 2.1.2 La Rupture Stratégique : Des filtres manuels aux filtres appris ⚡
+### La Rupture Stratégique
 
 Avant le Deep Learning, les ingénieurs devaient créer mathématiquement leurs propres filtres (ex: filtre de Sobel pour les bords verticaux). Cette approche, le *Feature Engineering* manuel, était extrêmement limitée par l'intuition humaine.
 

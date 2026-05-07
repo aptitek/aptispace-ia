@@ -1,16 +1,16 @@
-## 3.4 Mécanique Interne des LLM : Tokenisation, Embeddings et Contexte ⚙️ 
+## ⚙️ Mécanique Interne des LLM
 
 
 La transformation d'une phrase tapée par un utilisateur en une prédiction mathématique repose sur une ingénierie rigoureuse. Avant même de passer dans les couches d'attention du Transformer, le texte subit des transformations cruciales.
 
-### 3.4.1 Tokenisation et Embeddings 🎟️
+### 🎟️ Tokenisation et Embeddings
 
 Le texte brut n'est jamais injecté tel quel. Il est d'abord découpé en unités appelées **tokens**. 
 L'industrie utilise massivement le **Byte-Pair Encoding (BPE)**. Au lieu d'avoir un token par mot (ce qui nécessiterait un dictionnaire infini), le BPE décompose les mots rares en sous-unités fréquentes (préfixes, racines, suffixes). Par exemple, le mot "anticonstitutionnellement" pourrait être découpé en 4 ou 5 tokens distincts [@meaning_2026_architecture].
 
 Ces tokens sont ensuite projetés dans un espace vectoriel de haute dimension (les **Embeddings**). Dans cet espace, la distance cosinus entre deux vecteurs reflète leur proximité sémantique. Les concepts similaires sont physiquement proches dans cet espace mathématique [@sorbon_2024_llm].
 
-### 3.4.2 Encodage Positionnel : La Maîtrise de l'Ordre 📍
+### 📍 Encodage Positionnel
 
 Le mécanisme d'attention du Transformer est une force brute parallèle : il regarde tous les mots en même temps. Sans mécanisme externe, il est aveugle à l'ordre des mots. Pour lui, "Le chat mange la souris" et "La souris mange le chat" seraient traités de la même manière. Il faut donc **injecter l'information de position** dans les vecteurs avant le traitement.
 
@@ -21,7 +21,7 @@ Plusieurs stratégies s'affrontent dans la littérature :
 * **RoPE (Rotary Positional Embeddings) :** C'est le standard actuel (utilisé par LLaMA, Mistral). L'algorithme fait pivoter les vecteurs $Q$ et $K$ d'un angle proportionnel à leur position. Imaginez les aiguilles d'une montre : l'angle relatif entre l'aiguille des heures et celle des minutes encode naturellement la distance entre deux mots. Cela permet une excellente extrapolation [@articsledge_2026_positional].
 * **ALiBi :** Une alternative qui ne modifie pas les vecteurs, mais applique une pénalité linéaire directement sur les scores d'attention en fonction de la distance, favorisant naturellement le contexte récent [@fagundes_2025_positional].
 
-### 3.4.3 La Fenêtre de Contexte (Context Window) : Le Goulot d'Étranglement 🪟
+### 🪟 La Fenêtre de Contexte (Context Window)
 
 Le nombre maximum de tokens qu'un LLM peut ingérer et mémoriser en une seule fois s'appelle la **Context Window**.
 

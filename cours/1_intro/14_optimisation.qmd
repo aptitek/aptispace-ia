@@ -1,8 +1,8 @@
-## 1.4 Optimisation et Apprentissage : La Descente de Gradient 🏔️ 
+## 🎢 Optimisation et Apprentissage
 
 L'apprentissage d'un réseau de neurones est un problème d'optimisation. Mathématiquement, l'erreur globale du modèle est quantifiée par une **Loss Function**, notée $J(\theta)$, où $\theta$ représente les poids et biais. L'objectif est de trouver le paramètre optimal qui minimise cette erreur [@daniella_2024_gradient].
 
-### 1.4.1 La règle de mise à jour 🧗
+### 🧗 La règle de mise à jour
 
 Pour minimiser $J(\theta)$, on calcule son gradient $\nabla J(\theta)$, qui indique la direction de la plus forte pente montante. On met à jour les poids en se déplaçant dans la direction opposée :
 $$ \theta_{t+1} = \theta_t - \eta \nabla J(\theta_t) $$
@@ -13,7 +13,7 @@ Ce paysage multidimensionnel est cependant complexe [@ruder_2016_gradient] :
 *   **Plateaux :** Des régions plates où la dérivée est proche de 0, ralentissant l'apprentissage.
 *   **Points de selle :** Des points agissant comme un minimum dans une dimension et un maximum dans une autre. Ils sont très fréquents dans les espaces en haute dimension.
 
-### 1.4.2 Les Stratégies d'Échantillonnage 🏃
+### 🏃 Les Stratégies d'Échantillonnage
 
 Calculer le gradient sur l'ensemble du dataset est irréalisable. On divise donc le processus :
 
@@ -21,7 +21,7 @@ Calculer le gradient sur l'ensemble du dataset est irréalisable. On divise donc
 2.  **Stochastic GD (SGD) :** Calcul sur une seule donnée. Le "bruit" généré aide à s'échapper des minima locaux mais empêche une convergence stable.
 3.  **Mini-batch GD :** Calcul sur un petit groupe (ex: 64 données). C'est le **standard industriel** qui permet d'utiliser la puissance des GPU (Tensor Cores) [@ibm_2026_gradient].
 
-### 1.4.3 Simulation de Descente avec Inertie ⚡
+### ⚡ Simulation de Descente avec Inertie
 
 ::: {.graph header="Paramètres du Gradient"}
 
