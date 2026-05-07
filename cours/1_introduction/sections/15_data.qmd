@@ -1,17 +1,18 @@
 ## 1.5 L’Infrastructure de la Donnée : Nettoyage et Manipulation 🧹 
 
-[](zoom/15_data.qmd){.zoom}
+[C'est quoi la Data science ? (K-Means)](https://view.genially.com/692c310a95ba19c812c12b8b){.embed}
 
+La qualité des données dicte la limite de performance théorique de tout modèle de Machine Learning. Un pipeline rigoureux s'articule autour de plusieurs opérations statistiques critiques [@grignola_2026_cleaning]. 
+
+### 1.5.1 Le Pipeline de Nettoyage Standard 🧼
 
 Avant même de penser à l'intelligence artificielle, il faut s'assurer que les données qu'on lui fournit sont propres. Un modèle nourri avec des données erronées donnera des prédictions absurdes (le fameux principe du *Garbage In, Garbage Out*).
 
-### 1.5.1 Le Pipeline de Nettoyage Standard
-
 Voici les 3 étapes incontournables pour purifier vos données brutes :
 
-1.  **Boucher les trous (Valeurs manquantes) :** On remplace les cases vides par la moyenne ou on supprime les lignes trop corrompues.
-2.  **Chasser les intrus (Valeurs aberrantes) :** On filtre les erreurs de saisie ou les exceptions extrêmes (ex: un loyer saisi à 1 000 000 € au lieu de 1 000 €).
-3.  **Mettre à la même échelle (Normalisation) :** Sans ça, une variable mesurée en millions d'euros écraserait complètement l'importance d'une variable mesurée en pourcentages. 
+1.  **Traitement des valeurs manquantes :** On remplace les cases vides par l'imputation statistique (Moyenne $\mu$ ou Médiane selon la distribution).
+2.  **Détection des valeurs aberrantes (Outliers) :** On filtre les erreurs de saisie ou les exceptions extrêmes.
+3.  **Standardisation et Normalisation :** On met les données à la même échelle pour empêcher les variables à forte amplitude de dominer l'apprentissage [@codesignal_2025_normalization].
 
 *Comment décider à partir de quand un point devient une "anomalie" ? Utilisez le simulateur ci-dessous qui génère un jeu de données "sale".*
 
@@ -181,39 +182,36 @@ ui.card(md`| Statut | Quantité |
 ::: {.warning header="Z-Score vs IQR : Quelle différence sur le terrain ?"} 
 Bien que ces deux méthodes cherchent des anomalies, elles n'utilisent pas la même "boussole" mathématique :
 
-- **Z-Score (Le Centre Statistique) :** Il s'appuie sur la **Moyenne (μ)**, représentée par la croix verte sur le graphique. Il calcule la distance de chaque point par rapport à ce centre. **Attention :** Si une erreur est vraiment gigantesque, elle va "tirer" la moyenne vers elle, déformant ainsi toute la zone de sécurité.
-- **IQR (Le Cœur des Données) :** Il s'appuie sur la **Boîte Interquartile**, le rectangle vert qui contient les 50 % des données les plus centrales. Contrairement au Z-Score, l'IQR est **robuste** : même si un point est à des milliards de kilomètres, la boîte verte ne bougera pas d'un millimètre.
+- **Z-Score (Le Centre Statistique) :** Il s'appuie sur la **Moyenne (μ)**, représentée par la croix verte sur le graphique. Il calcule la distance de chaque point par rapport à ce centre. **Attention :** Si une erreur est vraiment gigantesque, elle va "tirer" la moyenne vers elle, déformant ainsi toute la zone de sécurité. Formule : $Z = \frac{x - \mu}{\sigma}$.
+- **IQR (Le Cœur des Données) :** Il s'appuie sur la **Boîte Interquartile**, le rectangle vert qui contient les 50 % des données les plus centrales ($Q3 - Q1$). Contrairement au Z-Score, l'IQR est **robuste** : même si un point est à des milliards de kilomètres, la boîte verte ne bougera pas d'un millimètre.
 
 **En résumé :** Utilisez le **Z-Score** pour des données "propres" qui suivent une courbe en cloche (Gaussienne), et l'**IQR** quand vos données sont très "sales" ou asymétriques.
 :::
 
-::: {.info header="Note"} 
-Dans la pratique, utiliser un Z-Score de 3 signifie que l'on garde environ 99,7 % des données "normales". Baisser ce chiffre rendra votre filtre beaucoup plus sévère !
-:::
-
-
-
 ### 1.5.2 L'Arsenal Python : Pandas et NumPy 🐍
-Pour manipuler des millions de lignes de données sans faire planter votre ordinateur, on utilise deux outils en Python :
 
-*   **NumPy :** La calculatrice ultra-rapide. Il fait les mathématiques complexes en un éclair.
-*   **Pandas :** Le gestionnaire de tableaux. C'est un peu comme un "Excel sous stéroïdes" (via ce qu'on appelle des `DataFrames`).
+Pour traiter des millions de lignes sans lenteur, on utilise la **vectorisation** [@leow_2018_numpy]. NumPy exécute ses calculs en langage C de bas niveau, évitant les boucles Python natives lentes.
 
-::: {.success header="💻 À vous de jouer ! (Exercice)"}
-Complétez les "___" dans ce script classique de nettoyage :
+*   **NumPy :** La calculatrice ultra-rapide. Il applique des opérations mathématiques simultanément sur toute la mémoire.
+*   **Pandas :** Le gestionnaire de tableaux ("Excel sous stéroïdes"). Construit sur NumPy, il permet de manipuler des `DataFrames` avec une API de haut niveau.
+
+::: {.success header="💻 Implémentation du Nettoyage par Z-Score"}
 ```python
 import pandas as pd
 import numpy as np
 
-# TODO : Chargez le dataset des loyers "dirty_rentals.csv"
-df = pd.read_csv("___")
+# Importation vectorisée du dataset
+df = pd.read_csv("dirty_rentals.csv")
 
-# TODO : Remplacez les valeurs manquantes de la colonne 'surface' par la médiane
-mediane_surface = df['surface'].___()
-df['surface'].fillna(___, inplace=True)
+# Imputation par la médiane (robuste aux asymétries)
+mediane_surface = df['surface'].median()
+df['surface'].fillna(mediane_surface, inplace=True)
 
-# Démonstration : Filtrage des valeurs aberrantes par Z-Score avec NumPy
+# Détection vectorisée des outliers via NumPy
+# On calcule l'écart-type et la moyenne sur l'axe entier en temps constant
 df['z_score_prix'] = np.abs((df['prix'] - df['prix'].mean()) / df['prix'].std())
+
+# Filtrage par masque booléen (garde les éléments sous le seuil critique de 3)
 df_clean = df[df['z_score_prix'] < 3]
 ```
 :::

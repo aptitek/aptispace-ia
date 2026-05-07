@@ -1,18 +1,17 @@
 ## 1.3 Les Fonctions d'Activation : Le Moteur de la Non-Linéarité ⚡ 
 
-[](zoom/13_activation.qmd){.zoom}
+Imaginons un réseau de neurones avec des centaines de couches, mais sans fonction d'activation. Mathématiquement, la multiplication de matrices successives resterait une opération linéaire. Sans cette "porte" spéciale, notre réseau profond gigantesque ne serait rien de plus qu'un modèle de régression linéaire de base, incapable de comprendre la complexité du monde réel. 
 
-Sans fonction d'activation, même un réseau de neurones gigantesque ne serait qu'une simple régression linéaire. Ces fonctions agissent comme des portes et introduisent la **non-linéarité**, ce qui permet au modèle d'apprendre des choses complexes (comme les courbes d'un visage).
+Les fonctions d'activation introduisent la **non-linéarité** indispensable à l'apprentissage profond [@daniella_2024_activation]. Le choix de la fonction dicte la vitesse de convergence et la stabilité du modèle pendant la descente de gradient.
 
-### 1.3.1 Les 4 "Classiques" en bref :
+### 1.3.1 Les Classiques de la Littérature Neuronale 📚
 
-*   **Sigmoïde :** Ramène les valeurs entre 0 et 1. Idéale pour prédire une probabilité binaire (Oui/Non).
-*   **Tanh :** Ramène les valeurs entre -1 et 1. Souvent plus rapide que la sigmoïde.
-*   **ReLU :** La plus populaire. Elle agit comme un filtre : elle bloque les valeurs négatives (donne 0) et laisse passer les valeurs positives. 
-*   **Softmax :** Utilisée à la fin du réseau pour transformer les résultats en un pourcentage de probabilités (total = 100%).
+::: {.graph header="Visualisation des Activations Classiques"}
 
-
-::: {.graph header="Fonctions d'Activations Classiques"}
+*   **Sigmoïde :** $f(x) = \frac{1}{1 + e^{-x}}$. Écrase l'entrée entre 0 et 1 (idéal pour les probabilités).
+*   **Tanh :** $f(x) = \text{tanh}(x)$. Centrée sur zéro, entre -1 et 1.
+*   **ReLU :** $f(x) = \max(0, x)$. La norme standard pour sa simplicité et sa rapidité.
+*   **Softmax :** Utilisée en sortie pour transformer des scores en distribution de probabilités (somme = 1).
 
 ::: {.controls}
 ```{ojs}
@@ -78,13 +77,17 @@ ui.card(md`| Sigmoïde(x) | Tanh(x) | ReLU(x) | Softmax(x) |
 :::
 :::
 
+::: {.warning header="Alerte Clinique : Le syndrome du Dying ReLU"}
+Le grand point faible de ReLU est sa stricte nullité pour $x \le 0$. Si une entrée est négative, le gradient devient $0$. Pendant la rétropropagation, ce neurone ne mettra plus jamais ses poids à jour : il est "mort". Des variantes comme **Leaky ReLU** ajoutent une micro-pente négative pour maintenir un flux de gradient.
+:::
 
 ### 1.3.2 L'Ère Moderne (Spécial IA Générative) ✨
-Aujourd'hui, les modèles avancés (comme ChatGPT ou BERT) utilisent des fonctions plus complexes et lissées pour de meilleures performances :
 
-*   **GELU :** La norme pour les *Transformers*.
-*   **SELU :** S'auto-normalise pour les réseaux très profonds.
-*   **Swish :** Développée par Google, idéale pour les très gros réseaux.
+Avec l'avènement des architectures complexes (Transformers, LLM), les chercheurs ont optimisé les fonctions pour éviter les cassures de gradient et améliorer la stabilité [@baheti_2021_activation] :
+
+*   **GELU (Gaussian Error Linear Unit) :** La norme pour les *Transformers*. Elle pondère l'entrée par sa probabilité de survie selon une distribution gaussienne, évitant les coupures brutales.
+*   **SELU (Scaled Exponential Linear Unit) :** S'auto-normalise pour garantir que la variance des activations reste stable à travers des réseaux très profonds.
+*   **Swish :** Développée par Google, idéale pour les très gros réseaux grâce à sa courbure non-monotone.
 
 ::: {.graph header="Fonctions d'Activations Modernes"}
 

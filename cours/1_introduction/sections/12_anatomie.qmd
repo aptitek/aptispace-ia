@@ -1,16 +1,37 @@
 ## 1.2 Anatomie Fonctionnelle des Réseaux de Neurones 🧠 
 
-[](zoom/12_anatomie.qmd){.zoom}
+Pour l'architecte système, un réseau de neurones n'est pas une "boîte noire" magique, mais une superposition de couches mathématiques organisées de manière hiérarchique pour extraire du sens à partir de données brutes [@modernintel_2026_architecture]. 
 
-### 1.2.1 L'Architecture en 3 Couches (Layers) 🧅
+### 1.2.1 La Structure en Couches (Layers) 🧅
 
-*   📥 **Input Layer (Entrée) :** Réception. Capte les données brutes (pixels, texte, valeurs). Aucun calcul.
-*   🧠 **Hidden Layers (Cachées) :** Abstraction. Cœur de l'intelligence. Calculs matriciels pour extraire des motifs de plus en plus complexes (bords $\rightarrow$ formes $\rightarrow$ visage).
-*   📤 **Output Layer (Sortie) :** Verdict. Délivre la décision finale (probabilité, classification, valeur numérique).
+Cette architecture mime grossièrement le fonctionnement des neurones biologiques et permet de hiérarchiser l'information : plus on descend profondément dans les couches du réseau, plus la représentation de la donnée devient abstraite.
+
+*   📥 **Input Layer (Entrée) :** Point de contact avec le monde extérieur. Elle reçoit les données brutes (*features* comme des pixels ou du texte) et n'effectue aucun calcul complexe. Son rôle unique est de formater et de transmettre le signal.
+*   🧠 **Hidden Layers (Cachées) :** Cœur de l'intelligence. Ces couches effectuent des calculs matriciels en cascade pour identifier des motifs de plus en plus complexes (ex: bords $\rightarrow$ formes $\rightarrow$ visage). La modularité de ces couches définit l'**Apprentissage Profond (Deep Learning)**.
+*   📤 **Output Layer (Sortie) :** Verdict final. Elle consolide les calculs pour livrer une probabilité (classification) ou une valeur numérique continue (régression).
 
 [Réseau de Neurones](https://view.genially.com/69144ab3e5ccc00eb91c4628){.embed}
 
-
 ### 1.2.2 La Danse du Signal (Le Cycle d'Apprentissage) 🔄
-*   ➡️ **Feedforward (Propagation) :** La donnée traverse le réseau de gauche à droite. Génère une prédiction (au début, totalement aléatoire).
-*   ⬅️ **Backpropagation (Rétropropagation) :** Le réseau calcule son erreur (Loss Function) et remonte le signal à l'envers pour ajuster les *poids* et les *biais* de chaque neurone. C'est ainsi que la machine "apprend".
+
+Le signal informatique ne se contente pas de traverser les couches à sens unique. Pour qu'il y ait apprentissage, il effectue un cycle en deux temps [@ibm_2026_gradient] :
+
+*   ➡️ **Propagation Avant (Feedforward) :** La donnée traverse le réseau de gauche à droite. Elle génère une prédiction qui, au début de l'entraînement, est totalement aléatoire.
+*   ⬅️ **Rétropropagation de l'erreur (Backpropagation) :** C'est le véritable moteur de l'apprentissage. Le réseau compare sa prédiction avec la réalité, calcule son erreur (via une **Loss Function**) et remonte le signal à l'envers pour ajuster les **poids** et les **biais** de chaque neurone afin de réduire l'erreur au prochain passage [@daniella_2024_gradient].
+
+```{mermaid}
+graph TD
+    A[Données Brutes] --> B(Feedforward : Calculs)
+    B --> C{Prédiction du réseau}
+    C -->|Comparaison avec la réalité| D[Calcul de l'Erreur / Loss]
+    D --> E(Backpropagation : Retour)
+    E -->|Ajustement des Poids & Biais| B
+    
+    style A fill:#f9d0c4,stroke:#333,stroke-width:2px
+    style C fill:#c4e1f9,stroke:#333,stroke-width:2px
+    style D fill:#fcf3c0,stroke:#333,stroke-width:2px
+```
+
+::: {.info header="Note sur l'activation"}
+Chaque neurone décide de transmettre son signal à la couche suivante via une **Fonction d'Activation** (ex: ReLU, Sigmoid). Sans ces fonctions non-linéaires, un réseau de neurones, même infiniment profond, ne serait qu'une simple régression linéaire incapable de résoudre des problèmes complexes.
+:::

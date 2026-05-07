@@ -25,7 +25,7 @@ title: "1. Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV"
 
 ---
 
-{{< include sections/15_data.qmd >}}
+{{< include sections/15_data.qmd >}} 
 
 ---
 

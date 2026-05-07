@@ -1,6 +1,10 @@
 ## 1.1 Genèse et Écosystème de l'IA : D'Alan Turing aux LLMs 🌍 
 
-[](zoom/11_genese.qmd){.zoom}
+L'Intelligence Artificielle n'est pas née avec l'émergence d'Internet ; elle s'inscrit dans une perspective historique longue, jalonnée de ruptures technologiques et de cycles économiques (les fameux "hivers" et "étés" de l'IA) [@wikipedia_2026_histoire].
+
+### 1.1.1 Une histoire du "Raisonnement" Artificiel : De la logique à la statistique 🕰️
+
+Pour comprendre où nous en sommes, il faut d'abord visualiser les étapes clés qui nous ont menés des premières machines à calculer aux agents autonomes actuels.
 
 :::: {.timeline .vertical}
 
@@ -47,3 +51,31 @@
 :::
 
 ::::
+
+#### De l'IA Symbolique au Connexionnisme 🧱
+
+Jusqu'aux années 1990, l'industrie a privilégié l'**IA Symbolique** et les **Systèmes Experts**. Ces programmes visaient à reproduire le raisonnement humain par des règles logiques strictes sous la forme "Si [condition] Alors [action]". 
+
+::: {.info header="Exemple emblématique"}
+La victoire de **Deep Blue** (IBM) contre Garry Kasparov en 1997 ne relevait pas de l'apprentissage automatique, mais d'une puissance de calcul massive couplée à un algorithme de recherche heuristique (Min-Max avec élagage alpha-bêta).
+:::
+
+Le tournant majeur s'opère par la suite grâce à l'augmentation de la puissance de calcul et l'explosion des données. On passe alors d'une IA "symbolique" (basée sur des règles codées par l'humain) à une IA "connexionniste" (basée sur l'apprentissage statistique) [@syracuse_2025_deepvsml]. C'est la naissance du **Deep Learning** moderne, capable de développer une forme "d'intuition" mathématique plutôt que de simplement suivre des rails scriptés.
+
+### 1.1.2 La Chaîne de Valeur de l'IA Moderne ⛓️
+
+Aujourd'hui, l'IA n'est plus un simple exercice de laboratoire expérimental ; c'est une industrie lourde qui repose sur une infrastructure mondiale complexe, divisée en quatre couches interdépendantes [@modernintel_2026_architecture].
+
+```{mermaid}
+flowchart TD
+    A[Hardware & Puces\nNVIDIA, ASML, AMD, Google TPU] -->|Fournissent la puissance| B(Cloud & IaaS\nAWS, Azure, GCP, OVH)
+    B -->|Hébergent les calculs massifs| C{Créateurs de Modèles\nOpenAI, DeepMind, Mistral, DeepSeek}
+    C -->|Accès via API & Open Source| D[Applications Finales\nSpotify, ChatGPT, Shift Technology, Notion]
+    
+    style A fill:#f9d0c4,stroke:#333,stroke-width:2px
+    style B fill:#fcf3c0,stroke:#333,stroke-width:2px
+    style C fill:#c4e1f9,stroke:#333,stroke-width:2px
+    style D fill:#c4f9cc,stroke:#333,stroke-width:2px
+```
+
+Comprendre ces quatre piliers est vital pour l'architecte système. La dépendance à la couche "Hardware" (notamment la lithographie avec ASML et la conception avec Nvidia) montre que la **souveraineté matérielle devient aussi cruciale que la performance algorithmique**. Un modèle de pointe n'a aucune utilité sans les capacités de calcul et d'hébergement nécessaires à son entraînement et à son inférence.
