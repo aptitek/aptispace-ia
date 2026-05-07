@@ -35,7 +35,7 @@ number-sections: false
 - Stratégies pour gagner la confiance des utilisateurs.
 - **Activité :** Débat sur l'IA parfaite et soutenance finale.
 
----
+
 
 ## 🎓 Modalités d'Évaluation
 

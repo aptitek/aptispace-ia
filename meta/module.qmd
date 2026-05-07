@@ -8,7 +8,7 @@ number-sections: false
 **Code :** PY-IA-M1
 **Année :** 2024-2025
 
----
+
 
 ## 🎯 Description Générale
 Ce module transforme des développeurs en architectes de solutions intelligentes. À travers un parcours intensif de 35 heures, les étudiants explorent l'intégralité du cycle de vie de l'IA : de la préparation de la donnée brute au déploiement d'agents autonomes. L'enjeu est de maîtriser les outils techniques (Deep Learning, LLM) tout en garantissant la sécurité et l'éthique des systèmes produits.

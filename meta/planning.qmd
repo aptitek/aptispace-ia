@@ -29,7 +29,7 @@ gantt
     Soutenance Projet (Note 3)            :milestone, m3, 2026-05-22, 0h
 ```
 
----
+
 
 ## 📑 Détail des Sessions
 

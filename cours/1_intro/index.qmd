@@ -2,32 +2,27 @@
 title: "🧹 Fondations de l'IA & Data"
 ---
 
-::: {.info header="🧊 Icebreaker Séance 1 : Le Test de Turing inversé"}
-**Script pour l'enseignant :**
-"Bonjour à tous et bienvenue dans ce module intensif. Avant de coder, faisons une expérience. Sortez vos téléphones. Je vais afficher 3 textes au tableau. Votre mission : identifier lequel a été écrit par un humain, lequel par un modèle pré-entraîné des années 2010, et lequel par un LLM récent. 
-*Indice : l'IA d'aujourd'hui fait souvent moins de fautes de syntaxe que nous, mais manque parfois cruellement de bon sens.*"
-(Cet exercice sert à briser la glace et à introduire empiriquement la différence entre les anciennes et les nouvelles générations d'IA).
-:::
+
 
 {{< include 11_genese.qmd >}}
 
----
+
 
 {{< include 12_anatomie.qmd >}}
 
----
+
 
 {{< include 13_activation.qmd >}}
 
----
+
 
 {{< include 14_optimisation.qmd >}}
 
----
+
 
 {{< include 15_data.qmd >}} 
 
----
+
 
 ## 🌉 Conclusion et Transition
 

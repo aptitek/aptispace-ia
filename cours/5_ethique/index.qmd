@@ -2,28 +2,23 @@
 title: "⚖️ Éthique & Gouvernance"
 ---
 
-::: {.info header="🧊 Icebreaker Séance 5 : Le dilemme du Tramway version IA"}
-**Script pour l'enseignant :**
-"Pour cette dernière séance, oublions le code une minute.
-*(Présenter une variante moderne du dilemme du tramway impliquant une voiture autonome et des données de capteurs bruitées)*.
-Si l'IA doit choisir entre deux issues catastrophiques, qui est responsable ? Le développeur ? Le constructeur ? L'utilisateur ? Et si l'IA refuse de choisir ? Bienvenue dans la complexité de la gouvernance algorithmique."
-:::
+
 
 {{< include 51_reglementation.qmd >}}
 
----
+
 
 {{< include 52_deepfakes.qmd >}}
 
----
+
 
 {{< include 53_ethique.qmd >}}
 
----
+
 
 {{< include 54_durabilite.qmd >}}
 
----
+
 
 ## 🎓 Conclusion du Module
 

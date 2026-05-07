@@ -22,7 +22,7 @@ Bienvenue dans le module d'**Intelligence Artificielle**. Ce cours intensif a po
 3. Concevoir et orchestrer des agents autonomes via des frameworks comme LangChain et le protocole MCP.
 4. Évaluer de manière critique les implications éthiques, de sécurité et environnementales des systèmes d'IA.
 
----
+
 
 ## 🗺️ Navigation dans le Module
 

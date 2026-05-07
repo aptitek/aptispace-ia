@@ -6,7 +6,7 @@ number-sections: false
 
 Cet aide-mémoire centralise les schémas fondamentaux et les concepts critiques à retenir pour chaque chapitre de ce module.
 
----
+
 
 ## 🧹 1. Fondations de l'IA & Data
 
@@ -30,7 +30,7 @@ graph TD
     E -->|Ajustement des poids| B
 ```
 
----
+
 
 ## 👁️ 2. Deep Learning & Vision (CNN)
 
@@ -57,7 +57,7 @@ graph TD
     G --> H[Prédiction Finale]
 ```
 
----
+
 
 ## 💬 3. NLP & GenAI (Transformers)
 
@@ -84,7 +84,7 @@ graph TD
     G --> H[Nouveau vecteur 'avocat' enrichi]
 ```
 
----
+
 
 ## 🤖 4. Orchestration & Agents (LangChain & MCP)
 
@@ -108,7 +108,7 @@ graph TD
     F --> G[LLM génère la réponse finalisée]
 ```
 
----
+
 
 ## ⚖️ 5. Éthique, Sécurité et Gouvernance
 

@@ -2,36 +2,31 @@
 title: "👁️ Deep Learning & Vision"
 ---
 
-::: {.info header="🧊 Icebreaker Séance 2 : Le paradoxe du Chihuahua"}
-**Script pour l'enseignant :**
-"Bonjour à tous ! Hier, nous avons nettoyé des tableaux Excel. Aujourd'hui, on donne des yeux à la machine.
-*(Afficher au vidéoprojecteur une image du célèbre mème 'Chihuahua ou Muffin aux myrtilles')*.
-Pour notre cerveau, distinguer le chien du gâteau prend une fraction de seconde. Pour un algorithme classique 'Si/Alors', c'est mathématiquement impossible à coder. Comment expliquer à un ordinateur ce qu'est une oreille avec des pixels ? C'est tout l'enjeu de la Vision par Ordinateur."
-:::
+
 
 {{< include 21_perspective.qmd >}}
 
----
+
 
 {{< include 22_fondamentaux.qmd >}}
 
----
+
 
 {{< include 23_anatomie.qmd >}}
 
----
+
 
 {{< include 24_alexnet.qmd >}}
 
----
+
 
 {{< include 25_overfitting.qmd >}}
 
----
+
 
 {{< include 26_applications.qmd >}}
 
----
+
 
 ## 🌉 Conclusion et Transition
 

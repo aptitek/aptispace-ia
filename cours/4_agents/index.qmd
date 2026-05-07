@@ -2,28 +2,23 @@
 title: "🤖 Orchestration & Agents"
 ---
 
-::: {.info header="🧊 Icebreaker Séance 4 : L'Apprenti Sorcier"}
-**Script pour l'enseignant :**
-"Aujourd'hui, on donne les clés de la maison à l'IA. 
-*(Rappel rapide du conte de l'Apprenti Sorcier)*.
-Si vous demandez à un agent autonome de 'vous faire un café à tout prix', et qu'il y a un barrage de police sur la route, va-t-il forcer le passage ? La question n'est plus seulement 'est-ce que ça marche ?' mais 'comment garder le contrôle sur une machine qui prend ses propres initiatives ?'"
-:::
+
 
 {{< include 41_orchestrateur.qmd >}}
 
----
+
 
 {{< include 42_rag.qmd >}}
 
----
+
 
 {{< include 43_agents.qmd >}}
 
----
+
 
 {{< include 44_securite.qmd >}}
 
----
+
 
 ## 🌉 Conclusion et Transition
 

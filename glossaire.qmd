@@ -6,7 +6,7 @@ number-sections: false
 
 Ce glossaire regroupe les termes techniques et concepts clés abordés tout au long du module. Il est conçu comme une référence rapide pour vos révisions et vos projets.
 
----
+
 
 ### A
 - **AI Office :** L'organe de supervision créé par l'Union Européenne, chargé de surveiller particulièrement les grands modèles de fondation (GPAI). ([Chapitre 5](cours/5_ethique/index.qmd))

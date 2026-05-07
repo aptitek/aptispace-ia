@@ -2,36 +2,31 @@
 title: "💬 GenAI & NLP"
 ---
 
-::: {.info header="🧊 Icebreaker Séance 3 : La chambre chinoise"}
-**Script pour l'enseignant :**
-"Bonjour à tous ! Aujourd'hui, on parle à la machine. Mais attention : est-ce que le modèle *comprend* ce qu'il dit ?
-*(Introduire brièvement l'expérience de pensée de la Chambre Chinoise de John Searle)*.
-Si je vous donne un livre de règles qui dit 'si tu vois ce symbole 🍎, réponds 🍏', vous pouvez converser sans comprendre un seul mot. Les LLM sont-ils juste d'immenses dictionnaires de probabilités ou y a-t-il une étincelle de compréhension ? Explorons le mécanisme de l'Attention pour le découvrir."
-:::
+
 
 {{< include 31_fondations.qmd >}}
 
----
+
 
 {{< include 32_espaces_latents.qmd >}}
 
----
+
 
 {{< include 33_transformers.qmd >}}
 
----
+
 
 {{< include 34_mecanique_llm.qmd >}}
 
----
+
 
 {{< include 35_pilotage.qmd >}}
 
----
+
 
 {{< include 36_risques.qmd >}}
 
----
+
 
 ## 🌉 Conclusion et Transition
 
