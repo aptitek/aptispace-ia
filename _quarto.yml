@@ -26,7 +26,6 @@ book:
   author: "Aptitek"
   search: false
   site-url: "https://ia.apti.space"
-  # number-sections est configuré dans les formats individuels
   
   sidebar:
     logo: "assets/logo.svg"
@@ -37,6 +36,11 @@ book:
   
   chapters:
     - index.qmd
+    - part: "🎯 Module"
+      chapters:
+        - meta/module.qmd
+        - meta/syllabus.qmd
+        - meta/planning.qmd
     - part: "🔭 Fondations & Vision"
       chapters:
         - cours/1_intro/index.qmd
@@ -48,7 +52,14 @@ book:
     - part: "🔮 Éthique & Futur"
       chapters:
         - cours/5_ethique/index.qmd
-    - references.qmd
+    - part: "🛠️ Lab & Projets"
+      chapters:
+        - lab/projet.qmd
+    - part: "📚 Annexes"
+      chapters:
+        - aide-memoire.qmd
+        - glossaire.qmd
+        - references.qmd
 
 format:
   html:

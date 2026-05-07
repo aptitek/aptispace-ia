@@ -1,8 +1,8 @@
 ---
-title: "Planning"
+number-sections: false
 ---
 
-# ⏳ Chronologie du Module
+# ⏳ Chronologie du Module {.unnumbered}
 
 ::: {.info header="Note d'organisation"}
 Le module se déroule sur 5 jours consécutifs (35 heures). Chaque journée est découpée en une matinée théorique et une après-midi de mise en pratique intensive.
@@ -29,25 +29,27 @@ gantt
     Soutenance Projet (Note 3)            :milestone, m3, 2026-05-22, 0h
 ```
 
-# 📑 Détail des Sessions
+---
 
-### Jour 1 : Nettoyer les écuries d'Augias des CSV
+## 📑 Détail des Sessions
+
+### 🧹 Jour 1 : Nettoyer les écuries d'Augias des CSV
 * **09h00 - 12h30** : Concepts de l'IA, Tenseurs et Descente de gradient.
 * **13h30 - 17h00** : Pandas/NumPy et Feature Engineering sur données réelles.
 
-### Jour 2 : Apprendre à voir dans les matrices
+### 👁️ Jour 2 : Apprendre à voir dans les matrices
 * **09h00 - 12h30** : Architectures CNN et traitement d'images (OpenCV).
 * **13h30 - 17h00** : Lab Keras : Entraînement et lutte contre l'overfitting.
 
-### Jour 3 : Murmurer à l'oreille des Transformers
+### 💬 Jour 3 : Murmurer à l'oreille des Transformers
 * **09h00 - 12h30** : Mécanismes d'attention et anatomie d'un LLM.
 * **13h30 - 17h00** : Atelier Prompt Engineering et Prompt Battle.
 
-### Jour 4 : Quand le code prend le contrôle
+### 🤖 Jour 4 : Quand le code prend le contrôle
 * **09h00 - 12h30** : Framework Langchain et stratégies RAG.
 * **13h30 - 17h00** : Création d'agents autonomes et outils MCP.
 
-### Jour 5 : Garder la machine sur les rails
+### ⚖️ Jour 5 : Garder la machine sur les rails
 * **09h00 - 11h00** : Éthique, Droit et Responsabilité.
 * **11h00 - 12h30** : Finalisation des prototypes.
 * **13h30 - 17h00** : Soutenances devant le "comité d'investissement".

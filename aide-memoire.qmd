@@ -1,12 +1,14 @@
 ---
-title: "Aide-Mémoire Global 🧠"
+number-sections: false
 ---
+
+# 🧠 Aide-Mémoire Global {.unnumbered}
 
 Cet aide-mémoire centralise les schémas fondamentaux et les concepts critiques à retenir pour chaque chapitre de ce module.
 
 ---
 
-## 1. Fondations de l'IA & Data
+## 🧹 1. Fondations de l'IA & Data
 
 ### 🔑 À retenir
 - **Systèmes Experts vs Deep Learning :** Passage d'une logique basée sur des règles ("Si/Alors") à un apprentissage statistique par réseaux de neurones.
@@ -30,7 +32,7 @@ graph TD
 
 ---
 
-## 2. Deep Learning & Vision (CNN)
+## 👁️ 2. Deep Learning & Vision (CNN)
 
 ### 🔑 À retenir
 - **Le Fléau de la Dimension :** Un réseau classique (MLP) a trop de paramètres pour traiter des images HD.
@@ -57,7 +59,7 @@ graph TD
 
 ---
 
-## 3. NLP & GenAI (Transformers)
+## 💬 3. NLP & GenAI (Transformers)
 
 ### 🔑 À retenir
 - **Féaturisation (BoW / TF-IDF) :** Transformation historique du texte en vecteurs, mais souffre du "problème de sparsité" (vecteurs creux).
@@ -84,7 +86,7 @@ graph TD
 
 ---
 
-## 4. Orchestration & Agents (LangChain & MCP)
+## 🤖 4. Orchestration & Agents (LangChain & MCP)
 
 ### 🔑 À retenir
 - **Orchestrateur (LangChain) :** Sépare la logique applicative du modèle IA sous-jacent.
@@ -108,7 +110,7 @@ graph TD
 
 ---
 
-## 5. Éthique, Sécurité et Gouvernance
+## ⚖️ 5. Éthique, Sécurité et Gouvernance
 
 ### 🔑 À retenir
 - **EU AI Act :** Premier règlement classant les IA par risque (Inacceptable = Interdiction, Haut Risque = Audit strict). Il impose ses standards via l'"Effet Bruxelles".

@@ -1,4 +1,8 @@
-## 🎓 Projet de Synthèse : "L'Architecte IA Responsable"
+---
+number-sections: false
+---
+
+# 🎓 Projet de Synthèse : "L'Architecte IA Responsable" {.unnumbered}
 
 ### 📋 Le Sujet
 **Contexte :** Vous êtes mandaté par une ONG internationale pour concevoir le prototype d'un système d'IA capable d'aider à la gestion de crises humanitaires (ex: séisme ou inondation). 
