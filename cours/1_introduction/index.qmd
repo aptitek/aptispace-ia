@@ -9,23 +9,23 @@ title: "1. Fondations de l'IA & Data : Nettoyer les écuries d'Augias des CSV"
 (Cet exercice sert à briser la glace et à introduire empiriquement la différence entre les anciennes et les nouvelles générations d'IA).
 :::
 
-{{< include sections/11_genese.qmd >}}
+{{< include 11_genese.qmd >}}
 
 ---
 
-{{< include sections/12_anatomie.qmd >}}
+{{< include 12_anatomie.qmd >}}
 
 ---
 
-{{< include sections/13_activation.qmd >}}
+{{< include 13_activation.qmd >}}
 
 ---
 
-{{< include sections/14_optimisation.qmd >}}
+{{< include 14_optimisation.qmd >}}
 
 ---
 
-{{< include sections/15_data.qmd >}} 
+{{< include 15_data.qmd >}} 
 
 ---
 

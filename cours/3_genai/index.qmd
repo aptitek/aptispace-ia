@@ -8,27 +8,27 @@ title: "3. NLP & GenAI : Murmurer à l'oreille des Transformers"
 Mentalement, quel est le mot qui vous vient ? 'Lait', probablement. Pourquoi ? Parce que statistiquement, dans votre expérience du monde, c'est le plus probable. L'IA générative moderne ne 'comprend' pas ce qu'est un chat ou du lait. Elle excelle simplement à prédire mathématiquement le mot suivant. Mais avant d'arriver à cette prouesse, il a fallu apprendre à la machine à compter les mots."
 :::
 
-{{< include sections/31_fondations.qmd >}}
+{{< include 31_fondations.qmd >}}
 
 ---
 
-{{< include sections/32_espaces_latents.qmd >}}
+{{< include 32_espaces_latents.qmd >}}
 
 ---
 
-{{< include sections/33_transformers.qmd >}}
+{{< include 33_transformers.qmd >}}
 
 ---
 
-{{< include sections/34_mecanique_llm.qmd >}}
+{{< include 34_mecanique_llm.qmd >}}
 
 ---
 
-{{< include sections/35_pilotage.qmd >}}
+{{< include 35_pilotage.qmd >}}
 
 ---
 
-{{< include sections/36_risques.qmd >}}
+{{< include 36_risques.qmd >}}
 
 ---
 

@@ -9,27 +9,27 @@ title: "2. Deep Learning & Vision : Apprendre à voir dans les matrices"
 Pour notre cerveau, distinguer le chien du gâteau prend une fraction de seconde. Pour un algorithme classique 'Si/Alors', c'est mathématiquement impossible à coder. Comment expliquer à un ordinateur ce qu'est une oreille avec des pixels ? C'est tout l'enjeu de la Vision par Ordinateur."
 :::
 
-{{< include sections/21_perspective.qmd >}}
+{{< include 21_perspective.qmd >}}
 
 ---
 
-{{< include sections/22_fondamentaux.qmd >}}
+{{< include 22_fondamentaux.qmd >}}
 
 ---
 
-{{< include sections/23_anatomie.qmd >}}
+{{< include 23_anatomie.qmd >}}
 
 ---
 
-{{< include sections/24_alexnet.qmd >}}
+{{< include 24_alexnet.qmd >}}
 
 ---
 
-{{< include sections/25_overfitting.qmd >}}
+{{< include 25_overfitting.qmd >}}
 
 ---
 
-{{< include sections/26_applications.qmd >}}
+{{< include 26_applications.qmd >}}
 
 ---
 

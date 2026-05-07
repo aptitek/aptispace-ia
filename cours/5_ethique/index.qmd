@@ -8,19 +8,19 @@ title: "5. Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA
 L'IA n'est plus seulement une prouesse technique, c'est un enjeu de sécurité nationale et de droit. Aujourd'hui, on arrête de coder, on parle de lois, d'éthique et de gouvernance."
 :::
 
-{{< include sections/51_reglementation.qmd >}}
+{{< include 51_reglementation.qmd >}}
 
 ---
 
-{{< include sections/52_deepfakes.qmd >}}
+{{< include 52_deepfakes.qmd >}}
 
 ---
 
-{{< include sections/53_ethique.qmd >}}
+{{< include 53_ethique.qmd >}}
 
 ---
 
-{{< include sections/54_durabilite.qmd >}}
+{{< include 54_durabilite.qmd >}}
 
 ---
 

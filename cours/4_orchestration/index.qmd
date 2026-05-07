@@ -8,19 +8,19 @@ title: "4. Orchestration & Agents : Quand le code prend le contrôle"
 Aujourd'hui, nous allons leur donner des bras, des jambes et un badge d'accès à votre système d'information. On passe de l'IA qui discute à l'IA qui agit."
 :::
 
-{{< include sections/41_orchestrateur.qmd >}}
+{{< include 41_orchestrateur.qmd >}}
 
 ---
 
-{{< include sections/42_rag.qmd >}}
+{{< include 42_rag.qmd >}}
 
 ---
 
-{{< include sections/43_agents.qmd >}}
+{{< include 43_agents.qmd >}}
 
 ---
 
-{{< include sections/44_securite.qmd >}}
+{{< include 44_securite.qmd >}}
 
 ---
 
