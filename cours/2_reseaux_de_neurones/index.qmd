@@ -2,231 +2,531 @@
 title: "2. Deep Learning & Vision : Apprendre à voir dans les matrices"
 ---
 
-::: {.danger header="🧊 Icebreaker Séance 2 : Le paradoxe du Chihuahua"}
+::: {.info header="🧊 Icebreaker Séance 2 : Le paradoxe du Chihuahua"}
 **Script pour l'enseignant :**
-"Bonjour à tous ! Hier, nous avons nettoyé des tableaux Excel. Aujourd'hui, on donne des yeux à la machine. 
-*(Afficher au vidéoprojecteur une image du célèbre mème 'Chihuahua ou Muffin aux myrtilles')*. 
+"Bonjour à tous ! Hier, nous avons nettoyé des tableaux Excel. Aujourd'hui, on donne des yeux à la machine.
+*(Afficher au vidéoprojecteur une image du célèbre mème 'Chihuahua ou Muffin aux myrtilles')*.
 Pour notre cerveau, distinguer le chien du gâteau prend une fraction de seconde. Pour un algorithme classique 'Si/Alors', c'est mathématiquement impossible à coder. Comment expliquer à un ordinateur ce qu'est une oreille avec des pixels ? C'est tout l'enjeu de la Vision par Ordinateur."
 :::
 
-## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️ [[➕ Voir plus](21_perspective_historique__de_la_neurobiologie_aux_reseaux_artificiels.qmd)]{.small}
+## 2.1 Perspective Historique : De la Neurobiologie aux Réseaux Artificiels 🏛️ 
+
+[🔍 Zoom sur cette section](21_perspective_historique__de_la_neurobiologie_aux_reseaux_artificiels.qmd){.btn .btn-outline-primary .btn-sm}
 
 La vision par ordinateur s'est imposée comme le pont technologique entre la perception biologique et l'intelligence artificielle. En tant qu'architecte système, il ne faut pas voir cette discipline comme un simple algorithme de tri, mais comme une tentative complexe d'extraction automatisée et de compréhension sémantique à partir de flux visuels purs [@networkoptix_2024_computervision].
 
+:::: {.timeline .vertical}
 
+::: {.event data-label="1980"}
+| Fukushima | Le Neocognitron |
+|:---|:---|
+| ![](../../assets/fukushima.jpg){width=100px} | *Concept* : Fukushima propose une architecture hiérarchique utilisant des "champs récepteurs" locaux. C'est le précurseur direct des CNN modernes. |
+:::
 
-* **Le Neocognitron (1980) :** Fukushima propose une architecture hiérarchique utilisant des "champs récepteurs" locaux. C'est le précurseur direct des Réseaux de Neurones Convolutifs (CNN) modernes.
-* **La Consécration Industrielle (Années 1990) :** Yann LeCun stabilise l'architecture avec le modèle *LeNet*, utilisé par la poste américaine pour lire automatiquement les codes postaux. C'est la première preuve formelle de viabilité à grande échelle [@networkoptix_2024_computervision].
+::: {.event data-label="Années 1990"}
+| Yann LeCun | La Consécration Industrielle |
+|:---|:---|
+| ![](../../assets/yann_lecun.jpg){width=100px} | *Application* : Stabilisation avec le modèle *LeNet*, utilisé par la poste américaine pour lire automatiquement les codes postaux. Première preuve de viabilité à grande échelle [@networkoptix_2024_computervision]. |
+:::
+
+::: {.event data-label="2012"}
+| Équipe Hinton | La Révolution AlexNet |
+|:---|:---|
+| ![](../../assets/alexnet.jpg){width=100px} | *Basculement* : AlexNet pulvérise les algorithmes traditionnels au concours ImageNet, prouvant que la profondeur (Deep Learning) est la clé [@wikipedia_2026_alexnet]. |
+:::
+
+::::
 
 ### 2.1.2 La Rupture Stratégique : Des filtres manuels aux filtres appris ⚡
 
-Avant le Deep Learning, les ingénieurs en traitement d'image devaient créer mathématiquement leurs propres filtres (par exemple, le filtre de Sobel pour détecter des bords verticaux). Cette approche, appelée *Feature Engineering* manuel, était extrêmement limitée par l'intuition humaine. 
+Avant le Deep Learning, les ingénieurs devaient créer mathématiquement leurs propres filtres (ex: filtre de Sobel pour les bords verticaux). Cette approche, le *Feature Engineering* manuel, était extrêmement limitée par l'intuition humaine.
 
-La rupture fondamentale apportée par les Réseaux Convolutifs (CNN) réside dans le passage aux **filtres appris par optimisation**. Le réseau découvre de lui-même, par essai-erreur, quels filtres mathématiques sont les plus pertinents pour extraire les caractéristiques d'une image [@wikipedia_2026_cnn].
+La rupture fondamentale des Réseaux Convolutifs (CNN) réside dans le passage aux **filtres appris par optimisation**. Le réseau découvre par essai-erreur quels filtres mathématiques sont les plus pertinents pour extraire les caractéristiques d'une image [@wikipedia_2026_cnn].
 
-```{mermaid}
-timeline
-    title Évolution de la Vision par Ordinateur
-    1980 : Neocognitron (Fukushima)
-    1990 : LeNet & Codes postaux (Y. LeCun)
-    2012 : Révolution AlexNet
-```
+## 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️ 
 
----
+[🔍 Zoom sur cette section](22_fondamentaux_et_superiorite_des_cnn_sur_les_modeles_traditionnels.qmd){.btn .btn-outline-primary .btn-sm}
 
-
-## 2.2 Fondamentaux et Supériorité des CNN sur les Modèles Traditionnels 🏗️ [[➕ Voir plus](22_fondamentaux_et_superiorite_des_cnn_sur_les_modeles_traditionnels.qmd)]{.small}
-
-Pourquoi ne pas simplement utiliser un réseau de neurones classique (MLP - Multi-Layer Perceptron) pour reconnaître des objets dans une image ? La réponse tient en un mot : **le fléau de la dimensionnalité** [@pyimagesearch_2021_cnn_layers].
+Pourquoi ne pas simplement utiliser un réseau de neurones classique (MLP - Multi-Layer Perceptron) pour reconnaître des objets ? La réponse tient en un mot : **le fléau de la dimensionnalité** [@pyimagesearch_2021_cnn_layers].
 
 ### 2.2.1 L'échec des réseaux classiques (MLP) ❌
 
-Dans un réseau classique, chaque neurone est connecté à tous les pixels de l'image. Imaginons une image standard de $250 \times 250$ pixels en couleur (RGB). Une seule couche dense nécessiterait :
-$$250 \times 250 \times 3 = 187\,500 \text{ poids (paramètres) par neurone.}$$
+Dans un réseau classique, chaque neurone est connecté à tous les pixels. Imaginons une image de 250x250 pixels en couleur (RGB). L'explosion des paramètres rend l'apprentissage instable, lent et gourmand en mémoire vive 
 
-Pour un réseau avec seulement 100 neurones dans une couche cachée, nous atteignons déjà près de **19 millions de paramètres** à entraîner pour une seule couche ! Cette explosion de paramètres rend l'apprentissage instable, extrêmement lent et gourmand en mémoire vive [@pyimagesearch_2021_cnn_layers].
+::: {.graph .horizontal header="Le Fléau de la Dimensionnalité"}
+
+::: {.controls header="Configuration"}
+```{ojs}
+//| echo: false
+resolutions = [28, 250, 1080, 3840];
+labels = ["28x28 (MNIST)", "250x250 (Standard)", "1920x1080 (Full HD)", "3840x2160 (4K UHD)"];
+
+viewof res_idx = ui.slider({
+  label: "Résolution d'Entrée",
+  labels: labels,
+  value: 1,
+  min: 0,
+  max: 3
+})
+
+res_choice = resolutions[res_idx];
+mlp_weights_per_neuron = res_choice * res_choice * 3;
+mlp_total_weights = mlp_weights_per_neuron * 100;
+cnn_total_weights = 3 * 3 * 3 * 100;
+```
+:::
+
+::: {.render header="Visualisation des Poids"}
+```{ojs}
+//| echo: false
+{
+  const fixed_cnn_size = 20; 
+  const weight_ratio = mlp_total_weights / cnn_total_weights;
+  const size_ratio = Math.pow(weight_ratio, 1/6); 
+  
+  const s_cnn = fixed_cnn_size;
+  const s_mlp = Math.min(200, s_cnn * size_ratio);
+  
+  const mlp_color = mlp_total_weights > 5000000 ? theme.red : theme.orange;
+  const cnn_color = theme.green;
+
+  const cube_html = (size, color, label) => {
+    const offset = size * 0.35;
+    const darken = (c, amt) => `color-mix(in srgb, ${c}, black ${amt}%)`;
+    return html`
+      <div class="flex-centered-col" style="gap: 8px;">
+        <div style="position: relative; width: ${size + offset}px; height: ${size + offset}px; transition: all 0.5s ease;">
+          <div style="position: absolute; left: 0; top: 0; width: ${size}px; height: ${offset}px; background: ${darken(color, 15)}; border: 1px solid rgba(0,0,0,0.1); transform: skewX(-45deg); transform-origin: bottom;"></div>
+          <div style="position: absolute; left: ${size}px; top: ${offset}px; width: ${offset}px; height: ${size}px; background: ${darken(color, 30)}; border: 1px solid rgba(0,0,0,0.1); transform: skewY(-45deg); transform-origin: left;"></div>
+          <div style="position: absolute; left: 0; top: ${offset}px; width: ${size}px; height: ${size}px; background: ${color}; border: 1px solid rgba(0,0,0,0.1); box-shadow: 2px 2px 10px rgba(0,0,0,0.1);"></div>
+        </div>
+        <span style="font-size: 0.8em; font-weight: bold; color: var(--sol-base01);">${label}</span>
+      </div>
+    `;
+  };
+
+  return html`
+    <div style="display: flex; gap: 40px; justify-content: center; align-items: flex-end; min-height: 250px; width: 100%;">
+      ${cube_html(s_cnn, cnn_color, "CNN")}
+      ${cube_html(s_mlp, mlp_color, "MLP")}
+    </div>
+  `;
+}
+```
+:::
+
+::: {.results}
+```{ojs}
+//| echo: false
+{
+  const status = mlp_total_weights > 10000000 ? "danger" : mlp_total_weights > 1000000 ? "warning" : "debug";
+  const analysis = mlp_total_weights > 10000000 ? "🚨 Incalculable sur un PC standard. Le MLP sature la mémoire." : mlp_total_weights > 1000000 ? "⚠️ Très lourd. L'entraînement sera lent et inefficace." : "Stable et léger.";
+
+  return ui.card(md`
+| Architecture | Paramètres par Unité | Total (couche de 100) |
+|:---|:---|:---|
+| ❌ Classique (MLP) | ${mlp_weights_per_neuron.toLocaleString()} | **${mlp_total_weights.toLocaleString()}** poids |
+| ✅ Convolutif (CNN) | 27 | **${cnn_total_weights.toLocaleString()}** poids |
+
+**Analyse :** ${analysis}
+`, { title: "Impact sur l'Architecture", status: status });
+}
+```
+:::
+:::
 
 ### 2.2.2 Les trois piliers stratégiques des CNN 🏛️
 
-Les CNN résolvent ce défi en exploitant la structure spatiale des images via trois propriétés fondamentales [@upgrad_2026_cnn_architecture; @wikipedia_2026_cnn] :
+Les CNN exploitent la structure spatiale via trois propriétés [@upgrad_2026_cnn_architecture; @wikipedia_2026_cnn] :
 
-1.  **Connectivité locale :** Contrairement au MLP, un neurone dans un CNN ne regarde pas toute l'image. Il ne traite qu'une petite zone limitée appelée **champ récepteur** (*receptive field*), imitant ainsi le fonctionnement du cortex visuel humain.
-2.  **Partage de poids (Shared weights) :** C'est le secret de l'efficacité. Au lieu d'apprendre un nouveau détecteur de bord pour chaque recoin de l'image, le réseau utilise le même filtre (noyau) sur toute la surface. Cela réduit drastiquement le nombre de paramètres et permet de détecter un motif, peu importe où il se trouve.
-3.  **Arrangement spatial en 3D :** Les données circulent sous forme de **tenseurs** (Largeur x Hauteur x Profondeur). La profondeur correspond ici aux canaux de couleur (RGB) ou au nombre de filtres appliqués [@pyimagesearch_2021_cnn_layers].
-
-
-
-### 2.2.3 Équivariance et Invariance 🔄
-
-Un avantage majeur des CNN est leur **équivariance à la translation** : si un motif (comme un visage) se déplace dans l'image d'entrée, sa représentation dans le réseau se déplace de la même manière. Cependant, ils ne sont pas naturellement invariants à la rotation ou au zoom ; c'est ici qu'interviennent les couches de *Pooling* que nous verrons en section 2.3 [@wikipedia_2026_cnn].
-
-```{mermaid}
-graph TD
-    A[Image Brute 2D/3D] --> B{Propriétés CNN}
-    B --> C[Connectivité Locale]
-    B --> D[Partage de Poids]
-    B --> E[Structure Tensorielle]
-    C --> F[Réduction Drastique des Paramètres]
-    D --> G[Détection de Motifs Partout]
-    E --> H[Conservation du Contexte Spatial]
-    F & G & H --> I[Apprentissage Efficace et Robuste]
-```
+1.  **Connectivité locale :** Un neurone ne regarde qu'une petite zone limitée (champ récepteur), imitant le cortex visuel humain.
+2.  **Partage de poids :** Le réseau utilise le même filtre sur toute la surface, réduisant les paramètres et détectant un motif n'importe où.
+3.  **Arrangement spatial en 3D :** Les données circulent en tenseurs (Largeur x Hauteur x Profondeur des couleurs/filtres) [@pyimagesearch_2021_cnn_layers].
 
 ---
 
+## 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬 
 
+[🔍 Zoom sur cette section](23_anatomie_technique_dun_cnn__convolution_activation_et_pooling.qmd){.btn .btn-outline-primary .btn-sm}
 
+Un CNN transforme des pixels bruts en prédictions sémantiques.
 
-## 2.3 Anatomie Technique d'un CNN : Convolution, Activation et Pooling 🔬 [[➕ Voir plus](23_anatomie_technique_dun_cnn__convolution_activation_et_pooling.qmd)]{.small}
+### 2.3.1 & 2.3.3 Convolution et Pooling : Démystification Visuelle 🌀🎱
 
-[cite_start]Un CNN transforme des pixels bruts en prédictions sémantiques par une extraction hiérarchique de caractéristiques[cite: 9]. Cette transformation repose sur une succession de couches spécialisées qui ont chacune un rôle stratégique dans la compression et l'interprétation de l'image.
+La **Couche de Convolution** réalise un produit de Frobenius entre un noyau glissant et l'entrée pour extraire des traits. La **Couche de Pooling** (ex: Max Pooling) réduit la résolution spatiale pour contrôler le surapprentissage tout en conservant le signal le plus fort.
 
-### 2.3.1 La Couche de Convolution (CONV) 🌀
-C'est le cœur du système. [cite_start]Mathématiquement, elle réalise un produit de Frobenius (somme du produit élément par élément) entre un **noyau** (kernel) glissant et l'entrée[cite: 8, 9]. 
+::: {.graph .vertical header="Max-Pooling : Distiller l'Essentiel"}
 
-* [cite_start]**Rôle :** Extraction de traits fondamentaux (bords, textures) puis de formes complexes (motifs, objets)[cite: 7, 9].
-* [cite_start]**Sortie :** Elle génère des **cartes d'activation** (feature maps) qui signalent la présence et la localisation de patterns spécifiques dans l'image[cite: 8, 9].
+::: {.render header="Visualisation du Pooling"}
+```{ojs}
+//| echo: false
+//| warning: false
+{
+  const gridInValues = [12, 20, 30, 0, 8, 12, 2, 0, 34, 70, 37, 4, 112, 100, 25, 12];
+  const colors = [theme.red, theme.blue, theme.green, theme.yellow];
+  const getGroup = (i) => {
+    if ([0,1,4,5].includes(i)) return 0;
+    if ([2,3,6,7].includes(i)) return 1;
+    if ([8,9,12,13].includes(i)) return 2;
+    return 3;
+  };
 
+  const container = html`
+    <div class="matrix-viz-container">
+      <div class="matrix-labels">
+         <span>Image d'Entrée (4x4)</span>
+      </div>
+      <div class="matrix-row">
+        <div id="grid-in" class="matrix-grid-in">
+          ${gridInValues.map((val, i) => {
+            const group = getGroup(i);
+            const color = colors[group];
+            return `<div class="cell-in matrix-cell" data-group="${group}" style="background: ${color}; color: ${theme.base3};">${val}</div>`
+          }).join('')}
+        </div>
+        
+        <div class="matrix-arrow">⬇️</div>
+        
+        <div class="matrix-labels">
+          <span>Sortie Pooled (2x2)</span>
+        </div>
+        <div id="grid-out" class="matrix-grid-out">
+          <div class="cell-out matrix-cell-out" data-group="0" style="background: ${theme.red}; color: ${theme.base3};">20</div>
+          <div class="cell-out matrix-cell-out" data-group="1" style="background: ${theme.blue}; color: ${theme.base3};">30</div>
+          <div class="cell-out matrix-cell-out" data-group="2" style="background: ${theme.green}; color: ${theme.base3};">112</div>
+          <div class="cell-out matrix-cell-out" data-group="3" style="background: ${theme.yellow}; color: ${theme.base3};">37</div>
+        </div>
+      </div>
+      
+      <div id="pool-explanation" class="card bg-debug pool-explanation-card">
+         <div class="card-body" id="explanation-text">
+            💡 <b>Astuce :</b> Cliquez sur une zone colorée pour comprendre comment le chiffre est extrait.
+         </div>
+      </div>
+    </div>
+  `;
 
+  const cellsIn = container.querySelectorAll(".cell-in");
+  const cellsOut = container.querySelectorAll(".cell-out");
+  const explanationCard = container.querySelector("#pool-explanation");
+  const explanationText = container.querySelector("#explanation-text");
 
-### 2.3.2 La Couche d'Activation (ReLU) ⚡
-[cite_start]La fonction $f(x) = \max(0, x)$ est systématiquement appliquée après la convolution[cite: 9].
+  const updateHighlight = (group) => {
+    const values = gridInValues.filter((_, i) => getGroup(i) === group);
+    const maxVal = Math.max(...values);
+    
+    // Update explanation state
+    explanationCard.setAttribute("data-group", group);
+    explanationText.innerHTML = `Dans la zone <b>${["Rouge", "Bleue", "Verte", "Jaune"][group]}</b>, on compare {${values.join(", ")}}. <br> Le plus grand est <b>${maxVal}</b>, c'est lui qui survit au Pooling !`;
+    
+    // Reset all cells
+    cellsIn.forEach(c => c.classList.remove("active", "is-max", "is-group"));
+    cellsOut.forEach(c => c.classList.remove("active"));
+    
+    // Highlight group and max
+    container.querySelectorAll(`.cell-in[data-group="${group}"]`).forEach(c => {
+      c.classList.add("active", "is-group");
+      if (parseInt(c.innerText) === maxVal) {
+        c.classList.add("is-max");
+      }
+    });
+    
+    // Highlight matching output cell
+    container.querySelector(`.cell-out[data-group="${group}"]`).classList.add("active");
+  };
 
-* **Rôle :** Introduire la non-linéarité indispensable (voir définition au [Chapitre 1](1_introduction.qmd#13-les-fonctions-dactivation--le-moteur-de-la-non-linéarité-)).
-* **Avantage :** Elle limite le phénomène de **Vanishing Gradient** (voir [Chapitre 1](1_introduction.qmd#131-les-classiques-de-la-littérature-neuronale-)), permettant un entraînement beaucoup plus rapide des réseaux profonds.
+  cellsIn.forEach(cell => {
+    cell.addEventListener("click", () => {
+      updateHighlight(parseInt(cell.getAttribute("data-group")));
+    });
+  });
 
-### 2.3.3 La Couche de Pooling (POOL) 🎱
-[cite_start]Généralement insérée entre les couches convolutives, elle réduit la résolution spatiale des données[cite: 7, 9].
+  cellsOut.forEach(cell => {
+    cell.addEventListener("click", () => {
+      updateHighlight(parseInt(cell.getAttribute("data-group")));
+    });
+  });
 
-* [cite_start]**Rôle :** Contrôler le surapprentissage (overfitting), réduire la charge de calcul et introduire une certaine invariance aux petites translations (un motif est reconnu même s'il bouge un peu)[cite: 8, 9].
-* [cite_start]**Types :** Le **Max Pooling** conserve uniquement le signal le plus fort d'une zone, tandis que l'**Average Pooling** calcule la moyenne pour lisser l'information[cite: 9].
+  return container;
+}
+```
+:::
+:::
 
-
-
-### 2.3.4 Couches Entièrement Connectées (FC) 🕸️
-[cite_start]Situées en fin de réseau, elles agrègent toutes les caractéristiques extraites précédemment pour prendre la décision finale[cite: 9].
-
-* [cite_start]**Rôle :** Effectuer le raisonnement global et la classification finale (ex: déterminer la classe de l'objet détecté)[cite: 9].
 
 ### 2.3.5 Configuration Spatiale : Les Hyperparamètres 📏
-[cite_start]Le dimensionnement d'un CNN repose sur une configuration rigoureuse de la géométrie des couches[cite: 9]:
 
-* **Stride (Pas) :** Définit le saut du filtre. [cite_start]Un stride supérieur à 1 réduit la dimension de la sortie, agissant comme un compresseur de données[cite: 9].
-* [cite_start]**Padding (Remplissage) :** Ajout de pixels (souvent de valeur zéro) aux bordures pour éviter la perte d'information sur les contours et stabiliser la taille de sortie[cite: 9].
+Le dimensionnement d'un CNN repose sur une configuration géométrique stricte.
+
+*   **Stride (Pas) :** Définit le saut du filtre. Un stride > 1 agit comme un compresseur de données.
+*   **Padding :** Ajout de pixels aux bordures pour éviter la perte d'information sur les contours.
 
 ::: {.warning header="Règle d'or de l'Architecte : La Formule de Sortie"}
-Pour une dimension d'entrée $W$, un filtre $F$, un padding $P$ et un stride $S$, la taille de sortie est donnée par :
+Pour une dimension d'entrée $W$, un filtre $F$, un padding $P$ et un stride $S$, la taille de sortie est :
 $$\text{Sortie} = \frac{W - F + 2P}{S} + 1$$
-[cite_start]Si le résultat n'est pas un entier, la configuration est considérée comme invalide car les neurones ne peuvent pas être répartis de manière symétrique sur l'image d'entrée[cite: 7, 9].
+Si le résultat n'est pas un entier, la configuration est invalide !
 :::
 
-```{mermaid}
-graph LR
-    A[Image Brute] --> B[Convolution]
-    B --> C[ReLU]
-    C --> D[Pooling]
-    D --> E[Convolution...]
-    E --> F[Flatten]
-    F --> G[Couches FC]
-    G --> H[Prédiction Finale]
+::: {.graph header="Calculateur de Sortie"}
+
+::: {.controls}
+```{ojs}
+//| echo: false
+viewof hyper_W = Inputs.range([10, 227], {value: 227, step: 1, label: "Entrée (W)"})
+viewof hyper_F = Inputs.range([1, 11], {value: 11, step: 1, label: "Filtre (F)"})
+viewof hyper_P = Inputs.range([0, 5], {value: 0, step: 1, label: "Padding (P)"})
+viewof hyper_S = Inputs.range([1, 5], {value: 4, step: 1, label: "Stride (S)"})
+
+output_size = (hyper_W - hyper_F + 2 * hyper_P) / hyper_S + 1
+is_valid_arch = Number.isInteger(output_size)
 ```
-
-
-
-## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆 [[➕ Voir plus](24_etude_de_cas__la_revolution_alexnet_2012.qmd)]{.small}
-
-Si l'on devait dater le début de l'ère moderne de l'Intelligence Artificielle, ce serait sans conteste l'année 2012. Lors du prestigieux concours ImageNet (qui consiste à classer des millions d'images dans des milliers de catégories), un réseau nommé **AlexNet** a littéralement pulvérisé les algorithmes de traitement d'image traditionnels. Il a prouvé au monde entier que la profondeur du réseau (*Deep Learning*) était la clé de la performance visuelle [@wikipedia_2026_alexnet].
-
-### 2.4.1 L'Architecture d'un Champion 🏗️
-
-AlexNet n'était pas fondamentalement différent du vieux *LeNet* des années 90 dans son concept, mais il l'était dans son échelle. Son architecture empilait **5 couches convolutives (CONV)** suivies de **3 couches entièrement connectées (FC)**, totalisant environ 60 millions de paramètres.
-
-Pour réussir cet exploit, ses créateurs (Alex Krizhevsky, Ilya Sutskever et Geoffrey Hinton) ont introduit plusieurs innovations cruciales pour l'industrie :
-
-1.  **L'adoption de ReLU :** Avant AlexNet, les réseaux utilisaient principalement Tanh ou la Sigmoïde. En utilisant ReLU, AlexNet a été entraîné plusieurs fois plus rapidement, contournant le problème du *vanishing gradient* [@upgrad_2026_cnn_architecture].
-2.  **L'invention du Dropout :** Face à un modèle aussi colossal, le surapprentissage (*overfitting*) était inévitable. Ils ont introduit le Dropout, une technique déconnectant aléatoirement des neurones pendant l'entraînement pour forcer le réseau à être plus robuste.
-3.  **L'entraînement Multi-GPU :** Le modèle était si lourd qu'il ne rentrait pas dans la mémoire vive (VRAM) d'une seule carte graphique de l'époque. Ils ont dû scinder le calcul sur deux puces NVIDIA GTX 580 en parallèle.
-
-::: {.info header="Anecdote d'Architecte : L'énigme des 224 pixels"}
-Dans de nombreux cours ou tutoriels, vous lirez qu'AlexNet prend en entrée des images de 224x224 pixels. Pourtant, si l'on applique scrupuleusement la formule mathématique de la couche convolutive (vue en 2.3) avec leur filtre de 11x11, un *stride* de 4 et aucun *padding*, le résultat avec 224 ne donne pas un nombre entier ! En réalité, le réseau recadrait secrètement les images à **227x227 pixels** lors du prétraitement pour que les mathématiques tombent juste [@pyimagesearch_2021_cnn_layers].
 :::
 
-### 2.4.2 Les Prémices de l'Apprentissage par Transfert (Transfer Learning) ♻️
+::: {.results}
+```{ojs}
+//| echo: false
+{
+  const status = is_valid_arch ? "success" : "danger";
+  return ui.card(md`
+Taille de la carte d'activation en sortie : **${output_size} x ${output_size} pixels**
 
-Une caractéristique fascinante d'AlexNet, et qui est devenue un standard aujourd'hui, est la possibilité de réutiliser le modèle. 
-Les couches de convolution agissent comme un fantastique extracteur de caractéristiques générales (lignes, textures). Les ingénieurs ont vite compris qu'ils pouvaient "couper" la dernière couche de classification d'AlexNet, garder tout le reste intact, et simplement réentraîner une nouvelle couche finale pour une tâche spécifique (par exemple, distinguer des pièces automobiles défectueuses). Cela s'appelle le **Fine-Tuning** (ou ajustement fin) [@wikipedia_2026_alexnet].
+${is_valid_arch 
+  ? "✅ **Configuration Valide.** Les neurones se répartissent parfaitement." 
+  : "🔴 **ERREUR GÉOMÉTRIQUE :** Résultat décimal ! Le filtre va déborder de l'image. *Astuce : Essayez d'ajuster le Padding.*"}
+`, { title: "Calculateur d'Architecture (En Temps Réel)", status: status });
+}
+```
+:::
+:::
+
 
 ---
 
+## 2.4 Étude de Cas : La Révolution AlexNet (2012) 🏆 
 
+[🔍 Zoom sur cette section](24_etude_de_cas__la_revolution_alexnet_2012.qmd){.btn .btn-outline-primary .btn-sm}
 
-## 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️ [[➕ Voir plus](25_defis_critiques__overfitting_et_techniques_de_regularisation.qmd)]{.small}
+Si l'on devait dater le début de l'ère moderne de l'IA, ce serait 2012 avec le réseau **AlexNet** qui a pulvérisé les modèles traditionnels au concours ImageNet [@wikipedia_2026_alexnet].
 
-Un CNN moderne comme AlexNet ou ResNet possède des millions, voire des milliards de paramètres. Cette capacité d'apprentissage immense est une arme à double tranchant. Si on laisse le réseau s'entraîner trop longtemps sur un jeu de données limité, il va faire du **Surapprentissage (Overfitting)**. 
+*   **L'adoption de ReLU :** Contourne le *vanishing gradient*, entraînement beaucoup plus rapide [@upgrad_2026_cnn_architecture].
+*   **L'invention du Dropout :** Technique contre le surapprentissage.
+*   **L'entraînement Multi-GPU :** Modèle scindé sur deux puces NVIDIA GTX 580 car trop lourd pour la VRAM de l'époque.
 
-Au lieu de comprendre la *logique* globale d'un chat, il va mémoriser par cœur chaque pixel de *vos* images de chats d'entraînement, y compris le bruit de fond ou le filigrane en bas à droite. Résultat : une précision parfaite sur vos données d'entraînement (Train set), mais des performances catastrophiques dans la vraie vie (Test set) [@greatlearning_2025_overfitting; @nerchuko_2026_bias_variance].
+::: {.warning header="Anecdote d'Architecte : L'énigme des 224 pixels"}
+Les tutoriels disent qu'AlexNet prend des images de 224x224. Mais avec un filtre de 11, un stride de 4 et un padding de 0, la formule (vue au-dessus) ne tombe pas juste ! En réalité, le réseau recadrait secrètement à **227x227 pixels** pour satisfaire les mathématiques [@pyimagesearch_2021_cnn_layers].
+:::
 
+---
 
+## 2.5 Défis Critiques : Overfitting et Techniques de Régularisation ⚠️ 
 
-Pour garantir la "généralisation" du modèle, l'architecte doit déployer un arsenal de techniques de **régularisation** [@fabien_2026_prevent_overfitting].
+[🔍 Zoom sur cette section](25_defis_critiques__overfitting_et_techniques_de_regularisation.qmd){.btn .btn-outline-primary .btn-sm}
+
+Un CNN moderne possède des millions de paramètres. S'il s'entraîne trop longtemps, il fait du **Surapprentissage (Overfitting)** : il mémorise par cœur le Train set, mais échoue sur le Test set [@greatlearning_2025_overfitting; @nerchuko_2026_bias_variance].
 
 ### 2.5.1 Le Dropout (Le Décrochage) 🔌
 
-Imaginez une entreprise où quelques employés brillants font tout le travail. Si l'un d'eux tombe malade, l'entreprise s'effondre. Le **Dropout** consiste à "désactiver" aléatoirement un certain pourcentage de neurones (souvent 50%) à chaque passage d'entraînement. 
+Le Dropout désactive aléatoirement un certain pourcentage de neurones à chaque passage pour forcer le réseau à répartir la connaissance [@wikipedia_2026_cnn].
 
-* **L'objectif :** Forcer le réseau à ne pas dépendre excessivement de quelques neurones spécifiques. Il doit répartir la connaissance et créer des représentations redondantes et robustes [@wikipedia_2026_cnn].
-* **Pratique :** Le Dropout n'est activé *que* pendant la phase d'entraînement. En production (inférence), tous les neurones sont allumés.
+::: {.graph header="Contrôle du Dropout"}
 
-### 2. La Normalisation par Lots (Batch Normalization) ⚖️
+::: {.controls}
+```{ojs}
+//| echo: false
+viewof drp_rate = Inputs.range([0, 0.9], {value: 0.6, step: 0.01, label: "Taux de Dropout :"})
 
-Tout comme nous avons standardisé les données brutes en entrée (Chapitre 1), la **Batch Normalization (BN)** standardise les données *à l'intérieur* du réseau, entre les couches. 
-Elle recentre les activations de chaque mini-lot (mini-batch) autour d'une moyenne de zéro et d'une variance de 1.
+// Fonctions de calcul partagées pour la cohérence
+calc_tr_loss = (dr, epoch) => 2 + 5 * Math.exp(-epoch / 15) + (dr * 0.5);
 
-* **Avantage :** Elle évite que les valeurs ne s'envolent ou ne s'effondrent d'une couche à l'autre (réduisant le décalage interne), ce qui accélère fulgurante la convergence et stabilise le modèle. 
-* **Astuce d'Architecte :** Il est souvent recommandé de placer la couche de Batch Normalization *après* la convolution, mais *avant* l'activation ReLU [@pyimagesearch_2021_cnn_layers].
+calc_val_loss = (dr, epoch) => {
+  let tr = calc_tr_loss(dr, epoch);
+  if (dr < 0.3) {
+    return 2.1 + 5 * Math.exp(-epoch / 15) + (epoch * (0.3 - dr) * 0.1);
+  } else if (dr > 0.7) {
+    return tr + 1.5;
+  } else {
+    return tr + 0.3;
+  }
+}
+
+data_loss = {
+  const pts = [];
+  for(let epoch = 1; epoch <= 50; epoch++) {
+    pts.push({epoch: epoch, loss: calc_tr_loss(drp_rate, epoch), type: "Train Loss"});
+    pts.push({epoch: epoch, loss: calc_val_loss(drp_rate, epoch), type: "Validation Loss (Réalité)"});
+  }
+  return pts;
+}
+
+data_dropout_curve = {
+  const pts = [];
+  for(let dr = 0; dr <= 0.9; dr += 0.02) {
+    pts.push({dr: dr, loss: calc_val_loss(dr, 50)});
+  }
+  return pts;
+}
+```
+:::
+
+::: {.graph .horizontal header="Analyse du Dropout"}
+
+::: {.render header="Évolution Temporelle"}
+```{ojs}
+//| echo: false
+Plot.plot({
+  height: 300,
+  background: "transparent",
+  grid: true,
+  y: {domain: [1.5, 7], label: "Erreur (Loss)"},
+  x: {label: "Époques d'entraînement"},
+  color: {legend: true, domain: ["Train Loss", "Validation Loss (Réalité)"], range: [theme.blue, theme.red]},
+  marks: [
+    Plot.line(data_loss, {x: "epoch", y: "loss", stroke: "type", strokeWidth: 3})
+  ]
+})
+```
+:::
+
+::: {.render header="Impact du Taux"}
+```{ojs}
+//| echo: false
+Plot.plot({
+  height: 300,
+  background: "transparent",
+  grid: true,
+  x: {label: "Taux de Dropout", domain: [0, 0.9]},
+  y: {domain: [1.5, 7], label: "Erreur de Validation (Époque 50)"},
+  marks: [
+    Plot.rectX([0], {x1: 0, x2: 0.3, fill: theme.red, fillOpacity: 0.1}),
+    Plot.rectX([0], {x1: 0.68, x2: 0.9, fill: theme.yellow, fillOpacity: 0.1}),
+    Plot.ruleX([0.5], {stroke: theme.green, strokeWidth: 2, strokeDasharray: "5,5"}),
+    Plot.line(data_dropout_curve, {x: "dr", y: "loss", stroke: theme.red, strokeWidth: 2, strokeDasharray: "4,4", strokeOpacity: 0.5}),
+    Plot.text([{dr: 0.15, loss: 6.5, label: "SURAPPRENTISSAGE"}], {x: "dr", y: "loss", text: "label", fontWeight: "bold", fill: theme.red, fontSize: 10}),
+    Plot.text([{dr: 0.8, loss: 6.5, label: "SOUS-APPRENTISSAGE"}], {x: "dr", y: "loss", text: "label", fontWeight: "bold", fill: theme.yellow, fontSize: 10}),
+    Plot.text([{dr: 0.5, loss: 1.8, label: "CIBLE OPTIMALE"}], {x: "dr", y: "loss", text: "label", fontWeight: "bold", fill: theme.green, fontSize: 10}),
+    Plot.dot([{dr: drp_rate, loss: calc_val_loss(drp_rate, 50)}], {x: "dr", y: "loss", fill: theme.red, r: 7, stroke: "white", strokeWidth: 2})
+  ]
+})
+```
+:::
+
+:::{.results}
+```{ojs}
+//| echo: false
+{
+  const status = drp_rate === 0 ? "danger" : drp_rate === 0.5 ? "success" : drp_rate >= 0.8 ? "warning" : "debug";
+  return ui.card(md`
+**${drp_rate === 0 ? "🚨 OVERFITTING (Surapprentissage grave) ! Les courbes divergent." : drp_rate === 0.5 ? "✅ OPTIMAL. Les courbes descendent ensemble." : drp_rate >= 0.8 ? "⚠️ UNDERFITTING (Sous-apprentissage). Trop de neurones désactivés, le réseau n'apprend plus." : "Stable."}**
+`, { title: "Statut de l'entraînement", status: status });
+}
+```
+:::
+:::
+:::
+
 
 ### 2.5.3 L'Augmentation de Données (Data Augmentation) 🖼️
 
-La meilleure façon de combattre le surapprentissage est d'avoir plus de données. Si vous n'en avez pas, fabriquez-en !
-L'**Augmentation de Données** consiste à appliquer des transformations aléatoires à vos images d'entraînement à la volée : rotations, zooms, inversions horizontales (effet miroir), ou légères modifications colorimétriques. Le modèle voit ainsi une image légèrement différente à chaque fois, ce qui l'empêche de mémoriser les pixels exacts.
+La meilleure façon de combattre le surapprentissage est d'appliquer des transformations aléatoires à vos images d'entraînement à la volée. Le modèle voit une image légèrement différente à chaque fois [@wikipedia_2026_cnn].
 
-### 2.5.4 La Pénalisation des Poids (Weight Decay L1/L2) 📉
+::: {.graph .horizontal header="Augmentation de Données"}
 
-Une règle mathématique empirique stipule que des poids synaptiques très élevés sont souvent le symptôme d'un modèle qui surapprend. Le **Weight Decay** (souvent via la norme L2) ajoute une pénalité mathématique directement à la fonction de perte (Loss Function) proportionnellement à la taille des poids. Cela force l'optimiseur à maintenir les poids les plus petits et les plus simples possibles [@wikipedia_2026_cnn].
+::: {.controls header="Transformations"}
+```{ojs}
+//| echo: false
+viewof augmentation = Inputs.form({
+  rot: Inputs.toggle({label: "🔄 Rotation"}),
+  flip: Inputs.toggle({label: "↔️ Effet Miroir"}),
+  zoom: Inputs.toggle({label: "🔍 Zoom"})
+}, {
+  template: (inputs) => html`<div class="augmentation-controls-column">${Object.values(inputs)}</div>`
+})
 
----
+do_rot = augmentation.rot;
+do_flip = augmentation.flip;
+do_zoom = augmentation.zoom;
+```
+:::
 
----
+::: {.separator}
+➡️
+:::
 
+::: {.render header="Vue Machine"}
+```{ojs}
+//| echo: false
+html`
+<div class="augmentation-display-side">
+  <div class="viz-viewport viz-augmentation-viewport">
+    <div class="viz-emoji" style="
+      transform: 
+        rotate(${do_rot ? '25deg' : '0deg'}) 
+        scaleX(${do_flip ? '-1' : '1'}) 
+        scale(${do_zoom ? '2.5' : '1'});">
+      🐶
+    </div>
+    <div class="viz-overlay"></div>
+  </div>
+</div>
+`
+```
+:::
 
-## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭 [[➕ Voir plus](26_horizon_actuel__applications_industrielles_et_limites.qmd)]{.small}
+::: {.results}
+::: {.warning}
+Pour la machine, l'information matricielle de ces variantes est **totalement différente** !
+:::
+:::
+:::
 
-Aujourd'hui, les architectures convolutives ont quitté les laboratoires pour devenir l'épine dorsale de l'industrie moderne. Elles dominent des secteurs critiques : le diagnostic médical (détection de tumeurs sur IRM ou scanners), la conduite autonome (analyse en temps réel de l'environnement) et la cybersécurité (reconnaissance biométrique) [@networkoptix_2024_computervision].
+## 2.6 Horizon Actuel : Applications Industrielles et Limites 🔭 
 
-Cependant, en tant qu'architectes, nous devons être conscients que l'approche CNN atteint aujourd'hui certaines limites structurelles majeures.
-
-### 2.6.1 Les Murs de Verre du Deep Learning Visuel 🧊
-
-Malgré leurs performances surhumaines sur des tâches spécifiques, les CNN font face à trois défis majeurs dans les déploiements industriels :
-
-1.  **Gourmandise en données (Data Hunger) :** Un CNN n'a pas de "bon sens". Pour apprendre à distinguer un panneau "Stop" d'un panneau "Cédez le passage", il a besoin de dizaines de milliers d'exemples annotés manuellement, sous tous les angles et toutes les météos. Ce besoin en données est un immense goulot d'étranglement.
-2.  **L'Opacité ("Boîte Noire") :** C'est le défi juridique de la décennie. Si un modèle médical se trompe de diagnostic, ou si une voiture autonome cause un accident, il est mathématiquement très difficile de savoir *pourquoi* le réseau a pris cette décision. Ce manque d'interprétabilité freine massivement leur adoption dans les secteurs à haute responsabilité légale.
+[🔍 Zoom sur cette section](26_horizon_actuel__applications_industrielles_et_limites.qmd){.btn .btn-outline-primary .btn-sm}
 
 ### 2.6.2 Le Nouveau Challenger : Les Vision Transformers (ViT) 🤖
 
-Depuis peu, la suprématie absolue des CNN est remise en question par une technologie venue du monde du texte (NLP) : **Les Transformers**. 
+Contrairement aux CNN qui regardent l'image petit bout par petit bout, les **Vision Transformers (ViT)** découpent l'image en "patchs" et utilisent un mécanisme d'**attention globale**. Ils comparent chaque patch avec tous les autres simultanément [@networkoptix_2024_computervision].
+
+::: {.graph .horizontal header="Comparaison Architecturale : Local vs Global"}
+
+::: {.render header="Filtre Local (CNN)"}
+```{ojs}
+//| echo: false
+html`
+<div class="viz-container-sm viz-cnn-grid" style="position: relative;">
+  <div class="viz-cnn-window"></div>
+  ${Array(16).fill(0).map(() => `<div style="border: 1px solid rgba(0,172,193,0.1);"></div>`).join('')}
+</div>
+`
+```
+:::
+
+::: {.separator}
+VS
+:::
+
+::: {.render header="Attention Globale (ViT)"}
+```{ojs}
+//| echo: false
+html`
+<div class="viz-container-sm viz-vit-grid" style="position: relative;">
+  ${Array(9).fill(0).map((_, i) => `<div style="background: rgba(108, 113, 196, 0.1); border: 1px solid ${theme.violet}; border-radius: 4px; position: relative; display: flex; align-items: center; justify-content: center;"><span style="position: absolute; width: ${i===4 ? '200%' : '0'}; height: 2px; background: ${theme.magenta}; z-index: 10; animation: flashNet 2s infinite;"></span></div>`).join('')}
+  <div class="viz-vit-ring"></div>
+</div>
+`
+```
+:::
+
+:::{.results}
+::: {.info header="Comparaison Architecturale : Local vs Global"}
+Observez la différence de philosophie. À gauche, le CNN scanne laborieusement l'image. À droite, le Transformer connecte toutes les informations simultanément.
+:::
+:::
+:::
 
 
-
-Contrairement aux CNN qui regardent l'image petit bout par petit bout (via les champs récepteurs locaux), les **Vision Transformers (ViT)** découpent l'image en "patchs" et utilisent un mécanisme d'**attention globale**. Ils comparent chaque patch avec tous les autres simultanément pour comprendre le contexte global de l'image dès la première couche [@networkoptix_2024_computervision].
-
-* **Le duel :** Les ViT sont souvent plus performants que les CNN sur des tâches complexes, mais ils nécessitent des ressources informatiques et des volumes de données encore plus gigantesques. 
-* **L'avenir :** Il réside très probablement dans l'hybridation : combiner l'efficacité spatiale et la légèreté des CNN avec la capacité de compréhension contextuelle des Transformers.
-
-### 2.7 Conclusion et Transition 🌉
+## 2.7 Conclusion et Transition 🌉
 
 C'est d'ailleurs cette architecture Transformer qui a donné naissance à l'IA Générative et aux LLM. Les modèles ne se contentent plus de *classifier* des données, ils sont capables d'en *créer* de nouvelles. 
 
 Ce changement de paradigme nous amène directement à notre **[Chapitre 3 : GenAI & NLP](../3_genai/index.qmd)** !
-
----

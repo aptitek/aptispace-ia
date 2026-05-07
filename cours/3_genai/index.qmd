@@ -8,7 +8,9 @@ title: "3. NLP & GenAI : Murmurer à l'oreille des Transformers"
 Mentalement, quel est le mot qui vous vient ? 'Lait', probablement. Pourquoi ? Parce que statistiquement, dans votre expérience du monde, c'est le plus probable. L'IA générative moderne ne 'comprend' pas ce qu'est un chat ou du lait. Elle excelle simplement à prédire mathématiquement le mot suivant. Mais avant d'arriver à cette prouesse, il a fallu apprendre à la machine à compter les mots."
 :::
 
-## 3.1 Les Fondations Classiques : Du Comptage à la "Féaturisation" 🏛️ [[➕ Voir plus](31_les_fondations_classiques__du_comptage_a_la_featurisation.qmd)]{.small}
+## 3.1 Les Fondations Classiques : Du Comptage à la "Féaturisation" 🏛️ 
+
+[🔍 Zoom sur cette section](31_les_fondations_classiques__du_comptage_a_la_featurisation.qmd){.btn .btn-outline-primary .btn-sm}
 
 L’histoire du Traitement du Langage Naturel (NLP) est marquée par une transition fondamentale : le passage d'une approche purement statistique (le comptage) à des architectures génératives à haute dimension (la compréhension sémantique). 
 
@@ -51,7 +53,9 @@ graph TD
 
 ---
 
-## 3.2 Les Espaces Latents et la Compression : Autoencodeurs (AE) et VAE 🗜️ [[➕ Voir plus](32_les_espaces_latents_et_la_compression__autoencodeurs_ae_et_vae.qmd)]{.small}
+## 3.2 Les Espaces Latents et la Compression : Autoencodeurs (AE) et VAE 🗜️ 
+
+[🔍 Zoom sur cette section](32_les_espaces_latents_et_la_compression__autoencodeurs_ae_et_vae.qmd){.btn .btn-outline-primary .btn-sm}
 
 Pour dépasser les limites du TF-IDF et du Bag of Words, les chercheurs ont cherché à créer des représentations **denses**. L'idée est de projeter des milliers de mots dans un espace mathématique de dimension inférieure (quelques centaines de dimensions seulement) où la proximité entre deux points reflète une proximité de sens. C'est ce qu'on appelle l'**Espace Latent** [@geeksforgeeks_2026_latent].
 
@@ -65,7 +69,9 @@ Un autoencodeur est un réseau de neurones conçu pour une tâche particulière 
 
 
 
-**Le problème :** Les autoencodeurs classiques sont "déterministes". Ils créent des points isolés dans l'espace latent. Si vous essayez de générer une donnée à partir d'un point situé entre deux exemples connus, le décodeur produira souvent du bruit sans aucun sens [@bandaru_2025_vae].
+::: {.warning header="Le problème"}
+Les autoencodeurs classiques sont "déterministes". Ils créent des points isolés dans l'espace latent. Si vous essayez de générer une donnée à partir d'un point situé entre deux exemples connus, le décodeur produira souvent du bruit sans aucun sens [@bandaru_2025_vae].
+:::
 
 ### 3.2.2 Les Autoencodeurs Variationnels (VAE) : L'IA Probabiliste 🎲
 
@@ -83,7 +89,7 @@ Grâce aux VAE, l'espace latent devient continu. Si vous avez un point "Chat" et
 Dans les systèmes modernes (comme DALL-E ou certains modèles de compression audio), on utilise des versions "quantifiées" (**VQ-VAE**). Au lieu d'avoir un espace continu infini, on utilise un **Codebook** (un dictionnaire de vecteurs types). L'IA choisit le vecteur le plus proche dans son dictionnaire pour représenter une information, ce qui rend les modèles plus stables et plus performants pour la génération de haute qualité [@bandaru_2025_vae].
 
 ```{mermaid}
-graph LR
+graph TD
     A[Donnée Brute] --> B(Encodeur)
     B --> C{Espace Latent\nBottleneck}
     C --> D(Décodeur)
@@ -98,7 +104,9 @@ graph LR
 
 ---
 
-## 3.3 La Révolution des Transformers et le Mécanisme d'Attention ⚡ [[➕ Voir plus](33_la_revolution_des_transformers_et_le_mecanisme_dattention.qmd)]{.small}
+## 3.3 La Révolution des Transformers et le Mécanisme d'Attention ⚡ 
+
+[🔍 Zoom sur cette section](33_la_revolution_des_transformers_et_le_mecanisme_dattention.qmd){.btn .btn-outline-primary .btn-sm}
 
 Avant 2017, pour traiter du texte, l'industrie utilisait des architectures dites "récurrentes" (RNN ou LSTM). Ces modèles lisaient le texte exactement comme nous le faisons : un mot après l'autre, de gauche à droite. 
 
@@ -123,7 +131,9 @@ Pour calculer cette attention, le modèle projette chaque mot en trois vecteurs 
 La formule mathématique fondamentale (Scaled Dot-Product Attention) s'écrit :
 $$ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V $$
 
-*Note technique : Le facteur d'échelle $\sqrt{d_k}$ est crucial. Sans lui, pour des vecteurs de très grande dimension, le produit scalaire $QK^T$ deviendrait si grand qu'il saturerait la fonction softmax, bloquant ainsi l'apprentissage (gradient nul) [@articsledge_2026_positional].*
+::: {.info header="Note technique"}
+Le facteur d'échelle $\sqrt{d_k}$ est crucial. Sans lui, pour des vecteurs de très grande dimension, le produit scalaire $QK^T$ deviendrait si grand qu'il saturerait la fonction softmax, bloquant ainsi l'apprentissage (gradient nul) [@articsledge_2026_positional].
+:::
 
 ::: {.info header="L'Astuce d'Architecte : FlashAttention"}
 Le calcul de l'attention classique est extrêmement lourd. En 2022, une optimisation nommée **FlashAttention** a révolutionné l'entraînement. Les ingénieurs se sont rendu compte que le goulot d'étranglement n'était pas le calcul en lui-même, mais les allers-retours de données entre la mémoire vive (HBM) et la puce du GPU. FlashAttention calcule l'attention par blocs directement dans la mémoire cache ultra-rapide (SRAM), accélérant l'entraînement de près de 300 % [@meaning_2026_architecture].
@@ -142,7 +152,9 @@ graph TD
 
 ---
 
-## 3.4 Mécanique Interne des LLM : Tokenisation, Embeddings et Contexte ⚙️ [[➕ Voir plus](34_mecanique_interne_des_llm__tokenisation_embeddings_et_contexte.qmd)]{.small}
+## 3.4 Mécanique Interne des LLM : Tokenisation, Embeddings et Contexte ⚙️ 
+
+[🔍 Zoom sur cette section](34_mecanique_interne_des_llm__tokenisation_embeddings_et_contexte.qmd){.btn .btn-outline-primary .btn-sm}
 
 La transformation d'une phrase tapée par un utilisateur en une prédiction mathématique repose sur une ingénierie rigoureuse. Avant même de passer dans les couches d'attention du Transformer, le texte subit des transformations cruciales.
 
@@ -179,7 +191,7 @@ Pour une séquence de 100 000 tokens, la matrice d'attention seule nécessiterai
 Pour repousser ces limites, les ingénieurs utilisent des astuces comme la **Sliding Window Attention** (le modèle ne fait attention qu'aux $K$ derniers tokens autour de lui) ou la **Sparse Attention**, ce qui permet de ramener la consommation de mémoire à une croissance linéaire.
 
 ```{mermaid}
-flowchart LR
+flowchart TD
     A[Texte Brut\n'Il fait beau'] --> B(BPE Tokenizer)
     B --> C['Il', ' fait', ' beau']
     C --> D(Embeddings)
@@ -191,7 +203,9 @@ flowchart LR
 
 ---
 
-## 3.5 Pilotage du Modèle : Paramétrage et Prompt Engineering 🎮 [[➕ Voir plus](35_pilotage_du_modele__parametrage_et_prompt_engineering.qmd)]{.small}
+## 3.5 Pilotage du Modèle : Paramétrage et Prompt Engineering 🎮 
+
+[🔍 Zoom sur cette section](35_pilotage_du_modele__parametrage_et_prompt_engineering.qmd){.btn .btn-outline-primary .btn-sm}
 
 L'inférence (la phase où l'utilisateur pose une question et où le modèle répond) n'est pas une recherche d'information dans une base de données. C'est un **échantillonnage probabiliste** au sein d'une distribution mathématique. Le réseau calcule les probabilités de tous les mots du vocabulaire, puis "tire au sort" le mot suivant.
 
@@ -223,7 +237,7 @@ Parmi les techniques avancées, la plus efficace est le **Chain-of-Thought (CoT)
 En incitant le modèle à "penser étape par étape", on le force à générer des tokens intermédiaires de raisonnement. Puisque l'attention de la fenêtre de contexte se nourrit des mots précédemment générés, ces étapes intermédiaires guident mathématiquement la prédiction finale vers une solution logique, évitant ainsi les conclusions hâtives et erronées.
 
 ```{mermaid}
-graph LR
+graph TD
     A[Prompt Utilisateur] --> B{LLM calcule les\nprobabilités brutes}
     B --> C[Filtre Top-K / Top-P]
     C --> D[Ajustement par la Température]
@@ -233,7 +247,9 @@ graph LR
 
 ---
 
-## 3.6 Risques Critiques et Sécurité des Systèmes d'IA 🛡️ [[➕ Voir plus](36_risques_critiques_et_securite_des_systemes_dia.qmd)]{.small}
+## 3.6 Risques Critiques et Sécurité des Systèmes d'IA 🛡️ 
+
+[🔍 Zoom sur cette section](36_risques_critiques_et_securite_des_systemes_dia.qmd){.btn .btn-outline-primary .btn-sm}
 
 L'intégration industrielle des Modèles de Langage (LLM) ne se limite pas à régler la température ou à trouver le bon prompt. En tant qu'architecte système, vous allez déployer ces modèles dans des environnements de production critiques (banque, santé, service client). Or, ces architectures probabilistes présentent des vulnérabilités inédites en ingénierie logicielle.
 
@@ -258,7 +274,7 @@ La cybersécurité classique protégeait les bases de données (injections SQL).
 * **LLM05 - Supply Chain Vulnerabilities :** Vulnérabilités introduites par des composants tiers ou des ensembles de données compromis dans la chaîne d'approvisionnement du modèle.
 * **LLM06 - Sensitive Information Disclosure :** Le modèle révèle des données personnelles (PII) ou des secrets industriels qu'il a mémorisés (overfitting) pendant sa phase d'entraînement. La remédiation exige une "sanitisation" stricte des données avant l'entraînement.
 
-### 3.7 Conclusion et Transition 🌉
+## 3.7 Conclusion et Transition 🌉
 
 Pour résoudre le problème critique des hallucinations tout en maintenant la puissance générative des LLM, l'industrie converge vers une nouvelle architecture : le **RAG (Retrieval-Augmented Generation)**. 
 

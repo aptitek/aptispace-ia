@@ -8,7 +8,9 @@ title: "5. Gouvernance, Éthique et Sécurité : Les Nouveaux Paradigmes de l'IA
 L'IA n'est plus seulement une prouesse technique, c'est un enjeu de sécurité nationale et de droit. Aujourd'hui, on arrête de coder, on parle de lois, d'éthique et de gouvernance."
 :::
 
-## 5.1 De la "Red AI" au Cadre Réglementaire : L'EU AI Act ⚖️ [[➕ Voir plus](51_de_la_red_ai_au_cadre_reglementaire__leu_ai_act.qmd)]{.small}
+## 5.1 De la "Red AI" au Cadre Réglementaire : L'EU AI Act ⚖️ 
+
+[🔍 Zoom sur cette section](51_de_la_red_ai_au_cadre_reglementaire__leu_ai_act.qmd){.btn .btn-outline-primary .btn-sm}
 
 L’intelligence artificielle traverse une phase de mutation structurelle majeure. L'industrie marque officiellement la fin de l’ère de la **« Red AI »** — cette course effrénée à la puissance de calcul où la performance brute primait sur toute considération éthique ou environnementale — pour entrer dans un paradigme de maturité réglementaire et de durabilité [@bose_2025_greenai]. 
 
@@ -44,7 +46,9 @@ Les fournisseurs américains ou asiatiques (OpenAI, Google, Anthropic) doivent o
 
 ---
 
-## 5.2 La Menace des Deepfakes : Sécurité et "Arbitrage Advantage" 🎭 [[➕ Voir plus](52_la_menace_des_deepfakes__securite_et_arbitrage_advantage.qmd)]{.small}
+## 5.2 La Menace des Deepfakes : Sécurité et "Arbitrage Advantage" 🎭 
+
+[🔍 Zoom sur cette section](52_la_menace_des_deepfakes__securite_et_arbitrage_advantage.qmd){.btn .btn-outline-primary .btn-sm}
 
 Le paysage des cyber-menaces a muté vers l'instantanéité. Nous avons quitté l'ère des deepfakes pré-enregistrés, souvent maladroits, pour entrer dans celle des **Live Deepfakes interactifs**. Propulsés par les Réseaux Antagonistes Génératifs (GAN) et des modèles de diffusion ultra-rapides, ces avatars peuvent désormais soutenir une conversation vidéo en temps réel [@hive_2025_deepfake].
 
@@ -66,7 +70,7 @@ Pour contrer ces attaques et garantir l'authenticité d'un fichier numérique, l
 Un défi majeur émerge en cybersécurité : l'**Integrity Clash** (Conflit d'intégrité). Imaginez un scénario où un fichier possède un manifeste C2PA parfaitement valide affirmant que l'image est d'origine humaine (le pirate a forgé les métadonnées), mais dont les pixels cachent un tatouage SynthID prouvant qu'elle a été générée par l'IA. Ce conflit souligne l'urgence de créer des protocoles de vérification croisée robustes [@evaluation_2026_systemique].
 
 ```{mermaid}
-graph LR
+graph TD
     A[Fichier Numérique Suspect] --> B(Analyse des Métadonnées)
     A --> C(Analyse des Pixels/Audio)
     B -->|Certificat C2PA| D[Verdict : Origine Humaine]
@@ -84,7 +88,9 @@ La sécurité ne se limite plus à contrôler ce que le modèle *produit* (infé
 
 ---
 
-## 5.3 Éthique et Équité Algorithmique : La Logique de l'Alignement ⚖️ [[➕ Voir plus](53_ethique_et_equite_algorithmique__la_logique_de_lalignement.qmd)]{.small}
+## 5.3 Éthique et Équité Algorithmique : La Logique de l'Alignement ⚖️ 
+
+[🔍 Zoom sur cette section](53_ethique_et_equite_algorithmique__la_logique_de_lalignement.qmd){.btn .btn-outline-primary .btn-sm}
 
 L'équité n'est plus une option philosophique, c'est une exigence technique. Les biais algorithmiques sont souvent la sédimentation de préjugés historiques présents dans les données. Pour les corriger, l'architecte doit intervenir mathématiquement à l'aide de métriques précises [@evaluation_2026_systemique].
 
@@ -111,7 +117,7 @@ Pour respecter l'EU AI Act, un modèle à haut risque doit pouvoir expliquer ses
 * **LIME :** Crée un modèle simple et local "autour" d'une décision complexe pour expliquer pourquoi, dans ce cas précis, l'IA a répondu "A" plutôt que "B" [@wikipedia_2026_xai].
 
 ```{mermaid}
-graph LR
+graph TD
     A[Modèle Boîte Noire] --> B{Besoin d'explication}
     B --> C[Outils Post-hoc : SHAP/LIME]
     B --> D[Modèles Intrinsèques : Arbres de décision]
@@ -121,7 +127,9 @@ graph LR
 
 ---
 
-## 5.4 Durabilité Technologique : La Crise de la Mesure et le Paradoxe de Jevons 🌿 [[➕ Voir plus](54_durabilite_technologique__la_crise_de_la_mesure_et_le_paradoxe_de_jevons.qmd)]{.small}
+## 5.4 Durabilité Technologique : La Crise de la Mesure et le Paradoxe de Jevons 🌿 
+
+[🔍 Zoom sur cette section](54_durabilite_technologique__la_crise_de_la_mesure_et_le_paradoxe_de_jevons.qmd){.btn .btn-outline-primary .btn-sm}
 
 La transition vers une **« Green AI »** est freinée par une infrastructure physique dont l'empreinte devient insoutenable. Depuis 2012, la demande en puissance de calcul a été multipliée par 300 000 [@bose_2025_greenai]. En tant qu'architectes, notre responsabilité est d'arbitrer entre la performance d'un modèle et son coût énergétique.
 
@@ -160,3 +168,8 @@ graph TD
     E --> G[Impact Carbone Critique]
     F --> H[Impact Carbone Maîtrisé]
 ```
+## 5.5 Conclusion et Clôture du Cours 🎓
+
+Ce module nous a permis de traverser l'écosystème de l'IA, de ses fondations mathématiques à ses implications sociétales les plus profondes. En tant qu'architectes et décideurs, vous avez désormais les clés pour non seulement comprendre ces technologies, mais aussi pour les déployer de manière éthique, sécurisée et durable.
+
+L'IA n'est plus une fin en soi, mais un outil puissant pour augmenter les capacités humaines. À vous de l'utiliser avec discernement et responsabilité.

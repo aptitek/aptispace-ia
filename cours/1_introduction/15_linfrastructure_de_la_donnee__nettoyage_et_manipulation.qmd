@@ -2,12 +2,14 @@
 title: "Approfondissement : 1.5 L’Infrastructure de la Donnée : Nettoyage et Manipulation 🧹"
 ---
 
-<div style="width: 100%;"><div style="position: relative; padding-bottom: 56.25%; padding-top: 0; height: 0;"><iframe title="C'est quoi la Data science ? (K-Means)" frameborder="0" width="1200" height="675" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://view.genially.com/692c310a95ba19c812c12b8b" type="text/html" allowscriptaccess="always" allowfullscreen="true" scrolling="yes" allownetworking="all"></iframe> </div> </div>
+[C'est quoi la Data science ? (K-Means)](https://view.genially.com/692c310a95ba19c812c12b8b){.embed}
+
 
 La qualité des données dicte la limite de performance théorique de tout modèle de Machine Learning. Un pipeline rigoureux s'articule autour de plusieurs opérations statistiques critiques [@grignola_2026_cleaning].
 
-#### 1.5.1 Mathématiques du Pipeline de Nettoyage 🧼
+### 1.5.1 Mathématiques du Pipeline de Nettoyage 🧼
 
+::: {.info header="Synthèse Statistique du Nettoyage"}
 1.  **Traitement des valeurs manquantes et doublons :** 
     L'imputation statistique permet de conserver la donnée. Selon la distribution, on privilégiera la moyenne $\mu$ (pour une distribution normale) ou la médiane (plus robuste face aux asymétries) pour combler les valeurs nulles (*NaN*).
 
@@ -23,8 +25,9 @@ La qualité des données dicte la limite de performance théorique de tout modè
     Cette étape empêche les caractéristiques (*features*) à forte amplitude de dominer la fonction de coût ou les calculs de distance (comme dans les algorithmes KNN ou SVM) [@codesignal_2025_normalization].
     *   *Standardisation (Z-score scaling) :* $x' = \frac{x - \mu}{\sigma}$ (Résultat : moyenne = 0, variance = 1).
     *   *Min-Max Scaling :* $x' = \frac{x - \min(x)}{\max(x) - \min(x)}$ (Résultat : plage stricte entre 0 et 1).
+:::
 
-#### 1.5.2 L'Écosystème Vectoriel : Pandas et NumPy 🐍
+### 1.5.2 L'Écosystème Vectoriel : Pandas et NumPy 🐍
 
 En Python, les boucles `for` natives sont extrêmement lentes pour le traitement de données massives. On fait donc appel à la **vectorisation** [@leow_2018_numpy].
 

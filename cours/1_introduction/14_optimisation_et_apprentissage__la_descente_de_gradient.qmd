@@ -4,7 +4,7 @@ title: "Approfondissement : 1.4 Optimisation et Apprentissage : La Descente de G
 
 L'apprentissage d'un réseau de neurones est un problème d'optimisation non-convexe. Mathématiquement, l'erreur globale du modèle est quantifiée par une **Fonction de Coût** (*Loss Function*), notée $J(\theta)$, où $\theta$ représente le vecteur de tous les poids et biais du réseau. L'objectif est de trouver le paramètre optimal $\theta^*$ tel que $\theta^* = \arg\min J(\theta)$ [@daniella_2024_gradient; @ibm_2026_gradient].
 
-#### 1.4.1 La règle de mise à jour 🧗
+### 1.4.1 La règle de mise à jour 🧗
 
 Pour minimiser $J(\theta)$, on calcule son gradient $\nabla J(\theta)$, qui indique la direction de la plus forte pente montante. On met à jour les poids en se déplaçant dans la direction opposée :
 $$ \theta_{t+1} = \theta_t - \eta \nabla J(\theta_t) $$
@@ -15,7 +15,7 @@ Ce paysage multidimensionnel est cependant extrêmement complexe [@ruder_2016_gr
 *   **Plateaux :** Des régions où la dérivée est proche de $0$, provoquant un ralentissement extrême de l'apprentissage (Vanishing Gradient).
 *   **Points de selle (Saddle Points) :** Des points où la pente est nulle, agissant comme un minimum dans une dimension et un maximum dans une autre. Dans les espaces en très haute dimension (comme les réseaux profonds), les points de selle sont statistiquement beaucoup plus fréquents que les minima locaux.
 
-#### 1.4.2 Les Stratégies d'Échantillonnage 🏃
+### 1.4.2 Les Stratégies d'Échantillonnage 🏃
 
 Le calcul du gradient exact sur l'ensemble du dataset est mathématiquement idéal mais informatiquement irréalisable. On divise donc le processus :
 
@@ -25,7 +25,7 @@ Le calcul du gradient exact sur l'ensemble du dataset est mathématiquement idé
     *   La forte variance introduit un "bruit" bénéfique qui aide à s'échapper des minima locaux, mais empêche une convergence stricte au fond de la vallée.
 3.  **Mini-batch GD :** Calcule le gradient sur un sous-ensemble $m$ (ex: $m=64$). C'est le standard industriel qui permet de paralléliser les calculs sur les cœurs des GPU (Tensor Cores) tout en gardant une variance acceptable.
 
-#### 1.4.3 Optimiseurs Avancés : Momentum et Adam 🛠️
+### 1.4.3 Optimiseurs Avancés : Momentum et Adam 🛠️
 
 Pour surmonter les points de selle et les ravins étroits (où le gradient oscille fortement), des mécanismes inertiels ont été ajoutés [@ruder_2016_gradient] :
 

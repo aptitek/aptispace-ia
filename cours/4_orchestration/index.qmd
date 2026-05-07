@@ -8,7 +8,9 @@ title: "4. Orchestration & Agents : Quand le code prend le contrôle"
 Aujourd'hui, nous allons leur donner des bras, des jambes et un badge d'accès à votre système d'information. On passe de l'IA qui discute à l'IA qui agit."
 :::
 
-## 4.1 L'Orchestrateur : LangChain et le Réveil des Automates 🎮 [[➕ Voir plus](41_lorchestrateur__langchain_et_le_reveil_des_automates.qmd)]{.small}
+## 4.1 L'Orchestrateur : LangChain et le Réveil des Automates 🎮 
+
+[🔍 Zoom sur cette section](41_lorchestrateur__langchain_et_le_reveil_des_automates.qmd){.btn .btn-outline-primary .btn-sm}
 
 L'industrie de l'IA a opéré une mutation structurelle, délaissant les modèles génératifs isolés pour embrasser l'**Ingénierie Agentique**. Les modèles (LLM) sont brillants mais "congelés" : leurs connaissances s'arrêtent à leur date d'entraînement et ils sont incapables d'interagir nativement avec le monde réel. 
 
@@ -53,7 +55,9 @@ graph TD
 ---
 
 
-## 4.2 Mécanique du RAG : De l'Ingestion à la Recherche Hybride 🏗️ [[➕ Voir plus](42_mecanique_du_rag__de_lingestion_a_la_recherche_hybride.qmd)]{.small}
+## 4.2 Mécanique du RAG : De l'Ingestion à la Recherche Hybride 🏗️ 
+
+[🔍 Zoom sur cette section](42_mecanique_du_rag__de_lingestion_a_la_recherche_hybride.qmd){.btn .btn-outline-primary .btn-sm}
 
 Le **RAG (Retrieval-Augmented Generation)** est la réponse structurelle aux hallucinations des modèles. Au lieu de compter sur la mémoire statistique du LLM, on transforme celui-ci en un lecteur capable de consulter une bibliothèque privée avant de répondre [@ibm_2026_rag]. 
 
@@ -100,7 +104,9 @@ graph TD
 
 
 
-## 4.3 Agents Autonomes et Model Context Protocol (MCP) : L'Intégration Universelle 🤖 [[➕ Voir plus](43_agents_autonomes_et_model_context_protocol_mcp__lintegration_universelle.qmd)]{.small}
+## 4.3 Agents Autonomes et Model Context Protocol (MCP) : L'Intégration Universelle 🤖 
+
+[🔍 Zoom sur cette section](43_agents_autonomes_et_model_context_protocol_mcp__lintegration_universelle.qmd){.btn .btn-outline-primary .btn-sm}
 
 Si le RAG donne la mémoire à l'IA, les **Agents** lui donnent des mains. Un agent autonome est un LLM orchestré de manière à pouvoir interagir avec son environnement. Il ne se contente pas de répondre à une question ; il évalue la situation, choisit un outil approprié (une calculatrice, un terminal bash, une API météo), s'en sert, observe le résultat, et ajuste sa stratégie.
 
@@ -158,7 +164,9 @@ graph TD
 
 
 
-## 4.4 Sécurité, Gouvernance et Futur de l'Ingénierie Agentique 🛡️ [[➕ Voir plus](44_securite_gouvernance_et_futur_de_lingenierie_agentique.qmd)]{.small}
+## 4.4 Sécurité, Gouvernance et Futur de l'Ingénierie Agentique 🛡️ 
+
+[🔍 Zoom sur cette section](44_securite_gouvernance_et_futur_de_lingenierie_agentique.qmd){.btn .btn-outline-primary .btn-sm}
 
 L'autonomie des agents introduit un nouveau paradigme de risque. Contrairement à un simple script déterministe qui plantera s'il rencontre une erreur, un agent IA tentera de contourner le problème, parfois en prenant des initiatives inattendues. Une gouvernance stricte est donc impérative.
 
@@ -184,7 +192,7 @@ Les premiers retours de l'industrie sur l'intégration de ces systèmes orchestr
 
 La convergence entre l'orchestration cyclique (LangGraph), le RAG haute fidélité et le standard d'intégration universel (MCP) transforme définitivement l'entreprise. Les modèles d'IA ne sont plus de simples gadgets conversationnels, ils deviennent de véritables collaborateurs numériques, capables d'automatiser des flux de travail complets tout en garantissant la souveraineté des données.
 
-### 4.5 Conclusion et Transition 🌉
+## 4.5 Conclusion et Transition 🌉
 
 Cependant, donner les pleins pouvoirs à des agents autonomes connectés à nos bases de données soulève des questions existentielles : comment s'assurer que l'agent ne prenne pas de décisions biaisées, dangereuses ou illégales ? 
 

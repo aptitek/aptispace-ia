@@ -20,7 +20,7 @@ Cet aide-mémoire centralise les schémas fondamentaux et les concepts critiques
 
 ### 📐 Schéma : Dynamique d'Apprentissage
 ```{mermaid}
-graph LR
+graph TD
     A[Données Brutes] --> B(Feedforward)
     B --> C{Prédiction}
     C --> D[Calcul de l'Erreur]
@@ -45,7 +45,7 @@ graph LR
 
 ### 📐 Schéma : Anatomie d'un CNN
 ```{mermaid}
-graph LR
+graph TD
     A[Image Brute] --> B[Convolution]
     B --> C[ReLU]
     C --> D[Pooling]

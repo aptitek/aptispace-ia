@@ -14,9 +14,11 @@ project:
 bibliography: bibliography.bib
 
 filters:
+  - aptitek/graph
   - filetree
   - card
   - timeline
+  - embed
 
 website:
   title: "ia"

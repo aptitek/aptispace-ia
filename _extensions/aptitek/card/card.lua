@@ -7,7 +7,8 @@ function Div(el)
         ["warning"] = true,
         ["info"] = true,
         ["light"] = true,
-        ["dark"] = true
+        ["dark"] = true,
+        ["debug"] = true
     }
 
     local color = nil
