@@ -189,6 +189,71 @@ window.ui = {
     
     container.value = value;
     return container;
+  },
+  toggle: ({label, options, value, layout = 'horizontal'}) => {
+    const container = document.createElement('div');
+    container.className = `premium-toggle-container ${layout}`;
+    
+    if (label) {
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'toggle-label';
+      labelSpan.innerText = label;
+      container.appendChild(labelSpan);
+    }
+    
+    const group = document.createElement('div');
+    group.className = 'toggle-group';
+    
+    const isObjectOptions = !Array.isArray(options);
+    const keys = isObjectOptions ? Object.keys(options) : options;
+    
+    keys.forEach(key => {
+      const displayValue = isObjectOptions ? options[key] : key;
+      const btn = document.createElement('button');
+      btn.className = `toggle-option ${key === value ? 'active' : ''}`;
+      btn.innerText = displayValue;
+      btn.onclick = () => {
+        group.querySelectorAll('.toggle-option').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        container.value = key;
+        container.dispatchEvent(new CustomEvent("input"));
+      };
+      group.appendChild(btn);
+    });
+    
+    container.appendChild(group);
+    container.value = value;
+    return container;
+  },
+  checkbox: ({label, value = false}) => {
+    const container = document.createElement('div');
+    container.className = 'premium-checkbox-container';
+    
+    const btn = document.createElement('button');
+    btn.className = `checkbox-toggle ${value ? 'active' : ''}`;
+    
+    const icon = document.createElement('span');
+    icon.className = 'checkbox-icon';
+    icon.innerText = value ? '✓' : '';
+    
+    const text = document.createElement('span');
+    text.className = 'checkbox-text';
+    text.innerText = label;
+    
+    btn.appendChild(icon);
+    btn.appendChild(text);
+    
+    btn.onclick = () => {
+      const newValue = !container.value;
+      container.value = newValue;
+      btn.classList.toggle('active', newValue);
+      icon.innerText = newValue ? '✓' : '';
+      container.dispatchEvent(new CustomEvent("input"));
+    };
+    
+    container.appendChild(btn);
+    container.value = value;
+    return container;
   }
 };
 </script>

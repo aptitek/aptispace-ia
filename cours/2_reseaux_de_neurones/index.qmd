@@ -272,10 +272,10 @@ Si le résultat n'est pas un entier, la configuration est invalide !
 ::: {.controls}
 ```{ojs}
 //| echo: false
-viewof hyper_W = Inputs.range([10, 227], {value: 227, step: 1, label: "Entrée (W)"})
-viewof hyper_F = Inputs.range([1, 11], {value: 11, step: 1, label: "Filtre (F)"})
-viewof hyper_P = Inputs.range([0, 5], {value: 0, step: 1, label: "Padding (P)"})
-viewof hyper_S = Inputs.range([1, 5], {value: 4, step: 1, label: "Stride (S)"})
+viewof hyper_W = ui.slider({label: "Entrée (W)", value: 227, min: 10, max: 227, step: 1})
+viewof hyper_F = ui.slider({label: "Filtre (F)", value: 11, min: 1, max: 11, step: 1})
+viewof hyper_P = ui.slider({label: "Padding (P)", value: 0, min: 0, max: 5, step: 1})
+viewof hyper_S = ui.slider({label: "Stride (S)", value: 4, min: 1, max: 5, step: 1})
 
 output_size = (hyper_W - hyper_F + 2 * hyper_P) / hyper_S + 1
 is_valid_arch = Number.isInteger(output_size)
@@ -333,7 +333,7 @@ Le Dropout désactive aléatoirement un certain pourcentage de neurones à chaqu
 ::: {.controls}
 ```{ojs}
 //| echo: false
-viewof drp_rate = Inputs.range([0, 0.9], {value: 0.6, step: 0.01, label: "Taux de Dropout :"})
+viewof drp_rate = ui.slider({label: "Taux de Dropout", value: 0.6, min: 0, max: 0.9, step: 0.01})
 
 // Fonctions de calcul partagées pour la cohérence
 calc_tr_loss = (dr, epoch) => 2 + 5 * Math.exp(-epoch / 15) + (dr * 0.5);
@@ -431,20 +431,12 @@ La meilleure façon de combattre le surapprentissage est d'appliquer des transfo
 
 ::: {.graph .horizontal header="Augmentation de Données"}
 
-::: {.controls header="Transformations"}
+::: {.controls}
 ```{ojs}
 //| echo: false
-viewof augmentation = Inputs.form({
-  rot: Inputs.toggle({label: "🔄 Rotation"}),
-  flip: Inputs.toggle({label: "↔️ Effet Miroir"}),
-  zoom: Inputs.toggle({label: "🔍 Zoom"})
-}, {
-  template: (inputs) => html`<div class="augmentation-controls-column">${Object.values(inputs)}</div>`
-})
-
-do_rot = augmentation.rot;
-do_flip = augmentation.flip;
-do_zoom = augmentation.zoom;
+viewof do_rot = ui.checkbox({label: "🔄 Rotation"})
+viewof do_flip = ui.checkbox({label: "↔️ Effet Miroir"})
+viewof do_zoom = ui.checkbox({label: "🔍 Zoom"})
 ```
 :::
 

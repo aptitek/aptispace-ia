@@ -268,7 +268,12 @@ viewof x_sim = ui.slider({
 f_2d = (x) => Math.pow(x, 4) - 4 * Math.pow(x, 2) + 0.5 * x + 10
 df_2d = (x) => 4 * Math.pow(x, 3) - 8 * x + 0.5
 
-data_plot = d3.range(-2.5, 2.51, 0.05).map(x => ({x: x, y: f_2d(x)}))
+data_plot = d3.range(-2.5, 2.51, 0.05).map(x => ({
+  x: x, 
+  y: f_2d(x), 
+  g: Math.abs(df_2d(x)),
+  region: (-1.7 < x && x < -1.2) ? theme.yellow : ((-0.2 < x && x < 0.3) ? theme.red : ((1.2 < x && x < 1.7) ? theme.green : "transparent"))
+}))
 ```
 :::
 
@@ -281,14 +286,18 @@ Plot.plot({
   grid: true,
   y: {label: "Coût (Erreur)", domain: [0, 15]},
   x: {label: "Paramètre (Poids)"},
+  color: {
+    domain: [0, 10],
+    range: [theme.red, theme.yellow, theme.green, theme.blue]
+  },
   marks: [
-    Plot.areaY(data_plot, {x: "x", y: "y", fill: theme.blue, fillOpacity: 0.1}),
-    Plot.line(data_plot, {x: "x", y: "y", stroke: theme.blue, strokeWidth: 3}),
+    Plot.areaY(data_plot, {x: "x", y: "y", fill: d => d.region, fillOpacity: 0.15}),
+    Plot.line(data_plot, {x: "x", y: "y", stroke: "g", strokeWidth: 3, z: null}),
     
     // Annotations conceptualisées
-    Plot.text([{x: -1.45, y: 4.8, text: "Minimum Local ⬇️"}], {x: "x", y: "y", dy: -20, fontWeight: "bold", fontSize: 14}),
-    Plot.text([{x: 1.38, y: 3.5, text: "Minimum Global 🏆"}], {x: "x", y: "y", dy: -20, fontWeight: "bold", fontSize: 14}),
-    Plot.text([{x: 0.05, y: 10.2, text: "Plateau / Sommet ✋"}], {x: "x", y: "y", dy: -20, fontWeight: "bold", fontSize: 14}),
+    Plot.text([{x: -1.45, y: 4, text: "Minimum Local"}], {x: "x", y: "y", text: "text", dy: -20, fontWeight: "bold", fontSize: 14}),
+    Plot.text([{x: 1.38, y: 3.5, text: "Minimum Global"}], {x: "x", y: "y", text: "text", dy: -20, fontWeight: "bold", fontSize: 14}),
+    Plot.text([{x: 0.05, y: 10.2, text: "Point de Selle"}], {x: "x", y: "y", text: "text", dy: -20, fontWeight: "bold", fontSize: 14}),
     
     // Le point actuel (la balle)
     Plot.dot([{x: x_sim, y: f_2d(x_sim)}], {x: "x", y: "y", fill: theme.red, r: 8, stroke: "white", strokeWidth: 2}),
@@ -323,9 +332,9 @@ Plot.plot({
       message = "⚠️ **Minimum Local détecté !** C'est un creux, mais il existe un meilleur fond ailleurs";
     } else {
       status = "success";
-      message = "✅ **Minimum Réel (Global) !** L'IA a trouvé le point le plus bas possible (Coût < 6).";
+      message = "✅ **Minimum Global !** L'IA a trouvé le point le plus bas possible (Coût < 6).";
     }
-  } else if (Math.abs(gradient) < 0.6) {
+  } else if (Math.abs(gradient) < 3) {
     status = "warning";
     message = "⚠️ **Zone de danger :** La pente est presque nulle. L'IA risque de s'arrêter ici !";
   }
@@ -398,7 +407,9 @@ Plotly = require("plotly.js-dist@2.24.1")
 
 {
   const container = document.createElement("div");
-  container.style.height = "500px";
+  container.style.height = "480px";
+  container.style.width = "100%";
+  container.style.maxWidth = "100%";
   
   const x = []; const y = []; const z = [];
   for (let i = -2.5; i <= 2.5; i += 0.15) x.push(i);
@@ -432,7 +443,11 @@ Plotly = require("plotly.js-dist@2.24.1")
   };
 
   const layout = {
-    margin: { l: 0, r: 0, b: 0, t: 0 },
+    width: width - 100,
+    height: 480,
+    autosize: true,
+    showlegend: false,
+    margin: { l: 30, r: 30, b: 30, t: 30 },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
     scene: {
@@ -441,7 +456,10 @@ Plotly = require("plotly.js-dist@2.24.1")
     }
   };
 
-  Plotly.newPlot(container, [surfaceTrace, trailTrace, ballTrace], layout, {responsive: true});
+  Plotly.newPlot(container, [surfaceTrace, trailTrace, ballTrace], layout, {responsive: true, displayModeBar: true});
+  
+  // Dynamic resize
+  new ResizeObserver(() => Plotly.Plots.resize(container)).observe(container);
 
   // Nettoyage du timer précédent si la cellule re-run
   if (this && this.animationTimer) clearInterval(this.animationTimer);
@@ -520,7 +538,7 @@ Voici les 3 étapes incontournables pour purifier vos données brutes :
 ```{ojs}
 //| echo: false
 // 1. Contrôles de l'interface utilisateur
-viewof method = Inputs.radio(["Z-Score", "IQR"], {value: "Z-Score", label: "Méthode :"})
+viewof method = ui.toggle({label: "Méthode :", options: ["Z-Score", "IQR"], value: "Z-Score"})
 
 // Le curseur s'adapte automatiquement selon la méthode choisie
 viewof threshold = method === "Z-Score" 
