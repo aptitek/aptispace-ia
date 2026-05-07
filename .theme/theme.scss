@@ -533,8 +533,50 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
 }
 
 // ==========================================
-// 10. TIMELINE TABLES
+// 10. TIMELINE TABLES & CUSTOM STYLING
 // ==========================================
+
+.timeline.vertical, .timeline.horizontal, .timeline {
+    --tl-color-line: #{$sol-magenta} !important;
+    --tl-color-dot: #{$sol-magenta} !important;
+    --tl-color-label: #{$sol-base01} !important;
+    --tl-line-width: 4px !important;
+    
+    // Rainbow gradient line
+    &::before {
+        background: linear-gradient(to bottom, 
+            #{$sol-magenta}, #{$sol-red}, #{$sol-orange}, 
+            #{$sol-yellow}, #{$sol-green}, #{$sol-cyan}, 
+            #{$sol-blue}, #{$sol-violet}
+        ) !important;
+    }
+
+    // Center dots on the line by accounting for line width
+    .event::after {
+        left: calc(-30px - var(--tl-dot-size) / 2 + var(--tl-line-width) / 2) !important;
+        transition: all 0.3s ease;
+    }
+
+    // Chronological dot colors
+    .event:nth-child(1)::after { border-color: #{$sol-magenta} !important; }
+    .event:nth-child(2)::after { border-color: #{$sol-red} !important; }
+    .event:nth-child(3)::after { border-color: #{$sol-orange} !important; }
+    .event:nth-child(4)::after { border-color: #{$sol-yellow} !important; }
+    .event:nth-child(5)::after { border-color: #{$sol-green} !important; }
+    .event:nth-child(6)::after { border-color: #{$sol-cyan} !important; }
+    .event:nth-child(7)::after { border-color: #{$sol-blue} !important; }
+    .event:nth-child(8)::after { border-color: #{$sol-violet} !important; }
+    
+    // Matching labels if needed
+    .event:nth-child(1)::before { color: #{$sol-magenta} !important; }
+    .event:nth-child(2)::before { color: #{$sol-red} !important; }
+    .event:nth-child(3)::before { color: #{$sol-orange} !important; }
+    .event:nth-child(4)::before { color: #{$sol-yellow} !important; }
+    .event:nth-child(5)::before { color: #{$sol-green} !important; }
+    .event:nth-child(6)::before { color: #{$sol-cyan} !important; }
+    .event:nth-child(7)::before { color: #{$sol-blue} !important; }
+    .event:nth-child(8)::before { color: #{$sol-violet} !important; }
+}
 
 .event table {
     table-layout: fixed;
@@ -713,6 +755,8 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
 
 // Semantic Dynamic Graphs
 .graph, .dynamic-graph-container {
+    container-type: inline-size;
+    container-name: graph;
     @extend %card-emphasized;
     background: $sol-base2;
     display: flex;
@@ -736,6 +780,10 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
         font-variation-settings: 'MONO' 0, 'CASL' 0.5;
     }
 
+    .code-copy-button {
+        display: none !important;
+    }
+
     // Headings and Results always span full width
     h1, h2, h3, h4, h5, h6, .results, .dynamic-graph-results {
         margin-top: 0 !important;
@@ -751,17 +799,18 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     &.horizontal {
         flex-direction: row !important;
         flex-wrap: wrap !important;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
         gap: 10px 15px;
 
-        @media (max-width: 992px) {
+        @media (max-width: 800px) {
             flex-direction: column !important;
         }
 
         .render, .dynamic-graph-canvas {
-            flex: 2 1 220px;
+            flex: 1 1 200px;
             min-width: 0;
+            padding: 15px !important;
         }
 
         .controls, .dynamic-graph-controls {
@@ -776,11 +825,12 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     }
 }
 
-.render[header], .controls[header], 
-.dynamic-graph-canvas[header], .dynamic-graph-controls[header] {
+.render[data-header], .controls[data-header], 
+.dynamic-graph-canvas[data-header], .dynamic-graph-controls[data-header] {
     &::before {
-        content: attr(header);
+        content: attr(data-header);
         display: block;
+        pointer-events: none;
         font-size: 0.85em;
         font-weight: 800;
         color: $sol-base01;
@@ -792,22 +842,33 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     }
 }
 
-.separator {
+.separator, .matrix-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 5px;
-    font-weight: 800;
+    font-size: 0 !important; // Hide emoji text
     color: $sol-base1;
-    opacity: 0.25;
-    font-size: 1.4em;
+    opacity: 0.4;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
-    min-width: 40px;
+    min-width: 50px;
+    height: 50px;
+    
+    &::after {
+        content: "\F135"; // bi-arrow-right
+        font-family: "bootstrap-icons" !important;
+        font-size: 2rem !important;
+        font-style: normal;
+        font-weight: normal !important;
+    }
+}
 
-    @media (max-width: 992px) {
-        width: 100%;
-        height: 40px;
+@container graph (max-width: 650px) {
+    .separator, .matrix-arrow {
+        width: 100% !important;
+        height: 60px;
         transform: rotate(90deg);
+        margin: 5px 0;
     }
 }
 
@@ -827,7 +888,7 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: auto;
+    overflow: visible;
 
     .has-controls & {
         grid-column: 1 / 2;
@@ -855,8 +916,12 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
 
 .matrix-row {
     @extend %flex-center;
-    flex-direction: column;
+    flex-direction: row;
     gap: 30px;
+
+    @media (max-width: 992px) {
+        flex-direction: column;
+    }
 }
 
 .matrix-grid-in {
@@ -864,6 +929,7 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     grid-template-columns: repeat(4, 50px); 
     gap: 8px; 
     text-align: center;
+    padding: 20px; // Space for scaling and shadows
 }
 
 .matrix-grid-out {
@@ -871,6 +937,7 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     grid-template-columns: repeat(2, 65px); 
     gap: 10px; 
     text-align: center;
+    padding: 20px; // Space for scaling and shadows
 }
 
 .matrix-labels {
@@ -882,12 +949,7 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     margin: 5px 0;
 }
 
-.matrix-arrow {
-    font-size: 1.5em;
-    opacity: 0.5;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-    margin: 10px 0;
-}
+// Removed legacy matrix-arrow styles as they are unified with .separator
 
 .matrix-cell {
     width: 50px;
@@ -898,6 +960,13 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid transparent;
+    position: relative;
+
+    &:hover {
+        z-index: 20 !important;
+        transform: scale(1.1) !important;
+        border-color: rgba(255,255,255,0.5) !important;
+    }
 
     &.active {
         transform: scale(1.05);
@@ -906,16 +975,15 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
 
     &.is-group {
         border-color: rgba($sol-base3, 0.8) !important;
-        box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
     }
 
     &.is-max {
-        transform: scale(1.2) !important;
+        transform: scale(1.15) !important;
         z-index: 10;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         font-size: 1.25em;
         text-decoration: underline;
         font-weight: 900;
+        border-color: white !important;
     }
 }
 
@@ -943,9 +1011,11 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     font-size: 18px;
 
     &.active {
-        transform: scale(1.15);
-        border-color: $sol-base02 !important;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        transform: scale(1.1);
+        border-color: white !important;
+        font-weight: 900;
+        text-decoration: underline;
+        font-size: 1.25em;
     }
 }
 
@@ -1036,9 +1106,10 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
 
     .slider-label {
         font-weight: 800;
-        font-size: 0.85em;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.08em;
+        color: $sol-base01;
     }
 
     .slider-badge {
@@ -1173,11 +1244,11 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     }
 
     .toggle-label {
-        font-weight: 700;
+        font-weight: 800;
         font-size: 0.75rem;
         color: $sol-base01;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         margin-bottom: 4px;
     }
 

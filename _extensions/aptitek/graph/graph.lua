@@ -17,15 +17,12 @@ local function handle_controls(div)
   end
 
   local new_content = pandoc.List()
-  if title then
-    local title_div = pandoc.Div(pandoc.Plain({pandoc.Str(title)}), pandoc.Attr("", {"graph-title"}))
-    new_content:insert(title_div)
-  end
   local group_div = pandoc.Div(div.content, pandoc.Attr("", {"graph-controls-group"}))
   
   new_content:insert(group_div)
   
-  return pandoc.Div(new_content, pandoc.Attr("", {"dynamic-graph-controls", "graph-controls"}))
+  local attr = pandoc.Attr(div.identifier, {"dynamic-graph-controls", "graph-controls"}, div.attributes)
+  return pandoc.Div(new_content, attr)
 end
 
 local function transform_graph_div(el)
@@ -45,8 +42,8 @@ local function transform_graph_div(el)
           components:insert(handle_controls(block))
           has_controls = true
         elseif has_class(block, "render") then
-          block.classes:insert("dynamic-graph-canvas")
           local new_classes = pandoc.List()
+          new_classes:insert("dynamic-graph-canvas")
           for _, c in ipairs(block.classes) do
             if c ~= "render" then new_classes:insert(c) end
           end
@@ -139,10 +136,10 @@ window.ui = {
     container.appendChild(body);
     return container;
   },
-  slider: ({label, labels, value = 0, min = 0, max = 3, step = 1}) => {
+  slider: ({label, labels, value = 0, min = 0, max = 3, step = 1, state}) => {
     const container = document.createElement('div');
     container.className = 'premium-slider-container';
-    container.setAttribute('data-state', value);
+    container.setAttribute('data-state', state !== undefined ? state : value);
     
     const header = document.createElement('div');
     header.className = 'slider-header';
