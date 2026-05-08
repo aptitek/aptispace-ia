@@ -45,11 +45,13 @@ viewof btnSparsity = {
   };
   return btn;
 }
-
 ```
+
+:::
 :::
 
 ::: {.render .transparent header="Tweet d'Entrée"}
+
 ```{ojs}
 //| echo: false
 tweetBox = {
@@ -66,6 +68,7 @@ tweetBox = {
   </div>`;
 }
 ```
+
 :::
 
 ::: {.separator}
@@ -110,6 +113,7 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
 ```
 
 ::: {.render .terminal-mode header="Vecteur_Sparsité_BoW"}
+
 ```{ojs}
 //| echo: false
 {
@@ -188,9 +192,11 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
   }
 }
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 {
@@ -299,6 +305,7 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
   return html`${ledContainer}${grid}`;
 }
 ```
+
 :::
 
 :::

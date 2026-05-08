@@ -331,7 +331,7 @@ return {
     -- Second pass: Inject theme if needed
     Pandoc = function(doc)
       if _G.has_graph_in_doc then
-        doc.blocks:insert(1, pandoc.RawBlock('html', theme_js))
+        doc.blocks:insert(pandoc.RawBlock('html', theme_js))
       end
       return doc
     end

@@ -15,6 +15,7 @@ mutable poolGroup = -1;
 ```
 
 ::: {.render header="Image d'Entrée (4x4)"}
+
 ```{ojs}
 //| echo: false
 {
@@ -42,6 +43,7 @@ mutable poolGroup = -1;
   return container;
 }
 ```
+
 :::
 
 ::: {.separator}
@@ -49,6 +51,7 @@ mutable poolGroup = -1;
 :::
 
 ::: {.render header="Sortie Pooled (2x2)"}
+
 ```{ojs}
 //| echo: false
 {
@@ -67,9 +70,11 @@ mutable poolGroup = -1;
   return container;
 }
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 {
@@ -97,6 +102,7 @@ Le plus grand est **${maxVal}**, c'est lui qui survit au Pooling !
   `, { title: "Détail du Calcul", status: status });
 }
 ```
+
 :::
 :::
 
@@ -117,6 +123,7 @@ Si le résultat n'est pas un entier, la configuration est invalide !
 ::: {.graph header="Calculateur de Sortie"}
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof hyper_W = ui.slider({label: "Entrée (W)", value: 227, min: 10, max: 227, step: 1, state: 0})
@@ -127,9 +134,11 @@ viewof hyper_S = ui.slider({label: "Stride (S)", value: 4, min: 1, max: 5, step:
 output_size = (hyper_W - hyper_F + 2 * hyper_P) / hyper_S + 1
 is_valid_arch = Number.isInteger(output_size)
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 {
@@ -143,5 +152,6 @@ ${is_valid_arch
 `, { title: "Calculateur d'Architecture (En Temps Réel)", status: status });
 }
 ```
+
 :::
 :::

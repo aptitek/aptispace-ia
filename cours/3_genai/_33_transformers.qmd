@@ -291,6 +291,7 @@ mutable activeQ = 4;
   return svg.node();
 }
 ```
+
 :::
 
 ::: {.separator}
@@ -329,7 +330,7 @@ mutable activeQ = 4;
   const step2 = html`<div>
     <span style="color: ${theme.cyan}; font-weight: bold;">[2. ATTENTION]</span> Calcul du score de pertinence :<br/>
     <div style="margin-top: 8px; padding: 12px; background: ${theme.base02}; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); line-height: 2.2;">
-      ${html([kMatchHtml])}
+      ${html`${kMatchHtml}`}
     </div>
   </div>`;
 

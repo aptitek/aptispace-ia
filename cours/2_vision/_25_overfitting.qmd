@@ -10,6 +10,7 @@ Le Dropout désactive aléatoirement un certain pourcentage de neurones à chaqu
 ::: {.graph .vertical header="Contrôle du Dropout"}
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof drp_rate = ui.slider({label: "Taux de Dropout", value: 0.6, min: 0, max: 0.9, step: 0.01})
@@ -45,9 +46,11 @@ data_dropout_curve = {
   return pts;
 }
 ```
+
 :::
 
 ::: {.render header="Évolution Temporelle"}
+
 ```{ojs}
 //| echo: false
 Plot.plot({
@@ -62,9 +65,11 @@ Plot.plot({
   ]
 })
 ```
+
 :::
 
 ::: {.render header="Impact du Taux"}
+
 ```{ojs}
 //| echo: false
 Plot.plot({
@@ -85,9 +90,11 @@ Plot.plot({
   ]
 })
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 {
@@ -97,6 +104,7 @@ Plot.plot({
 `, { title: "Statut de l'entraînement", status: status });
 }
 ```
+
 :::
 :::
 
@@ -108,12 +116,14 @@ La meilleure façon de combattre le surapprentissage est d'appliquer des transfo
 ::: {.graph .horizontal header="Augmentation de Données"}
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof do_rot = ui.checkbox({label: "🔄 Rotation"})
 viewof do_flip = ui.checkbox({label: "↔️ Effet Miroir"})
 viewof do_zoom = ui.checkbox({label: "🔍 Zoom"})
 ```
+
 :::
 
 ::: {.separator}
@@ -121,6 +131,7 @@ viewof do_zoom = ui.checkbox({label: "🔍 Zoom"})
 :::
 
 ::: {.render header="Vue Machine"}
+
 ```{ojs}
 //| echo: false
 html`
@@ -138,6 +149,7 @@ html`
 </div>
 `
 ```
+
 :::
 
 ::: {.results}

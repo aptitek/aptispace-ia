@@ -10,6 +10,7 @@ Dans un réseau classique, chaque neurone est connecté à tous les pixels. Imag
 ::: {.graph header="Le Fléau de la Dimensionnalité"}
 
 ::: {.controls header="Configuration"}
+
 ```{ojs}
 //| echo: false
 resolutions = [28, 250, 1080, 3840];
@@ -28,9 +29,11 @@ mlp_weights_per_neuron = res_choice * res_choice * 3;
 mlp_total_weights = mlp_weights_per_neuron * 100;
 cnn_total_weights = 3 * 3 * 3 * 100;
 ```
+
 ::: 
 
 ::: {.render header="Visualisation des Poids"}
+
 ```{ojs}
 //| echo: false
 {
@@ -67,9 +70,11 @@ cnn_total_weights = 3 * 3 * 3 * 100;
   `;
 }
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 {
@@ -86,6 +91,7 @@ cnn_total_weights = 3 * 3 * 3 * 100;
 `, { title: "Impact sur l'Architecture", status: status });
 }
 ```
+
 :::
 :::
 

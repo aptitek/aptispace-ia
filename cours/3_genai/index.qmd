@@ -2,18 +2,22 @@
 title: "💬 GenAI & NLP"
 ---
 
+```{ojs}
+//| echo: false
+//| output: false
+// Block de stabilisation OJS pour le projet Quarto
+_stabilize = true
+```
+
 
 
 {{< include _31_fondations.qmd >}}
 
 
-
 {{< include _32_espaces_latents.qmd >}}
 
 
-
 {{< include _33_transformers.qmd >}}
-
 
 
 {{< include _34_mecanique_llm.qmd >}}

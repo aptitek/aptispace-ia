@@ -8,6 +8,7 @@ Contrairement aux CNN qui regardent l'image petit bout par petit bout, les **Vis
 ::: {.graph .horizontal header="Comparaison Architecturale : Local vs Global"}
 
 ::: {.render header="Filtre Local (CNN)"}
+
 ```{ojs}
 //| echo: false
 html`
@@ -17,6 +18,7 @@ html`
 </div>
 `
 ```
+
 :::
 
 ::: {.separator}
@@ -24,6 +26,7 @@ VS
 :::
 
 ::: {.render header="Attention Globale (ViT)"}
+
 ```{ojs}
 //| echo: false
 html`
@@ -33,6 +36,7 @@ html`
 </div>
 `
 ```
+
 :::
 
 :::{.results}

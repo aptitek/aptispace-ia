@@ -2,6 +2,14 @@
 title: "🧹 Fondations de l'IA & Data"
 ---
 
+```{ojs}
+//| echo: false
+//| output: false
+// Block de stabilisation OJS pour le projet Quarto
+_stabilize = true
+```
+
+
 
 
 {{< include _11_genese.qmd >}}
@@ -20,8 +28,7 @@ title: "🧹 Fondations de l'IA & Data"
 
 
 
-{{< include _15_data.qmd >}} 
-
+{{< include _15_data.qmd >}}
 
 
 ## 🌉 Conclusion et Transition

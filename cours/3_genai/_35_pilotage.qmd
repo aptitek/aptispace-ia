@@ -21,6 +21,160 @@ Même avec une température bien réglée, il reste toujours une "longue traîne
 * **Top-K :** Le modèle ne conserve que les $K$ meilleurs candidats (ex: le top 40 des mots les plus probables) et ramène la probabilité de tous les autres à zéro.
 * **Top-P (Nucleus Sampling) :** Plus dynamique que le Top-K. Le modèle additionne les probabilités des meilleurs tokens en descendant dans la liste. Dès que la somme atteint le seuil $P$ (ex: 0.95, soit 95% de la masse de probabilité), il coupe la liste. Cela permet de garder beaucoup de mots si le contexte est flou, ou très peu de mots si le contexte est évident [@sorbon_2024_llm].
 
+
+::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
+
+::: {.controls header="Paramètres de Sampling"}
+Ajustez les leviers pour observer l'impact sur la probabilité de tirage du prochain mot.
+
+```{ojs}
+//| echo: false
+// 1. Température : Gère l'étalement de la distribution
+viewof temp = Inputs.range([0.01, 2], {value: 0.7, step: 0.05, label: html`<b>Température (T) :</b>`})
+
+// 2. Top-K : Filtre les K meilleurs candidats
+viewof topK = Inputs.range([1, 8], {value: 8, step: 1, label: html`<b>Top-K :</b>`})
+
+// 3. Top-P (Nucleus) : Filtre la masse de probabilité cumulée
+viewof topP = Inputs.range([0.1, 1], {value: 1, step: 0.05, label: html`<b>Top-P (Nucleus) :</b>`})
+
+```
+
+:::
+
+::: {.render .transparent header="Distribution Softmax Dynamique"}
+
+```{ojs}
+//| echo: false
+{
+  // Vocabulaire fictif et ses scores bruts (logits)
+  const vocab = [
+    { word: "Intelligence", logit: 8.0 },
+    { word: "Chat", logit: 7.5 },
+    { word: "Code", logit: 6.0 },
+    { word: "Robot", logit: 5.0 },
+    { word: "Erreur", logit: 4.0 },
+    { word: "Pizza", logit: 1.0 },
+    { word: "Soleil", logit: 0.5 },
+    { word: "Arbre", logit: 0.1 }
+  ];
+
+  // --- ÉTAPE 1 : Application de la Température (Softmax Stable) ---
+  // p_i = exp((L_i - max(L)) / T) / sum(exp((L_j - max(L)) / T))
+  const maxLogit = d3.max(vocab, d => d.logit);
+  let items = vocab.map(d => ({
+    ...d,
+    score: Math.exp((d.logit - maxLogit) / temp)
+  }));
+  
+  let sumScore = d3.sum(items, d => d.score);
+  items.forEach(d => d.prob = d.score / sumScore);
+
+  // --- ÉTAPE 2 : Tri pour les filtres ---
+  items.sort((a, b) => b.prob - a.prob);
+
+  // --- ÉTAPE 3 : Filtre Top-K ---
+  // On ne garde que les K premiers
+  items.forEach((d, i) => {
+    if (i >= topK) d.prob = 0;
+  });
+
+  // --- ÉTAPE 4 : Filtre Top-P (Nucleus) ---
+  // On coupe dès que la somme cumulée dépasse P
+  let cumulative = 0;
+  let pCutoffReached = false;
+  items.forEach(d => {
+    if (pCutoffReached || d.prob <= 0) {
+      d.prob = 0;
+    } else {
+      const currentProb = d.prob;
+      cumulative += currentProb;
+      if (cumulative >= topP) pCutoffReached = true;
+    }
+  });
+
+  // --- ÉTAPE 5 : Re-normalisation finale ---
+  let finalSum = d3.sum(items, d => d.prob);
+  items.forEach(d => d.prob = finalSum > 0 ? Math.min(1, d.prob / finalSum) : 0);
+
+  // Rendu graphique avec Plot
+  return Plot.plot({
+    width: 500,
+    height: 250,
+    marginLeft: 80,
+    style: { background: "transparent", color: "#839496" },
+    x: { domain: [0, 1], tickFormat: "%", label: "Probabilité de sélection (%)" },
+    y: { label: null, domain: items.map(d => d.word) },
+    marks: [
+      Plot.barX(items, {
+        x: "prob",
+        y: "word",
+        fill: d => d.prob > 0 ? (d.prob > 0.5 ? "#859900" : "#268bd2") : "#333",
+        rx: 4
+      }),
+      Plot.text(items, {
+        x: "prob",
+        y: "word",
+        text: d => d.prob > 0 ? (d.prob * 100).toFixed(1) + "%" : "Exclu",
+        textAnchor: "start",
+        dx: 5,
+        fill: "#93a1a1"
+      })
+    ]
+  });
+}
+
+```
+
+:::
+
+::: {.results header="Analyse du Tirage au Sort"}
+
+```{ojs}
+//| echo: false
+{
+  const isDeterministic = temp < 0.2;
+  const isCreative = temp > 1.2;
+  
+  const container = html`<div style="font-family: sans-serif; padding: 10px;"></div>`;
+  
+  const status = html`
+    <div style="background: #073642; padding: 15px; border-radius: 8px; border-left: 4px solid ${isDeterministic ? '#dc322f' : '#859900'};">
+      <h5 style="margin-top: 0; color: #eee;">Mode actuel : ${isDeterministic ? '🔒 Déterministe' : (isCreative ? '🎨 Créatif / Aléatoire' : '⚖️ Équilibré')}</h5>
+      <p style="font-size: 0.9em; color: #93a1a1;">
+        ${isDeterministic 
+          ? "La distribution est 'pincée'. Le modèle choisira presque toujours le mot le plus probable. Idéal pour le code ou les faits." 
+          : (isCreative 
+              ? "La distribution est aplatie. Les mots rares ont une chance réelle de sortir, augmentant l'originalité mais aussi le risque d'incohérence."
+              : "Réglage standard. Le modèle balance entre logique et fluidité naturelle.")}
+      </p>
+    </div>
+  `;
+
+  const filters = html`
+    <div style="margin-top: 15px; font-size: 0.85em; display: flex; gap: 10px;">
+      <div style="flex: 1; padding: 8px; border: 1px solid #586e75; border-radius: 4px;">
+        <strong style="color: #2aa198;">Top-K (${topK})</strong><br/>
+        Limite stricte aux ${topK} meilleurs candidats.
+      </div>
+      <div style="flex: 1; padding: 8px; border: 1px solid #586e75; border-radius: 4px;">
+        <strong style="color: #b58900;">Top-P (${topP})</strong><br/>
+        Garde la 'masse' de ${Math.round(topP*100)}% de certitude.
+      </div>
+    </div>
+  `;
+
+  container.appendChild(status);
+  container.appendChild(filters);
+  return container;
+}
+
+```
+
+:::
+
+:::
+
 ### ✍️ Le Prompt Engineering
 
 Le **Prompt Engineering** n'est pas de la "magie" ou de la simple rédaction. Techniquement, c'est l'art de fournir un contexte initial suffisamment riche pour orienter la distribution de probabilité de l'attention vers le sous-domaine de réponse souhaité [@souchere_2025_prompt].

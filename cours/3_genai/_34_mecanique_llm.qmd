@@ -146,6 +146,7 @@ tokenizerResults = {
 ```
 
 ::: {.bg-debug .debug}
+
 ```{ojs}
 //| echo: false
 {
@@ -176,6 +177,7 @@ tokenizerResults = {
   </div>`;
 }
 ```
+
 :::
 
 :::
@@ -430,6 +432,7 @@ viewof thetaBase = ui.slider({
 ```
 
 ::: {.bg-debug .debug}
+
 ```{ojs}
 //| echo: false
 {
@@ -449,6 +452,7 @@ viewof thetaBase = ui.slider({
   </div>`;
 }
 ```
+
 :::
 
 :::

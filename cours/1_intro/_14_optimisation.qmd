@@ -28,6 +28,7 @@ Calculer le gradient sur l'ensemble du dataset est irréalisable. On divise donc
 Les optimiseurs modernes comme **Adam** ou le **Momentum** simulent l'inertie physique pour franchir les obstacles et accélérer la descente.
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof momentum = ui.slider({
@@ -47,9 +48,11 @@ viewof btnDrop = {
   return btn;
 }
 ```
+
 :::
 
 ::: {.render}
+
 ```{ojs}
 //| echo: false
 //| warning: false
@@ -162,6 +165,7 @@ Plotly = require("plotly.js-dist@2.24.1")
   return Object.assign(container, {animationTimer: animationTimer});
 }
 ```
+
 :::
 :::
 

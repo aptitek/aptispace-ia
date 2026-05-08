@@ -14,6 +14,7 @@ Les fonctions d'activation introduisent la **non-linéarité** indispensable à 
 *   **Softmax :** Utilisée en sortie pour transformer des scores en distribution de probabilités (somme = 1).
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof x_val = ui.slider({
@@ -44,6 +45,7 @@ data = {
 :::
 
 ::: {.render}
+
 ```{ojs}
 //| echo: false
 Plot.plot({
@@ -63,9 +65,11 @@ Plot.plot({
   ]
 })
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 ui.card(md`| Sigmoïde(x) | Tanh(x) | ReLU(x) | Softmax(x) |
@@ -74,6 +78,7 @@ ui.card(md`| Sigmoïde(x) | Tanh(x) | ReLU(x) | Softmax(x) |
   title: "Valeurs d'Activation"
 })
 ```
+
 :::
 :::
 
@@ -92,6 +97,7 @@ Avec l'avènement des architectures complexes (Transformers, LLM), les chercheur
 ::: {.graph header="Fonctions d'Activations Modernes"}
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof x_modern = ui.slider({
@@ -116,9 +122,11 @@ data_modern = {
   return points;
 }
 ```
+
 :::
 
 ::: {.render}
+
 ```{ojs}
 //| echo: false
 Plot.plot({
@@ -138,9 +146,11 @@ Plot.plot({
   ]
 })
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 ui.card(md`| Swish(x) | GELU(x) | SELU(x) |
@@ -149,5 +159,6 @@ ui.card(md`| Swish(x) | GELU(x) | SELU(x) |
   title: "Valeurs d'Activation (Modernes)"
 })
 ```
+
 :::
 :::

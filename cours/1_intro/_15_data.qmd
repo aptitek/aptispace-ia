@@ -19,6 +19,7 @@ Voici les 3 étapes incontournables pour purifier vos données brutes :
 ::: {.graph header="Nettoyage Vectoriel"}
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 // 1. Contrôles de l'interface utilisateur
@@ -108,9 +109,11 @@ stats = {
   return {total, kept, anomalies};
 }
 ```
+
 :::
 
 ::: {.render}
+
 ```{ojs}
 //| echo: false
 Plot.plot({
@@ -163,9 +166,11 @@ Plot.plot({
   ]
 })
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 ui.card(md`| Statut | Quantité |
@@ -176,6 +181,7 @@ ui.card(md`| Statut | Quantité |
   title: "Résumé du filtrage"
 })
 ```
+
 :::
 :::
 
@@ -214,4 +220,5 @@ df['z_score_prix'] = np.abs((df['prix'] - df['prix'].mean()) / df['prix'].std())
 # Filtrage par masque booléen (garde les éléments sous le seuil critique de 3)
 df_clean = df[df['z_score_prix'] < 3]
 ```
+
 :::

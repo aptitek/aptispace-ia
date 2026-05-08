@@ -10,10 +10,12 @@ L'entraînement est un jeu du chat et de la souris : le générateur s'améliore
 ::: {.graph .horizontal header="Simulation : L'entraînement d'un GAN"}
 
 ::: {.controls}
+
 ```{ojs}
 //| echo: false
 viewof gan_epoch = ui.slider({label: "Époques d'entraînement", value: 0, min: 0, max: 100, step: 1})
 ```
+
 :::
 
 ::: {.separator}
@@ -21,6 +23,7 @@ viewof gan_epoch = ui.slider({label: "Époques d'entraînement", value: 0, min: 
 :::
 
 ::: {.render header="Le Générateur"}
+
 ```{ojs}
 //| echo: false
 html`
@@ -30,6 +33,7 @@ html`
 </div>
 `
 ```
+
 :::
 
 ::: {.separator}
@@ -37,6 +41,7 @@ html`
 :::
 
 ::: {.render header="Le Discriminateur"}
+
 ```{ojs}
 //| echo: false
 html`
@@ -48,9 +53,11 @@ html`
 </div>
 `
 ```
+
 :::
 
 ::: {.results}
+
 ```{ojs}
 //| echo: false
 {
@@ -60,6 +67,7 @@ html`
 `, { title: "Analyse du Duel", status: status });
 }
 ```
+
 :::
 :::
 

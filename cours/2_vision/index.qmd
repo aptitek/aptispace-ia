@@ -2,6 +2,14 @@
 title: "👁️ Deep Learning & Vision"
 ---
 
+```{ojs}
+//| echo: false
+//| output: false
+// Block de stabilisation OJS pour le projet Quarto
+_stabilize = true
+```
+
+
 
 
 {{< include _21_perspective.qmd >}}
