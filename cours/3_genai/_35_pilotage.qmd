@@ -21,97 +21,79 @@ Même avec une température bien réglée, il reste toujours une "longue traîne
 * **Top-K :** Le modèle ne conserve que les $K$ meilleurs candidats (ex: le top 40 des mots les plus probables) et ramène la probabilité de tous les autres à zéro.
 * **Top-P (Nucleus Sampling) :** Plus dynamique que le Top-K. Le modèle additionne les probabilités des meilleurs tokens en descendant dans la liste. Dès que la somme atteint le seuil $P$ (ex: 0.95, soit 95% de la masse de probabilité), il coupe la liste. Cela permet de garder beaucoup de mots si le contexte est flou, ou très peu de mots si le contexte est évident [@sorbon_2024_llm].
 
+::::: {.graph}
 
-::::: {.graph header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
+<div class="graph-title">🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste</div>
 
-:::: {style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center; justify-content: center; padding: 20px 0;"}
+:::: {style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; padding: 20px 0;"}
 
-<!-- ⬅️ Left Controls (Top-K & Top-P) -->
-::: {style="display: flex; flex-direction: column; gap: 20px;"}
+::: {style="display: flex; flex-direction: column;"}
 ```{ojs}
 //| echo: false
-viewof topK = {
+viewof temp = {
   const container = html`
-  <div style="display: flex; flex-direction: column; align-items: center; width: 80px; background: #073642; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;">
-    <div style="font-size: 24px; margin-bottom: 5px;">🪓</div>
-    <div style="font-weight: bold; color: #93a1a1; font-size: 0.8em; margin-bottom: 10px; text-align: center;">TOP-K</div>
-    
-    <div style="position: relative; height: 160px; width: 40px; background: #002b36; border-radius: 4px; border: 2px solid #586e75; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0;">
-      <div id="tokens" style="display: flex; flex-direction: column; height: 100%; justify-content: space-around;">
-        ${[1,2,3,4,5,6,7,8].map(i => `<div class="tok" style="height: 6px; margin: 0 6px; background: #2aa198; border-radius: 2px; transition: opacity 0.2s, background 0.2s;"></div>`).join('')}
+  <div class="sampler-widget">
+    <div style="font-size: 18px; margin-bottom: 2px; z-index: 5;">🌡️</div>
+    <div class="widget-label" style="z-index: 5;">TEMP</div>
+    <div class="vertical-track" style="z-index: 2;">
+      <div class="emoji-hot" style="position: absolute; top: 0px; right: -10px; font-size: 12px; opacity: 0; transition: opacity 0.3s, top 0.1s linear; z-index: 6;">💧</div>
+      <div class="emoji-cold" style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); font-size: 18px; opacity: 0; transition: opacity 0.3s; z-index: 6;">❄️</div>
+      <div class="frost" style="position: absolute; inset: 0; background: transparent; backdrop-filter: blur(0px); border-radius: 6px; pointer-events: none; transition: all 0.5s ease; z-index: 4;"></div>
+      <div style="position: absolute; left: 100%; top: 5px; bottom: 5px; width: 8px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none;">
+        ${[...Array(6)].map(() => html`<div style="height: 1.5px; width: 4px; background: ${theme.base01};"></div>`)}
       </div>
-      <div class="blade" style="position: absolute; top: 0; left: -8px; right: -8px; height: 3px; background: #dc322f; box-shadow: 0 0 8px #dc322f; transition: top 0.1s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none;">
-         <div style="position: absolute; top: -10px; right: -2px; font-size: 14px;">🔪</div>
-      </div>
-      <input type="range" min="1" max="8" step="1" value="8" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ns-resize; transform: rotate(180deg);">
+      <div class="fill thermometer-fill" style="height: 35%; background: linear-gradient(to top, ${theme.blue}, ${theme.red}); z-index: 3;"></div>
+      <div class="bulb thermometer-bulb" style="background: ${theme.blue}; z-index: 2;"></div>
+      <input type="range" min="0.01" max="2" step="0.01" value="0.7" orient="vertical" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; margin: 0; opacity: 0; cursor: pointer; -webkit-appearance: slider-vertical; writing-mode: vertical-lr; z-index: 10;">
     </div>
-    
-    <div class="val" style="margin-top: 15px; font-weight: bold; color: #eee; font-family: monospace; font-size: 1.1em; background: #002b36; padding: 4px 10px; border-radius: 6px;">8</div>
+    <div class="val widget-value-box" style="z-index: 5;">0.70</div>
   </div>`;
-  
   const input = container.querySelector("input");
-  const blade = container.querySelector(".blade");
+  const fill = container.querySelector(".fill");
+  const bulb = container.querySelector(".bulb");
   const val = container.querySelector(".val");
-  const toks = container.querySelectorAll(".tok");
-  
+  const frost = container.querySelector(".frost");
+  const hotEmoji = container.querySelector(".emoji-hot");
+  const coldEmoji = container.querySelector(".emoji-cold");
   const update = () => {
-    const v = parseInt(input.value);
-    const pct = ((v - 0.5) / 8) * 100; 
-    blade.style.top = pct + "%";
-    
-    toks.forEach((tok, idx) => {
-      if (idx >= v) {
-        tok.style.opacity = "0.2";
-        tok.style.background = "#586e75";
-      } else {
-        tok.style.opacity = "1";
-        tok.style.background = "#2aa198";
-      }
-    });
-    
-    val.innerText = v;
-    container.value = v;
-    container.dispatchEvent(new CustomEvent("input"));
-  };
-  
-  input.oninput = (e) => { e.stopPropagation(); update(); };
-  setTimeout(update, 0);
-  return container;
-}
-```
-
-```{ojs}
-//| echo: false
-viewof topP = {
-  const container = html`
-  <div style="display: flex; flex-direction: column; align-items: center; width: 80px; background: #073642; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;">
-    <div style="font-size: 24px; margin-bottom: 5px;">🎯</div>
-    <div style="font-weight: bold; color: #93a1a1; font-size: 0.8em; margin-bottom: 10px; text-align: center;">TOP-P</div>
-    
-    <div style="position: relative; height: 60px; width: 60px; background: #002b36; border-radius: 50%; border: 2px solid #586e75; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: ew-resize;">
-      <div class="core" style="width: 100%; height: 100%; background: radial-gradient(circle, #b58900 0%, #cb4b16 100%); border-radius: 50%; transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 0 10px rgba(0,0,0,0.5);"></div>
-      <div style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 8px 8px; pointer-events: none; border-radius: 50%;"></div>
-      <input type="range" min="0.1" max="1" step="0.05" value="1" style="position: absolute; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer;">
-    </div>
-    
-    <div class="val" style="margin-top: 15px; font-weight: bold; color: #eee; font-family: monospace; font-size: 1.1em; background: #002b36; padding: 4px 10px; border-radius: 6px;">1.00</div>
-  </div>`;
-  
-  const input = container.querySelector("input");
-  const core = container.querySelector(".core");
-  const val = container.querySelector(".val");
-  
-  const update = () => {
-    const v = parseFloat(input.value);
-    const scale = Math.max(0.15, v);
-    core.style.transform = "scale(" + scale + ")";
-    core.style.opacity = v < 0.3 ? 0.5 : 1;
-    
+    const sliderVal = parseFloat(input.value);
+    const v = 2.01 - sliderVal;
+    const pct = (v / 2) * 100; 
+    fill.style.height = Math.max(5, pct) + "%";
+    hotEmoji.style.opacity = Math.max(0, (v - 1.2) / 0.8);
+    hotEmoji.style.top = Math.max(0, (v - 1.2) * 60) + "px";
+    coldEmoji.style.opacity = Math.max(0, (0.8 - v) / 0.8);
+    if (v < 0.4) {
+      fill.style.background = "linear-gradient(to top, " + theme.base3 + ", " + theme.blue + ")";
+      bulb.style.background = theme.blue;
+      frost.style.background = "rgba(var(--sol-base3-rgb), 0.4)";
+      frost.style.backdropFilter = "blur(2px)";
+      container.style.boxShadow = "0 0 15px " + theme.base3 + ", 0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
+      container.classList.remove("hot-pulse");
+      fill.style.boxShadow = "0 0 10px " + theme.base3;
+      bulb.style.boxShadow = "0 0 10px " + theme.base3;
+    } else if (v > 1.4) {
+      fill.style.background = "linear-gradient(to top, " + theme.red + ", " + theme.orange + ")";
+      bulb.style.background = theme.red;
+      frost.style.background = "transparent";
+      frost.style.backdropFilter = "blur(0px)";
+      container.classList.add("hot-pulse");
+      fill.style.boxShadow = "0 0 15px " + theme.red;
+      bulb.style.boxShadow = "0 0 15px " + theme.red;
+    } else {
+      fill.style.background = "linear-gradient(to top, " + theme.green + ", " + theme.yellow + ")";
+      bulb.style.background = theme.green;
+      frost.style.background = "transparent";
+      frost.style.backdropFilter = "blur(0px)";
+      container.style.boxShadow = "0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
+      container.classList.remove("hot-pulse");
+      fill.style.boxShadow = "none";
+      bulb.style.boxShadow = "none";
+    }
     val.innerText = v.toFixed(2);
     container.value = v;
     container.dispatchEvent(new CustomEvent("input"));
   };
-  
   input.oninput = (e) => { e.stopPropagation(); update(); };
   setTimeout(update, 0);
   return container;
@@ -119,13 +101,67 @@ viewof topP = {
 ```
 :::
 
-<!-- 🎯 Center Graph -->
-::: {.render .transparent header="Distribution Softmax Dynamique" style="flex: 1; min-width: 400px; margin: 0; box-shadow: none; border: none; background: transparent;"}
+::: {style="display: flex; flex-direction: column;"}
+```{ojs}
+//| echo: false
+viewof topK = {
+  const container = html`
+  <div class="sampler-widget">
+    <div class="aggro-grad" style="position: absolute; top: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, ${theme.red}66, transparent); pointer-events: none; opacity: 0; transition: opacity 0.3s ease; z-index: 1;"></div>
+    <div class="aggro-emoji" style="position: absolute; top: 8px; right: 8px; font-size: 16px; opacity: 0; transition: opacity 0.3s ease; z-index: 2;">💢</div>
+    <div style="font-size: 18px; margin-bottom: 2px; z-index: 2;">🪓</div>
+    <div class="widget-label" style="z-index: 2;">TOP-K</div>
+    <div class="blade-track" style="z-index: 2;">
+      <div id="tokens" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
+        ${[1,2,3,4,5,6,7,8].map(i => html`<div class="tok" style="height: 5px; margin: 0 5px; background: ${theme.cyan}; border-radius: 2px; transition: opacity 0.2s, background 0.2s;"></div>`)}
+      </div>
+      <div class="blade blade-line">
+         <div style="position: absolute; top: -10px; right: -3px; font-size: 12px;">🔪</div>
+      </div>
+      <input type="range" min="1" max="8" step="1" value="8" orient="vertical" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; -webkit-appearance: slider-vertical; writing-mode: vertical-lr; z-index: 10;">
+    </div>
+    <div class="val widget-value-box" style="z-index: 2;">8</div>
+  </div>`;
+  const input = container.querySelector("input");
+  const blade = container.querySelector(".blade");
+  const val = container.querySelector(".val");
+  const toks = container.querySelectorAll(".tok");
+  const aggroGrad = container.querySelector(".aggro-grad");
+  const aggroEmoji = container.querySelector(".aggro-emoji");
+  const update = () => {
+    const v = parseInt(input.value);
+    const pct = (v / 8.2) * 100;
+    blade.style.top = pct + "%";
+    const intensity = Math.max(0, (4 - v) / 3);
+    aggroGrad.style.opacity = intensity;
+    aggroEmoji.style.opacity = intensity;
+    if (intensity > 0) {
+      container.style.boxShadow = "0 0 " + (15 * intensity) + "px " + theme.red + "88, 0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
+    } else {
+      container.style.boxShadow = "0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
+    }
+    toks.forEach((tok, idx) => {
+      tok.style.opacity = (idx >= v) ? "0.2" : "1";
+      tok.style.background = (idx >= v) ? theme.base01 : theme.cyan;
+    });
+    val.innerText = v;
+    container.value = v;
+    container.dispatchEvent(new CustomEvent("input"));
+  };
+  input.oninput = (e) => { e.stopPropagation(); update(); };
+  setTimeout(update, 0);
+  return container;
+}
+```
+:::
+
+::: {.render .transparent style="flex: 1; max-width: 400px; margin: 0; box-shadow: none; border: none; background: transparent;"}
+
+<div class="graph-title" style="font-size: 0.95em; opacity: 0.8;">Distribution Softmax Dynamique</div>
 
 ```{ojs}
 //| echo: false
 {
-  // Vocabulaire fictif et ses scores bruts (logits)
   const vocab = [
     { word: "Intelligence", logit: 8.0 },
     { word: "Chat", logit: 7.5 },
@@ -136,119 +172,67 @@ viewof topP = {
     { word: "Soleil", logit: 0.5 },
     { word: "Arbre", logit: 0.1 }
   ];
-
-  // --- ÉTAPE 1 : Application de la Température (Softmax Stable) ---
-  // p_i = exp((L_i - max(L)) / T) / sum(exp((L_j - max(L)) / T))
   const maxLogit = d3.max(vocab, d => d.logit);
-  let items = vocab.map(d => ({
-    ...d,
-    score: Math.exp((d.logit - maxLogit) / temp)
-  }));
-  
+  let items = vocab.map(d => ({ ...d, score: Math.exp((d.logit - maxLogit) / temp) }));
   let sumScore = d3.sum(items, d => d.score);
   items.forEach(d => d.prob = d.score / sumScore);
-
-  // --- ÉTAPE 2 : Tri pour les filtres ---
   items.sort((a, b) => b.prob - a.prob);
-
-  // --- ÉTAPE 3 : Filtre Top-K ---
-  // On ne garde que les K premiers
-  items.forEach((d, i) => {
-    if (i >= topK) d.prob = 0;
-  });
-
-  // --- ÉTAPE 4 : Filtre Top-P (Nucleus) ---
-  // On coupe dès que la somme cumulée dépasse P
+  items.forEach((d, i) => { if (i >= topK) d.prob = 0; });
   let cumulative = 0;
   let pCutoffReached = false;
   items.forEach(d => {
     if (pCutoffReached || d.prob <= 0) {
       d.prob = 0;
     } else {
-      const currentProb = d.prob;
-      cumulative += currentProb;
+      cumulative += d.prob;
       if (cumulative >= topP) pCutoffReached = true;
     }
   });
-
-  // --- ÉTAPE 5 : Re-normalisation finale ---
   let finalSum = d3.sum(items, d => d.prob);
   items.forEach(d => d.prob = finalSum > 0 ? Math.min(1, d.prob / finalSum) : 0);
-
-  // Rendu graphique avec Plot
   return Plot.plot({
-    width: 500,
+    width: 400,
     height: 250,
     marginLeft: 80,
-    style: { background: "transparent", color: "#839496" },
-    x: { domain: [0, 1], tickFormat: "%", label: "Probabilité de sélection (%)" },
+    style: { background: "transparent", color: theme.base1 },
+    x: { domain: [0, 1], tickFormat: ".0%", label: "Probabilité (%)" },
     y: { label: null, domain: items.map(d => d.word) },
     marks: [
-      Plot.barX(items, {
-        x: "prob",
-        y: "word",
-        fill: d => d.prob > 0 ? (d.prob > 0.5 ? "#859900" : "#268bd2") : "#333",
-        rx: 4
-      }),
-      Plot.text(items, {
-        x: "prob",
-        y: "word",
-        text: d => d.prob > 0 ? (d.prob * 100).toFixed(1) + "%" : "Exclu",
-        textAnchor: "start",
-        dx: 5,
-        fill: "#93a1a1"
-      })
+      Plot.barX(items, { x: "prob", y: "word", fill: d => d.prob > 0 ? (d.prob > 0.5 ? theme.green : theme.blue) : theme.base02, rx: 4 }),
+      Plot.text(items, { x: "prob", y: "word", text: d => d.prob > 0 ? (d.prob * 100).toFixed(1) + "%" : "Exclu", textAnchor: "start", dx: 5, fill: theme.base1 })
     ]
   });
 }
-
 ```
-
 :::
 
-<!-- 🌡️ Right Controls (Temp) -->
 ::: {style="display: flex; flex-direction: column;"}
 ```{ojs}
 //| echo: false
-viewof temp = {
+viewof topP = {
   const container = html`
-  <div style="display: flex; flex-direction: column; align-items: center; width: 80px; background: #073642; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;">
-    <div style="font-size: 24px; margin-bottom: 5px;">🌡️</div>
-    <div style="font-weight: bold; color: #93a1a1; font-size: 0.8em; margin-bottom: 10px; text-align: center;">TEMP</div>
-    
-    <div style="position: relative; height: 180px; width: 24px; background: #002b36; border-radius: 12px; border: 2px solid #586e75; display: flex; flex-direction: column; justify-content: flex-end; padding: 3px;">
-      <div style="position: absolute; left: 100%; top: 5px; bottom: 5px; width: 10px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none;">
-        ${[...Array(10)].map(() => `<div style="height: 2px; width: 6px; background: #586e75;"></div>`).join('')}
-      </div>
-      <div class="fill" style="width: 100%; height: 35%; background: linear-gradient(to top, #268bd2, #dc322f); border-radius: 8px; transition: height 0.1s, background 0.2s, box-shadow 0.2s;"></div>
-      <input type="range" min="0.01" max="2" step="0.01" value="0.7" style="position: absolute; top: 0; left: -10px; height: 100%; width: 44px; margin: 0; opacity: 0; cursor: ns-resize; transform: rotate(180deg);">
+  <div class="sampler-widget" style="width: 110px;">
+    <div style="font-size: 18px; margin-bottom: 2px;">🎯</div>
+    <div class="widget-label">TOP-P (Nucleus)</div>
+    <div class="nucleus-orbit">
+      <div class="core nucleus-core" style="background: radial-gradient(circle, ${theme.yellow} 0%, ${theme.orange} 100%); opacity: 0.8;"></div>
+      <div style="position: absolute; inset: 0; background-image: radial-gradient(${theme.base3}22 1px, transparent 1px); background-size: 6px 6px; pointer-events: none;"></div>
+      <input type="range" min="0.1" max="1" step="0.05" value="1" style="position: absolute; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer;">
     </div>
-    
-    <div class="val" style="margin-top: 15px; font-weight: bold; color: #eee; font-family: monospace; font-size: 1.1em; background: #002b36; padding: 4px 10px; border-radius: 6px;">0.70</div>
+    <div class="val widget-value-box">1.00</div>
   </div>`;
-  
   const input = container.querySelector("input");
-  const fill = container.querySelector(".fill");
+  const core = container.querySelector(".core");
   const val = container.querySelector(".val");
-  
   const update = () => {
     const v = parseFloat(input.value);
-    const pct = Math.max(5, (v / 2) * 100); 
-    fill.style.height = pct + "%";
-    
-    let color, shadowColor;
-    if (v < 0.5) { color = "linear-gradient(to top, #2aa198, #268bd2)"; shadowColor = "#268bd2"; }
-    else if (v < 1.2) { color = "linear-gradient(to top, #859900, #b58900)"; shadowColor = "#b58900"; }
-    else { color = "linear-gradient(to top, #cb4b16, #dc322f)"; shadowColor = "#dc322f"; }
-    
-    fill.style.background = color;
-    fill.style.boxShadow = "0 0 10px " + shadowColor;
-    
+    const scale = Math.max(0.2, v);
+    core.style.transform = "scale(" + scale + ")";
+    core.style.opacity = v < 0.3 ? 0.4 : 0.8;
     val.innerText = v.toFixed(2);
     container.value = v;
     container.dispatchEvent(new CustomEvent("input"));
   };
-  
   input.oninput = (e) => { e.stopPropagation(); update(); };
   setTimeout(update, 0);
   return container;
@@ -258,50 +242,75 @@ viewof temp = {
 
 ::::
 
-::: {.results header="Analyse du Tirage au Sort"}
+:::: {.results}
+
+<div class="graph-title">Configuration de l'Échantillonnage</div>
 
 ```{ojs}
 //| echo: false
 {
-  const isDeterministic = temp < 0.2;
-  const isCreative = temp > 1.2;
-  
-  const container = html`<div style="font-family: sans-serif; padding: 10px;"></div>`;
-  
-  const status = html`
-    <div style="background: #073642; padding: 15px; border-radius: 8px; border-left: 4px solid ${isDeterministic ? '#dc322f' : '#859900'};">
-      <h5 style="margin-top: 0; color: #eee;">Mode actuel : ${isDeterministic ? '🔒 Déterministe' : (isCreative ? '🎨 Créatif / Aléatoire' : '⚖️ Équilibré')}</h5>
-      <p style="font-size: 0.9em; color: #93a1a1;">
-        ${isDeterministic 
-          ? "La distribution est 'pincée'. Le modèle choisira presque toujours le mot le plus probable. Idéal pour le code ou les faits." 
-          : (isCreative 
-              ? "La distribution est aplatie. Les mots rares ont une chance réelle de sortir, augmentant l'originalité mais aussi le risque d'incohérence."
-              : "Réglage standard. Le modèle balance entre logique et fluidité naturelle.")}
-      </p>
-    </div>
-  `;
-
-  const filters = html`
-    <div style="margin-top: 15px; font-size: 0.85em; display: flex; gap: 10px;">
-      <div style="flex: 1; padding: 8px; border: 1px solid #586e75; border-radius: 4px;">
-        <strong style="color: #2aa198;">Top-K (${topK})</strong><br/>
-        Limite stricte aux ${topK} meilleurs candidats.
-      </div>
-      <div style="flex: 1; padding: 8px; border: 1px solid #586e75; border-radius: 4px;">
-        <strong style="color: #b58900;">Top-P (${topP})</strong><br/>
-        Garde la 'masse' de ${Math.round(topP*100)}% de certitude.
+  // 1. Temperature Card
+  const tempStatus = temp < 0.4 ? "warning" : (temp > 1.4 ? "success" : "info");
+  const tempCard = ui.card(html`
+    <div class="card-metric-container" style="position: relative; overflow: hidden;">
+      <div style="position: relative; z-index: 2;">
+        <div class="card-metric-label">Température</div>
+        <div class="card-metric-value" style="color: ${tempStatus === 'warning' ? theme.yellow : (tempStatus === 'success' ? theme.orange : theme.blue)};">${temp.toFixed(2)}</div>
+        <div class="small opacity-75 mt-2" style="line-height: 1.3;">
+          ${temp < 0.4 
+            ? "<b>Déterministe</b>. Distribution pincée, focus sur la logique pure." 
+            : (temp > 1.4 
+              ? "<b>Créatif</b>. Distribution aplatie, focus sur l'originalité." 
+              : "<b>Équilibré</b>. Navigation fluide entre logique et variabilité.")
+          }
+        </div>
       </div>
     </div>
-  `;
+  `, { status: tempStatus });
 
-  container.appendChild(status);
-  container.appendChild(filters);
-  return container;
+  // 2. Top-K Card
+  const kStatus = topK <= 3 ? "warning" : "info";
+  const kCard = ui.card(html`
+    <div class="card-metric-container" style="position: relative; overflow: hidden;">
+      <div style="position: relative; z-index: 2;">
+        <div class="card-metric-label">Top-K (Candidates)</div>
+        <div class="card-metric-value" style="color: ${theme.cyan};">${topK}</div>
+        <div class="small opacity-75 mt-2" style="line-height: 1.3;">
+          ${topK <= 3 
+            ? "<b>Cercle Restreint</b>. Seul le haut du panier est autorisé." 
+            : "<b>Large Éventail</b>. Le modèle explore une plus grande diversité."
+          }
+        </div>
+      </div>
+    </div>
+  `, { status: kStatus });
+
+  // 3. Top-P Card
+  const pStatus = topP < 0.6 ? "warning" : "info";
+  const pCard = ui.card(html`
+    <div class="card-metric-container" style="position: relative; overflow: hidden;">
+      <div style="position: relative; z-index: 2;">
+        <div class="card-metric-label">Top-P (Nucleus)</div>
+        <div class="card-metric-value" style="color: ${theme.yellow};">${(topP * 100).toFixed(0)}%</div>
+        <div class="small opacity-75 mt-2" style="line-height: 1.3;">
+          ${topP < 0.6 
+            ? "<b>Nucleus Serré</b>. On ne garde que le cœur de la probabilité." 
+            : "<b>Masse Ouverte</b>. La traîne de probabilité est conservée."
+          }
+        </div>
+      </div>
+    </div>
+  `, { status: pStatus });
+
+  return html`<div class="d-flex flex-row gap-3 w-100" style="flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 250px;">${tempCard}</div>
+    <div style="flex: 1; min-width: 250px;">${kCard}</div>
+    <div style="flex: 1; min-width: 250px;">${pCard}</div>
+  </div>`;
 }
-
 ```
 
-:::
+::::
 
 :::::
 

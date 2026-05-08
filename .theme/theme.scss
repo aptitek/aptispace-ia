@@ -480,18 +480,40 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     color: $sol-base01 !important;
     font-size: 0.9em;
     margin-bottom: 1.5rem;
+    overflow: hidden !important;
+    position: relative;
+    border-left: none !important; // Explicitly remove to fix square overflow
+
+    // Use pseudo-element for the color strip to respect parent border-radius
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 6px;
+        z-index: 5;
+        border-radius: inherit; // Matches the 8px of the card
+    }
 
     .card-header {
         @extend %card-header;
-        color: $sol-base3 !important; // Texte clair sur fond coloré
+        color: $sol-base3 !important;
         font-family: $font-family-code;
         font-size: 0.8em;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: bold;
+        position: relative;
+        z-index: 2;
+        padding-left: 1.2rem; // Give space for the bar
     }
 
-    .card-body { padding: 0.75rem 1rem; }
+    .card-body { 
+        padding: 0.75rem 1rem 0.75rem 1.2rem;
+        position: relative;
+        z-index: 2;
+    }
 
     table {
         margin-bottom: 0;
@@ -510,27 +532,27 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
 }
 
 .bg-debug { 
-    border-left: 5px solid $sol-base1 !important; 
+    &::before { background-color: $sol-base1 !important; }
     .card-header { background-color: $sol-base1 !important; }
 }
 
 .bg-info, .bg-primary { 
-    border-left: 5px solid $sol-blue !important; 
+    &::before { background-color: $sol-blue !important; }
     .card-header { background-color: $sol-blue !important; }
 }
 
 .bg-success { 
-    border-left: 5px solid $sol-green !important; 
+    &::before { background-color: $sol-green !important; }
     .card-header { background-color: $sol-green !important; }
 }
 
 .bg-warning { 
-    border-left: 5px solid $sol-yellow !important; 
+    &::before { background-color: $sol-yellow !important; }
     .card-header { background-color: $sol-yellow !important; }
 }
 
 .bg-danger { 
-    border-left: 5px solid $sol-red !important; 
+    &::before { background-color: $sol-red !important; }
     .card-header { background-color: $sol-red !important; }
 }
 
@@ -1830,6 +1852,163 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
             padding-bottom: 5px;
         }
     }
+}
+
+// ==========================================
+// 13. SIMULATION: SAMPLING & PILOTAGE
+// ==========================================
+
+.sampler-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 65px;
+    height: 250px;
+    background: $sol-base02;
+    padding: 10px 5px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba($sol-base03, 0.4);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: all 0.3s ease;
+}
+
+.aggro-grad, .frost {
+    border-radius: inherit;
+}
+
+.widget-label {
+    font-weight: 800;
+    color: $sol-base1;
+    font-size: 0.65em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vertical-track {
+    position: relative;
+    flex: 1;
+    width: 16px;
+    background: $sol-base03;
+    border-radius: 8px;
+    border: 1.5px solid $sol-base01;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2px;
+}
+
+.widget-value-box {
+    margin-top: 10px;
+    font-weight: 900;
+    color: $sol-base3;
+    font-family: $font-family-code;
+    font-size: 0.9em;
+    background: $sol-base03;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+/* Specifics for Temperature */
+.thermometer-fill {
+    width: 100%;
+    border-radius: 6px;
+    transition: height 0.1s, background 0.3s, box-shadow 0.3s;
+}
+
+.thermometer-bulb {
+    width: 28px;
+    height: 28px;
+    background: inherit;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+/* Specifics for Top-K */
+.blade-track {
+    position: relative;
+    flex: 1;
+    width: 32px;
+    background: $sol-base03;
+    border-radius: 6px;
+    border: 1.5px solid $sol-base01;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.blade-line {
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    height: 2px;
+    background: $sol-red;
+    box-shadow: 0 0 8px $sol-red;
+    transition: top 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+/* Specifics for Top-P */
+.nucleus-orbit {
+    position: relative;
+    height: 70px;
+    width: 70px;
+    flex-shrink: 0;
+    background: $sol-base03;
+    border-radius: 12px;
+    border: 1.5px solid $sol-base01;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.nucleus-core {
+    width: 100%;
+    height: 100%;
+    border-radius: 50% !important;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+}
+
+/* Analysis Cards Styling */
+.card-metric-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.card-metric-value {
+    font-size: 2.2em;
+    font-weight: 900;
+    margin: 5px 0;
+    font-family: $font-family-code;
+}
+
+.card-metric-label {
+    font-size: 0.8em;
+    color: $sol-base1;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes pulse-heat {
+    0% { box-shadow: 0 0 5px $sol-red, inset 0 0 10px $sol-orange; }
+    50% { box-shadow: 0 0 25px $sol-red, inset 0 0 20px $sol-orange; }
+    100% { box-shadow: 0 0 5px $sol-red, inset 0 0 10px $sol-orange; }
+}
+
+.hot-pulse {
+    animation: pulse-heat 1.5s infinite;
 }
 
 
