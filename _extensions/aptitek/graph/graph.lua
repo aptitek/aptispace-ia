@@ -251,6 +251,66 @@ window.ui = {
     container.appendChild(btn);
     container.value = value;
     return container;
+  },
+  text_area: ({label, value = '', rows = 3, placeholder = '', state}) => {
+    const container = document.createElement('div');
+    container.className = 'premium-textarea-container';
+    
+    if (label) {
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'textarea-label';
+      labelSpan.innerText = label;
+      container.appendChild(labelSpan);
+    }
+    
+    const textarea = document.createElement('textarea');
+    textarea.className = 'premium-textarea';
+    textarea.rows = rows;
+    textarea.placeholder = placeholder;
+    textarea.value = value;
+    
+    textarea.oninput = () => {
+      container.value = textarea.value;
+      container.dispatchEvent(new CustomEvent("input"));
+    };
+    
+    container.appendChild(textarea);
+    container.value = value;
+    return container;
+  },
+  select: ({label, options, value, format = d => d}) => {
+    const container = document.createElement('div');
+    container.className = 'premium-select-container';
+    
+    if (label) {
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'select-label';
+      labelSpan.innerText = label;
+      container.appendChild(labelSpan);
+    }
+    
+    const select = document.createElement('select');
+    select.className = 'premium-select';
+    
+    const isObjectOptions = !Array.isArray(options);
+    const keys = isObjectOptions ? Object.keys(options) : options;
+    
+    keys.forEach(key => {
+      const option = document.createElement('option');
+      option.value = key;
+      option.innerText = format(isObjectOptions ? options[key] : key);
+      if (key == value) option.selected = true;
+      select.appendChild(option);
+    });
+    
+    select.onchange = () => {
+      container.value = select.value;
+      container.dispatchEvent(new CustomEvent("input"));
+    };
+    
+    container.appendChild(select);
+    container.value = value;
+    return container;
   }
 };
 </script>

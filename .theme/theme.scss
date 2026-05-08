@@ -1452,6 +1452,175 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     }
 }
 
+/* Token Visualization */
+.token-stream {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 4px;
+    padding: 20px;
+    background: $sol-base03;
+    border-radius: 12px;
+    box-shadow: inset 0 4px 15px rgba(0,0,0,0.4);
+    min-height: 180px;
+    align-content: flex-start;
+    border: 1px solid $sol-base02;
+}
+
+.token-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    
+    .token-node {
+        padding: 6px 12px;
+        font-family: $font-family-code;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        cursor: help;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.1);
+
+        &.is-fragment {
+            border-right-style: dashed;
+            border-right-width: 1px;
+        }
+
+        .space-marker {
+            color: $sol-base01;
+            font-weight: 900;
+            font-size: 0.8em;
+            margin-right: 2px;
+        }
+    }
+
+    .token-id {
+        font-size: 9px;
+        margin-top: 4px;
+        opacity: 0.8;
+        font-family: $font-family-code;
+    }
+}
+
+/* Statistics Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+
+    @media (max-width: 500px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stat-item {
+    background: $sol-base02;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    border-bottom: 3px solid transparent;
+
+    .stat-label {
+        font-size: 0.75em;
+        color: $sol-base2;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 2.2em;
+        font-weight: 800;
+        font-family: $font-family-code;
+    }
+}
+
+/* Premium Textarea */
+.premium-textarea-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+
+    .textarea-label {
+        font-weight: 800;
+        font-size: 0.75rem;
+        color: $sol-base01;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 4px;
+    }
+
+    .premium-textarea {
+        width: 100%;
+        background: $sol-base3;
+        border: 2px solid $sol-base2;
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: $sol-base00;
+        font-family: $font-family-code;
+        font-size: 0.95rem;
+        resize: vertical;
+        transition: all 0.2s ease;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+
+        &:focus {
+            outline: none;
+            border-color: $sol-blue;
+            box-shadow: 0 0 0 4px rgba($sol-blue, 0.1);
+            background: $white;
+        }
+
+        &::placeholder {
+            color: $sol-base1;
+            opacity: 0.6;
+        }
+    }
+}
+
+/* Premium Select */
+.premium-select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1rem;
+    width: 100%;
+
+    .select-label {
+        font-weight: 800;
+        font-size: 0.75rem;
+        color: $sol-base01;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .premium-select {
+        width: 100%;
+        background: $sol-base3;
+        border: 2px solid $sol-base2;
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: $sol-base00;
+        font-family: $font-family-base;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:focus {
+            outline: none;
+            border-color: $sol-blue;
+            box-shadow: 0 0 0 3px rgba($sol-blue, 0.1);
+        }
+    }
+}
+
 // ==========================================
 // 13. SPARSITY SIMULATION
 // ==========================================

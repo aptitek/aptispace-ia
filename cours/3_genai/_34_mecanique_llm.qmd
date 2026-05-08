@@ -10,6 +10,179 @@ L'industrie utilise massivement le **Byte-Pair Encoding (BPE)**. Au lieu d'avoir
 
 Ces tokens sont ensuite projetés dans un espace vectoriel de haute dimension (les **Embeddings**). Dans cet espace, la distance cosinus entre deux vecteurs reflète leur proximité sémantique. Les concepts similaires sont physiquement proches dans cet espace mathématique [@sorbon_2024_llm].
 
+::: {.graph .controls-top header="🕹️ Simulation Interactive : Le Tokenizer BPE (Byte-Pair Encoding)"}
+
+::: {.controls header="Saisie du Texte Brut"}
+Tapez une phrase ci-dessous. Observez comment le modèle découpe les mots fréquents, les mots rares et la ponctuation avant de les transformer en vecteurs.
+
+```{ojs}
+//| echo: false
+viewof rawTextInput = ui.text_area({
+  value: "L'IA comprend-elle le mot anticonstitutionnellement ? 🤔", 
+  rows: 3, 
+  label: "Texte à tokeniser :"
+})
+
+// 1. Logique de Tokenisation (Simulée)
+// On centralise le calcul pour éviter les effets de bord 'mutable'
+tokenizerResults = {
+  const text = rawTextInput || "";
+  if (text.trim() === "") return { tokens: [], chars: 0 };
+
+  // Découpage primaire (Regex BPE-like)
+  const baseTokens = text.match(/ ?[a-zA-ZÀ-ÿ0-9]+| ?[^\s\w\p{Emoji_Presentation}]+| ?\p{Emoji_Presentation}/gu) || [];
+  
+  let finalTokens = [];
+  baseTokens.forEach(t => {
+    let cleanT = t;
+    let hasSpace = false;
+    if (t.startsWith(" ")) {
+      hasSpace = true;
+      cleanT = t.substring(1);
+    }
+
+    // Simulation BPE pour mots longs ou spécifiques
+    if (cleanT.toLowerCase() === "anticonstitutionnellement") {
+      finalTokens.push({ text: "anti", isFragment: true, hasSpace: hasSpace });
+      finalTokens.push({ text: "constitution", isFragment: true, hasSpace: false });
+      finalTokens.push({ text: "nelle", isFragment: true, hasSpace: false });
+      finalTokens.push({ text: "ment", isFragment: false, hasSpace: false });
+    } else if (cleanT.length > 9) {
+      const mid = Math.floor(cleanT.length / 2);
+      finalTokens.push({ text: cleanT.substring(0, mid), isFragment: true, hasSpace: hasSpace });
+      finalTokens.push({ text: cleanT.substring(mid), isFragment: false, hasSpace: false });
+    } else {
+      finalTokens.push({ text: cleanT, isFragment: false, hasSpace: hasSpace });
+    }
+  });
+
+  return {
+    tokens: finalTokens,
+    chars: text.length,
+    count: finalTokens.length
+  };
+}
+```
+
+:::
+
+::: {.render .transparent header="Flux de Tokens (Visualisation Vectorielle)"}
+
+```{ojs}
+//| echo: false
+{
+  const { tokens } = tokenizerResults;
+  
+  if (tokens.length === 0) {
+    return html`<div class="text-muted p-4 italic">Saisissez du texte pour démarrer la simulation...</div>`;
+  }
+
+  const container = html`<div class="token-stream"></div>`;
+  const colors = [theme.blue, theme.red, theme.green, theme.yellow, theme.magenta, theme.cyan];
+
+  tokens.forEach((tok, index) => {
+    const color = colors[index % colors.length];
+    const id = Math.floor(Math.random() * 50000);
+    
+    const tokenEl = html`<div class="token-item">
+      <div class="token-node ${tok.isFragment ? 'is-fragment' : ''}" 
+           style="background: ${color}22; color: ${color}; border-color: ${color}44;"
+           title="Token ID: ${id}\nFragment: ${tok.isFragment ? 'Oui' : 'Non'}">
+        ${tok.hasSpace ? html`<span class="space-marker">Ġ</span>` : ''}
+        <span>${tok.text}</span>
+      </div>
+      <div class="token-id" style="color: ${color}; opacity: 0.6;">${id}</div>
+    </div>`;
+
+    const node = tokenEl.querySelector('.token-node');
+    node.onmouseover = () => {
+      node.style.background = `${color}44`;
+      node.style.transform = "translateY(-2px)";
+      node.style.boxShadow = `0 4px 12px ${color}33`;
+    };
+    node.onmouseout = () => {
+      node.style.background = `${color}22`;
+      node.style.transform = "translateY(0)";
+      node.style.boxShadow = "none";
+    };
+
+    container.appendChild(tokenEl);
+  });
+
+  return container;
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.results header="Analyse Statistique du BPE"}
+
+```{ojs}
+//| echo: false
+{
+  const stats = tokenizerResults;
+  if (!stats.tokens || stats.tokens.length === 0) return html`<div class="text-muted">En attente de texte...</div>`;
+
+  const ratio = (stats.chars / stats.count).toFixed(2);
+  
+  return html`<div class="stats-grid">
+    <div class="stat-item" style="border-color: ${theme.blue}">
+      <div class="stat-label">Caractères</div>
+      <div class="stat-value" style="color: ${theme.blue}">${stats.chars}</div>
+    </div>
+    <div class="stat-item" style="border-color: ${theme.red}">
+      <div class="stat-label">Tokens</div>
+      <div class="stat-value" style="color: ${theme.red}">${stats.count}</div>
+    </div>
+    <div class="stat-item" style="border-color: ${theme.green}">
+      <div class="stat-label">Ratio (Char/Tok)</div>
+      <div class="stat-value" style="color: ${theme.green}">${ratio}</div>
+    </div>
+  </div>`;
+}
+```
+
+::: {.bg-debug .debug}
+```{ojs}
+//| echo: false
+{
+  const stats = tokenizerResults;
+  if (!stats.tokens || stats.tokens.length === 0) return html`<span></span>`;
+
+  let hasG = stats.tokens.some(t => t.hasSpace);
+  let hasFragment = stats.tokens.some(t => t.isFragment);
+  
+  return html`<div class="d-flex flex-column gap-2">
+    ${hasG ? html`<div class="d-flex gap-3">
+        <div style="color: ${theme.orange}; font-weight: bold; min-width: 80px;">Espaces :</div>
+        <div>Le symbole <b style="color: ${theme.orange};">Ġ</b> fusionne l'espace avec le mot suivant. Pour un LLM, " chat" et "chat" sont deux concepts différents.</div>
+      </div>` : ''}
+    ${hasFragment ? html`<div class="d-flex gap-3">
+        <div style="color: ${theme.cyan}; font-weight: bold; min-width: 80px;">Découpe :</div>
+        <div>Les mots complexes sont fragmentés. Cela permet au modèle de comprendre des mots qu'il n'a jamais vus en assemblant des racines connues.</div>
+      </div>` : ''}
+    <div class="d-flex flex-column gap-1 mt-2 pt-2 border-top border-secondary opacity-75 small">
+      <div class="d-flex gap-3">
+        <div style="color: ${theme.magenta}; font-weight: bold; min-width: 80px;">Contexte :</div>
+        <div>Cette séquence occupe <b>${stats.count} / 8192</b> slots de la fenêtre d'attention.</div>
+      </div>
+      <div style="width: 100%; height: 6px; background: ${theme.base02}44; border-radius: 10px; overflow: hidden; margin-top: 4px; border: 1px solid ${theme.base02}22;">
+        <div style="width: ${Math.min(100, (stats.count / 8192 * 100)).toFixed(1)}%; height: 100%; background: ${theme.magenta}; border-radius: 10px; transition: width 0.4s ease-out;"></div>
+      </div>
+    </div>
+  </div>`;
+}
+```
+:::
+
+:::
+
+:::
+
+
 ### 📍 Encodage Positionnel
 
 Le mécanisme d'attention du Transformer est une force brute parallèle : il regarde tous les mots en même temps. Sans mécanisme externe, il est aveugle à l'ordre des mots. Pour lui, "Le chat mange la souris" et "La souris mange le chat" seraient traités de la même manière. Il faut donc **injecter l'information de position** dans les vecteurs avant le traitement.
@@ -20,6 +193,268 @@ Plusieurs stratégies s'affrontent dans la littérature :
 * **Learned Encodings (BERT, GPT-2) :** Le modèle apprend un vecteur spécifique pour chaque position (de 0 à 511). Défaut majeur : le modèle plante catégoriquement s'il reçoit un 513ème token [@fagundes_2025_positional].
 * **RoPE (Rotary Positional Embeddings) :** C'est le standard actuel (utilisé par LLaMA, Mistral). L'algorithme fait pivoter les vecteurs $Q$ et $K$ d'un angle proportionnel à leur position. Imaginez les aiguilles d'une montre : l'angle relatif entre l'aiguille des heures et celle des minutes encode naturellement la distance entre deux mots. Cela permet une excellente extrapolation [@articsledge_2026_positional].
 * **ALiBi :** Une alternative qui ne modifie pas les vecteurs, mais applique une pénalité linéaire directement sur les scores d'attention en fonction de la distance, favorisant naturellement le contexte récent [@fagundes_2025_positional].
+
+
+::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
+
+::: {.controls header="Saisie et Sélection Textuelle"}
+Saisissez une phrase pour générer les ancres de position, puis sélectionnez deux mots pour comparer leur encodage rotatif.
+
+```{ojs}
+//| echo: false
+// 1. Entrée du texte par l'utilisateur
+viewof sentenceInput = ui.text_area({
+  value: "Le chat mange la souris dans la cuisine.",
+  label: "1. Saisissez une phrase :",
+  placeholder: "Tapez une phrase..."
+})
+
+// 2. Sélecteur de mots interactif (Remplace les listes déroulantes)
+viewof ropeSelection = {
+  const words = sentenceInput.trim().split(/\s+/);
+  const container = html`<div class="token-stream mb-3" style="min-height: auto; padding: 10px; border-style: dashed; border-color: ${theme.base01}44;"></div>`;
+  
+  // État local pour la sélection (indices)
+  let selection = [0, 1]; // Défaut : les deux premiers mots
+  
+  function render() {
+    container.innerHTML = "";
+    const label = html`<div class="small text-muted mb-2 italic w-100">2. Cliquez sur deux mots pour les comparer :</div>`;
+    container.appendChild(label);
+    
+    words.forEach((word, i) => {
+      const isA = selection[0] === i;
+      const isB = selection[1] === i;
+      const color = isA ? theme.blue : (isB ? theme.red : theme.base1);
+      
+      const btn = html`<span class="token-node" style="
+        cursor: pointer;
+        background: ${isA || isB ? color + '22' : 'transparent'};
+        color: ${color};
+        border: 1px solid ${isA || isB ? color + '88' : theme.base02};
+        padding: 4px 10px;
+        margin: 2px;
+        transition: all 0.2s;
+        font-weight: ${isA || isB ? 'bold' : 'normal'};
+      ">${word}</span>`;
+      
+      btn.onclick = () => {
+        if (selection.includes(i)) return;
+        selection.shift(); // Retire le plus ancien
+        selection.push(i); // Ajoute le nouveau
+        render();
+        container.value = { a: selection[0], b: selection[1] };
+        container.dispatchEvent(new CustomEvent("input"));
+      };
+      
+      container.appendChild(btn);
+    });
+  }
+  
+  render();
+  container.value = { a: selection[0], b: selection[1] };
+  return container;
+}
+
+// Extraction des indices pour le reste de la logique
+idxA = ropeSelection.a
+idxB = ropeSelection.b
+
+// 3. Découpage en tokens pour la visualisation
+tokens = sentenceInput.trim().split(/\s+/).map((word, i) => ({
+  id: i,
+  word: word
+}))
+
+// 4. Paramètre de l'angle
+viewof thetaBase = ui.slider({
+  min: 5, 
+  max: 45,
+  value: 15, 
+  step: 1, 
+  label: "3. Sensibilité (θ) :"
+})
+```
+
+:::
+
+::: {.render .transparent header="Visualisation de l'Espace Rotatif"}
+
+```{ojs}
+//| echo: false
+{
+  const width = 400;
+  const height = 400;
+  const cx = width / 2;
+  const cy = height / 2;
+  const radius = 140;
+
+  const svg = d3.create("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .style("background", theme.base03)
+    .style("border-radius", "12px")
+    .style("box-shadow", `inset 0 4px 15px ${theme.base02}88`);
+
+  // Fond : Cadran gradué (Simplifié)
+  svg.append("circle")
+    .attr("cx", cx).attr("cy", cy).attr("r", radius)
+    .attr("fill", "none")
+    .attr("stroke", theme.base02)
+    .attr("stroke-width", 1);
+
+  // Dessin de TOUS les tokens de la phrase
+  tokens.forEach(t => {
+    const angle = t.id * thetaBase * (Math.PI / 180);
+    svg.append("circle")
+      .attr("cx", cx + radius * Math.sin(angle))
+      .attr("cy", cy - radius * Math.cos(angle))
+      .attr("r", 5)
+      .attr("fill", theme.base02)
+      .attr("stroke", theme.base01);
+  });
+
+  // Calculs pour les deux mots sélectionnés
+  const radA = (idxA * thetaBase) * (Math.PI / 180);
+  const radB = (idxB * thetaBase) * (Math.PI / 180);
+  
+  const getPos = (rad, r) => ({ x: cx + r * Math.sin(rad), y: cy - r * Math.cos(rad) });
+  const pA = getPos(radA, radius);
+  const pB = getPos(radB, radius);
+
+  // Arc de distance relative
+  const arc = d3.arc()
+    .innerRadius(radius - 20).outerRadius(radius + 5)
+    .startAngle(Math.min(radA, radB))
+    .endAngle(Math.max(radA, radB));
+
+  svg.append("path")
+    .attr("transform", `translate(${cx}, ${cy})`)
+    .attr("d", arc())
+    .attr("fill", theme.yellow)
+    .attr("opacity", 0.3);
+
+  // Vecteurs (Aiguilles)
+  const drawVector = (p, color) => {
+    svg.append("line")
+      .attr("x1", cx).attr("y1", cy).attr("x2", p.x).attr("y2", p.y)
+      .attr("stroke", color)
+      .attr("stroke-width", 4)
+      .attr("stroke-linecap", "round")
+      .attr("stroke-dasharray", "none");
+  };
+
+  drawVector(pA, theme.blue);
+  drawVector(pB, theme.red);
+
+  // Labels textuels
+  const drawLabel = (p, text, color) => {
+    const labelGroup = svg.append("g").attr("transform", `translate(${p.x}, ${p.y - 25})`);
+    const textEl = labelGroup.append("text")
+      .attr("text-anchor", "middle")
+      .attr("fill", theme.base3)
+      .attr("font-size", "12px")
+      .attr("font-weight", "900")
+      .style("font-family", "var(--font-base)")
+      .text(text);
+      
+    // Fallback measurement if getBBox fails (common in OJS)
+    let bbox = textEl.node().getBBox();
+    let w = bbox.width > 0 ? bbox.width : text.length * 8;
+    let h = bbox.height > 0 ? bbox.height : 14;
+    
+    const px = 15; 
+    const py = 8; 
+    
+    textEl.remove();
+    
+    labelGroup.append("rect")
+      .attr("x", - (w/2 + px)).attr("y", - (h/2 + py))
+      .attr("width", w + px * 2).attr("height", h + py * 2)
+      .attr("fill", color)
+      .attr("stroke", theme.base3)
+      .attr("stroke-width", 1.5)
+      .attr("rx", 8); 
+      
+    labelGroup.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .attr("fill", theme.base3)
+      .attr("font-size", "13px")
+      .attr("font-weight", "900")
+      .style("font-family", "var(--font-base)")
+      .text(text);
+  };
+
+  drawLabel(pA, tokens[idxA].word, theme.blue);
+  drawLabel(pB, tokens[idxB].word, theme.red);
+
+  // Point central
+  svg.append("circle").attr("cx", cx).attr("cy", cy).attr("r", 5).attr("fill", theme.base1);
+
+  return svg.node();
+}
+```
+
+:::
+
+::: {.results header="Analyse de la Position Relative"}
+
+```{ojs}
+//| echo: false
+{
+  const dist = Math.abs(idxA - idxB);
+  const totalAngle = dist * thetaBase;
+  const wordA = tokens[idxA].word;
+  const wordB = tokens[idxB].word;
+
+  return html`<div class="stats-grid">
+    <div class="stat-item" style="border-color: ${theme.blue}">
+      <div class="stat-label">Mot A</div>
+      <div class="stat-value" style="color: ${theme.blue}">[${idxA}]</div>
+      <div class="small opacity-75">${wordA}</div>
+    </div>
+    <div class="stat-item" style="border-color: ${theme.red}">
+      <div class="stat-label">Mot B</div>
+      <div class="stat-value" style="color: ${theme.red}">[${idxB}]</div>
+      <div class="small opacity-75">${wordB}</div>
+    </div>
+    <div class="stat-item" style="border-color: ${theme.yellow}">
+      <div class="stat-label">Déphasage</div>
+      <div class="stat-value" style="color: ${theme.yellow}">${totalAngle}°</div>
+      <div class="small opacity-75">Δ = ${dist} mots</div>
+    </div>
+  </div>`;
+}
+```
+
+::: {.bg-debug .debug}
+```{ojs}
+//| echo: false
+{
+  const dist = Math.abs(idxA - idxB);
+  const totalAngle = dist * thetaBase;
+  const wordA = tokens[idxA].word;
+  
+  return html`<div class="d-flex flex-column gap-2">
+    <div class="d-flex gap-3">
+      <div style="color: ${theme.yellow}; font-weight: bold; min-width: 100px;">Secret du RoPE :</div>
+      <div>Pour le Transformer, l'important n'est pas la position absolue de <b style="color: ${theme.blue};">"${wordA}"</b>, mais l'angle relatif qui le sépare des autres mots.</div>
+    </div>
+    <div class="d-flex gap-3">
+      <div style="color: ${theme.cyan}; font-weight: bold; min-width: 100px;">Invariance :</div>
+      <div>Si vous déplacez cette paire de mots 100 pages plus loin, leur déphasage de <b style="color: ${theme.yellow};">${totalAngle}°</b> restera identique. C'est l'encodage de la <b>distance relative</b>.</div>
+    </div>
+  </div>`;
+}
+```
+:::
+
+:::
+
+:::
+
 
 ### 🪟 La Fenêtre de Contexte (Context Window)
 
