@@ -32,6 +32,12 @@ Pour comprendre où nous en sommes, il faut d'abord visualiser les étapes clés
 | ![](../../assets/yann_lecun.jpg){width=80px} | *Transition* : LeNet de Yann LeCun (1989) pose les bases du Deep Learning. Deep Blue bat Kasparov aux échecs (1997) par la force de calcul. |
 :::
 
+::: {.event data-label="2014"}
+| Ian Goodfellow | L'Ère de la Génération |
+|:---|:---|
+| ![](../../assets/ian_goodfellow.png){width=80px} | *Imagination artificielle* : Invention des GANs (Generative Adversarial Networks). La machine ne se contente plus de classer, elle apprend à créer. |
+:::
+
 ::: {.event data-label="2016"}
 | Google DeepMind | La Révolution Deep Learning |
 |:---|:---|
@@ -52,15 +58,23 @@ Pour comprendre où nous en sommes, il faut d'abord visualiser les étapes clés
 
 ::::
 
-#### 🧱 De l'IA Symbolique au Connexionnisme
+#### 🧠 Typologie et Raisonnement des IA
 
-Jusqu'aux années 1990, l'industrie a privilégié l'**IA Symbolique** et les **Systèmes Experts**. Ces programmes visaient à reproduire le raisonnement humain par des règles logiques strictes sous la forme "Si [condition] Alors [action]". 
+Pour bien situer les technologies actuelles, il est crucial de distinguer les différentes approches de la résolution de problèmes par la machine. Chacune possède sa propre façon de "raisonner", avec ses forces et ses limites.
 
-::: {.info header="Exemple emblématique"}
-La victoire de **Deep Blue** (IBM) contre Garry Kasparov en 1997 ne relevait pas de l'apprentissage automatique, mais d'une puissance de calcul massive couplée à un algorithme de recherche heuristique (Min-Max avec élagage alpha-bêta).
+| Approche | Comment ça "raisonne" ? | Forces | Faiblesses |
+|:---|:---|:---|:---|
+| **Algorithme Classique** | **Exécution stricte**. Le programmeur fournit les règles (le code) et les données. La machine applique la recette pour obtenir une réponse. | Déterministe, prédictible, traçabilité totale, très rapide. | Rigide. Incapable de gérer l'imprévu ou les ambiguïtés du monde réel. |
+| **Système Expert**<br>*(IA Symbolique)* | **Déduction logique**. Raisonne par inférence ("Si A et B, alors C") à partir d'une vaste base de connaissances codée par des experts métiers. | Très forte explicabilité (on sait pourquoi il prend une décision), rigueur absolue. | "Mur de la complexité" : il est impossible de coder manuellement toutes les règles de l'univers. |
+| **Machine Learning**<br>*(ML)* | **Apprentissage statistique**. On fournit les données et les réponses attendues. L'algorithme déduit lui-même les règles (patterns) qui lient les deux. | Excellente performance sur des données tabulaires/structurées, capacité de prédiction fine. | Dépend de la qualité des données. Nécessite souvent un "Feature Engineering" (préparation) manuel lourd. |
+| **Deep Learning**<br>*(DL)* | **Représentation hiérarchique**. Des couches de "neurones" artificiels extraient des concepts de plus en plus abstraits (ex: pixels -> contours -> visage). | Excelle sur les données brutes non structurées (images, son, texte), découvre ses propres "features". | Effet "Boîte noire" (difficile à interpréter). Extrêmement gourmand en données et en puissance de calcul. |
+| **IA Générative**<br>*(GenAI)* | **Modélisation probabiliste**. Apprend la structure et la distribution sous-jacentes des données pour générer de nouvelles séquences plausibles. | Créativité, fluidité de l'interaction en langage naturel, hyper-polyvalence (code, texte, image). | Sujette aux "hallucinations" (affirme des faits faux avec aplomb). Coûts d'entraînement et d'inférence astronomiques. |
+
+::: {.info header="De la logique à l'intuition"}
+Jusqu'aux années 1990, l'industrie a privilégié l'**IA Symbolique** et les **Systèmes Experts**. La victoire de **Deep Blue** (IBM) contre Garry Kasparov en 1997 relevait de cette époque : une puissance de calcul massive couplée à un algorithme de recherche heuristique (Min-Max), et non de l'apprentissage automatique. 
+
+Le tournant majeur s'est opéré par la suite grâce à l'augmentation de la puissance de calcul et l'explosion des données. On est passé à une IA "connexionniste" (Machine Learning puis Deep Learning) [@syracuse_2025_deepvsml]. C'est la naissance d'une IA capable de développer une forme "d'intuition" mathématique plutôt que de simplement suivre des rails scriptés.
 :::
-
-Le tournant majeur s'opère par la suite grâce à l'augmentation de la puissance de calcul et l'explosion des données. On passe alors d'une IA "symbolique" (basée sur des règles codées par l'humain) à une IA "connexionniste" (basée sur l'apprentissage statistique) [@syracuse_2025_deepvsml]. C'est la naissance du **Deep Learning** moderne, capable de développer une forme "d'intuition" mathématique plutôt que de simplement suivre des rails scriptés.
 
 ### ⛓️ La Chaîne de Valeur de l'IA Moderne
 

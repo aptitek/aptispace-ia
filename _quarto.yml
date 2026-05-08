@@ -69,6 +69,7 @@ format:
     mainfont: "Recursive"
     monofont: "Recursive"
     highlight-style: solarized
+    code-overflow: wrap
     toc: true
     code-copy: true
     code-tools:

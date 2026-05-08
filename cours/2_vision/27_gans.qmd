@@ -1,0 +1,66 @@
+## 🎭 Les Réseaux Antagonistes Génératifs (GANs)
+
+Si les CNN et les ViT excellent pour *comprendre* une image, les **GANs (Generative Adversarial Networks)** ont été les premiers à exceller pour en *créer*. Inventés en 2014 par Ian Goodfellow, les GANs reposent sur une idée brillante : mettre en compétition deux réseaux de neurones.
+
+* **Le Générateur (Le Faussaire) :** Il crée des images à partir de bruit aléatoire et essaie de les rendre les plus réalistes possibles.
+* **Le Discriminateur (Le Policier) :** Il reçoit à la fois de vraies images et des fausses images du Générateur, et doit deviner lesquelles sont réelles.
+
+L'entraînement est un jeu du chat et de la souris : le générateur s'améliore pour tromper le discriminateur, et le discriminateur s'améliore pour ne plus se faire avoir. 
+
+::: {.graph .horizontal header="Simulation : L'entraînement d'un GAN"}
+
+::: {.controls}
+```{ojs}
+//| echo: false
+viewof gan_epoch = ui.slider({label: "Époques d'entraînement", value: 0, min: 0, max: 100, step: 1})
+```
+:::
+
+::: {.separator}
+⚙️
+:::
+
+::: {.render header="Le Générateur"}
+```{ojs}
+//| echo: false
+html`
+<div class="viz-container-sm" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+  <div style="font-size: 48px; filter: blur(${Math.max(0, 10 - gan_epoch/10)}px); opacity: ${0.2 + gan_epoch/125}; transform: scale(${0.8 + gan_epoch/500}); transition: all 0.3s;">🐶</div>
+  <div style="font-size: 12px; color: ${theme.fg};">Génère une fausse image</div>
+</div>
+`
+```
+:::
+
+::: {.separator}
+⚔️
+:::
+
+::: {.render header="Le Discriminateur"}
+```{ojs}
+//| echo: false
+html`
+<div class="viz-container-sm" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+  <div style="padding: 10px 15px; border-radius: 6px; background: ${gan_epoch > 80 ? theme.green : theme.red}; color: ${theme.bg}; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    ${gan_epoch > 80 ? "VRAI ?" : "FAUX !"}
+  </div>
+  <div style="font-size: 12px; color: ${theme.fg};">Tente de démasquer le faux</div>
+</div>
+`
+```
+:::
+
+::: {.results}
+```{ojs}
+//| echo: false
+{
+  const status = gan_epoch < 30 ? "danger" : gan_epoch < 80 ? "warning" : "success";
+  return ui.card(md`
+**${gan_epoch < 30 ? "Le Générateur produit du bruit informe. Le Discriminateur gagne facilement." : gan_epoch < 80 ? "Le Générateur commence à produire des formes reconnaissables. La compétition s'intensifie." : "Le Générateur a réussi ! Les images sont tellement réalistes que le Discriminateur est trompé."}**
+`, { title: "Analyse du Duel", status: status });
+}
+```
+:::
+:::
+
+Les GANs ont ouvert la voie aux "DeepFakes" et à la génération d'art avant d'être progressivement remplacés par les Modèles de Diffusion (comme Midjourney ou Stable Diffusion) qui sont plus stables à entraîner.

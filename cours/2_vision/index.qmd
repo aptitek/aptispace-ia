@@ -28,6 +28,10 @@ title: "👁️ Deep Learning & Vision"
 
 
 
+{{< include 27_gans.qmd >}}
+
+
+
 ## 🌉 Conclusion et Transition
 
 C'est d'ailleurs cette architecture Transformer qui a donné naissance à l'IA Générative et aux LLM. Les modèles ne se contentent plus de *classifier* des données, ils sont capables d'en *créer* de nouvelles. 
