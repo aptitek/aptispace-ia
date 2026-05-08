@@ -22,27 +22,105 @@ Même avec une température bien réglée, il reste toujours une "longue traîne
 * **Top-P (Nucleus Sampling) :** Plus dynamique que le Top-K. Le modèle additionne les probabilités des meilleurs tokens en descendant dans la liste. Dès que la somme atteint le seuil $P$ (ex: 0.95, soit 95% de la masse de probabilité), il coupe la liste. Cela permet de garder beaucoup de mots si le contexte est flou, ou très peu de mots si le contexte est évident [@sorbon_2024_llm].
 
 
-::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
+::::: {.graph header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
 
-::: {.controls header="Paramètres de Sampling"}
-Ajustez les leviers pour observer l'impact sur la probabilité de tirage du prochain mot.
+:::: {style="display: flex; flex-wrap: wrap; gap: 30px; align-items: center; justify-content: center; padding: 20px 0;"}
+
+<!-- ⬅️ Left Controls (Top-K & Top-P) -->
+::: {style="display: flex; flex-direction: column; gap: 20px;"}
+```{ojs}
+//| echo: false
+viewof topK = {
+  const container = html`
+  <div style="display: flex; flex-direction: column; align-items: center; width: 80px; background: #073642; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;">
+    <div style="font-size: 24px; margin-bottom: 5px;">🪓</div>
+    <div style="font-weight: bold; color: #93a1a1; font-size: 0.8em; margin-bottom: 10px; text-align: center;">TOP-K</div>
+    
+    <div style="position: relative; height: 160px; width: 40px; background: #002b36; border-radius: 4px; border: 2px solid #586e75; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 0;">
+      <div id="tokens" style="display: flex; flex-direction: column; height: 100%; justify-content: space-around;">
+        ${[1,2,3,4,5,6,7,8].map(i => `<div class="tok" style="height: 6px; margin: 0 6px; background: #2aa198; border-radius: 2px; transition: opacity 0.2s, background 0.2s;"></div>`).join('')}
+      </div>
+      <div class="blade" style="position: absolute; top: 0; left: -8px; right: -8px; height: 3px; background: #dc322f; box-shadow: 0 0 8px #dc322f; transition: top 0.1s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none;">
+         <div style="position: absolute; top: -10px; right: -2px; font-size: 14px;">🔪</div>
+      </div>
+      <input type="range" min="1" max="8" step="1" value="8" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ns-resize; transform: rotate(180deg);">
+    </div>
+    
+    <div class="val" style="margin-top: 15px; font-weight: bold; color: #eee; font-family: monospace; font-size: 1.1em; background: #002b36; padding: 4px 10px; border-radius: 6px;">8</div>
+  </div>`;
+  
+  const input = container.querySelector("input");
+  const blade = container.querySelector(".blade");
+  const val = container.querySelector(".val");
+  const toks = container.querySelectorAll(".tok");
+  
+  const update = () => {
+    const v = parseInt(input.value);
+    const pct = ((v - 0.5) / 8) * 100; 
+    blade.style.top = pct + "%";
+    
+    toks.forEach((tok, idx) => {
+      if (idx >= v) {
+        tok.style.opacity = "0.2";
+        tok.style.background = "#586e75";
+      } else {
+        tok.style.opacity = "1";
+        tok.style.background = "#2aa198";
+      }
+    });
+    
+    val.innerText = v;
+    container.value = v;
+    container.dispatchEvent(new CustomEvent("input"));
+  };
+  
+  input.oninput = (e) => { e.stopPropagation(); update(); };
+  setTimeout(update, 0);
+  return container;
+}
+```
 
 ```{ojs}
 //| echo: false
-// 1. Température : Gère l'étalement de la distribution
-viewof temp = Inputs.range([0.01, 2], {value: 0.7, step: 0.05, label: html`<b>Température (T) :</b>`})
-
-// 2. Top-K : Filtre les K meilleurs candidats
-viewof topK = Inputs.range([1, 8], {value: 8, step: 1, label: html`<b>Top-K :</b>`})
-
-// 3. Top-P (Nucleus) : Filtre la masse de probabilité cumulée
-viewof topP = Inputs.range([0.1, 1], {value: 1, step: 0.05, label: html`<b>Top-P (Nucleus) :</b>`})
-
+viewof topP = {
+  const container = html`
+  <div style="display: flex; flex-direction: column; align-items: center; width: 80px; background: #073642; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;">
+    <div style="font-size: 24px; margin-bottom: 5px;">🎯</div>
+    <div style="font-weight: bold; color: #93a1a1; font-size: 0.8em; margin-bottom: 10px; text-align: center;">TOP-P</div>
+    
+    <div style="position: relative; height: 60px; width: 60px; background: #002b36; border-radius: 50%; border: 2px solid #586e75; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: ew-resize;">
+      <div class="core" style="width: 100%; height: 100%; background: radial-gradient(circle, #b58900 0%, #cb4b16 100%); border-radius: 50%; transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 0 10px rgba(0,0,0,0.5);"></div>
+      <div style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 8px 8px; pointer-events: none; border-radius: 50%;"></div>
+      <input type="range" min="0.1" max="1" step="0.05" value="1" style="position: absolute; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer;">
+    </div>
+    
+    <div class="val" style="margin-top: 15px; font-weight: bold; color: #eee; font-family: monospace; font-size: 1.1em; background: #002b36; padding: 4px 10px; border-radius: 6px;">1.00</div>
+  </div>`;
+  
+  const input = container.querySelector("input");
+  const core = container.querySelector(".core");
+  const val = container.querySelector(".val");
+  
+  const update = () => {
+    const v = parseFloat(input.value);
+    const scale = Math.max(0.15, v);
+    core.style.transform = "scale(" + scale + ")";
+    core.style.opacity = v < 0.3 ? 0.5 : 1;
+    
+    val.innerText = v.toFixed(2);
+    container.value = v;
+    container.dispatchEvent(new CustomEvent("input"));
+  };
+  
+  input.oninput = (e) => { e.stopPropagation(); update(); };
+  setTimeout(update, 0);
+  return container;
+}
 ```
-
 :::
 
-::: {.render .transparent header="Distribution Softmax Dynamique"}
+<!-- 🎯 Center Graph -->
+::: {.render .transparent header="Distribution Softmax Dynamique" style="flex: 1; min-width: 400px; margin: 0; box-shadow: none; border: none; background: transparent;"}
 
 ```{ojs}
 //| echo: false
@@ -128,6 +206,58 @@ viewof topP = Inputs.range([0.1, 1], {value: 1, step: 0.05, label: html`<b>Top-P
 
 :::
 
+<!-- 🌡️ Right Controls (Temp) -->
+::: {style="display: flex; flex-direction: column;"}
+```{ojs}
+//| echo: false
+viewof temp = {
+  const container = html`
+  <div style="display: flex; flex-direction: column; align-items: center; width: 80px; background: #073642; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;">
+    <div style="font-size: 24px; margin-bottom: 5px;">🌡️</div>
+    <div style="font-weight: bold; color: #93a1a1; font-size: 0.8em; margin-bottom: 10px; text-align: center;">TEMP</div>
+    
+    <div style="position: relative; height: 180px; width: 24px; background: #002b36; border-radius: 12px; border: 2px solid #586e75; display: flex; flex-direction: column; justify-content: flex-end; padding: 3px;">
+      <div style="position: absolute; left: 100%; top: 5px; bottom: 5px; width: 10px; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none;">
+        ${[...Array(10)].map(() => `<div style="height: 2px; width: 6px; background: #586e75;"></div>`).join('')}
+      </div>
+      <div class="fill" style="width: 100%; height: 35%; background: linear-gradient(to top, #268bd2, #dc322f); border-radius: 8px; transition: height 0.1s, background 0.2s, box-shadow 0.2s;"></div>
+      <input type="range" min="0.01" max="2" step="0.01" value="0.7" style="position: absolute; top: 0; left: -10px; height: 100%; width: 44px; margin: 0; opacity: 0; cursor: ns-resize; transform: rotate(180deg);">
+    </div>
+    
+    <div class="val" style="margin-top: 15px; font-weight: bold; color: #eee; font-family: monospace; font-size: 1.1em; background: #002b36; padding: 4px 10px; border-radius: 6px;">0.70</div>
+  </div>`;
+  
+  const input = container.querySelector("input");
+  const fill = container.querySelector(".fill");
+  const val = container.querySelector(".val");
+  
+  const update = () => {
+    const v = parseFloat(input.value);
+    const pct = Math.max(5, (v / 2) * 100); 
+    fill.style.height = pct + "%";
+    
+    let color, shadowColor;
+    if (v < 0.5) { color = "linear-gradient(to top, #2aa198, #268bd2)"; shadowColor = "#268bd2"; }
+    else if (v < 1.2) { color = "linear-gradient(to top, #859900, #b58900)"; shadowColor = "#b58900"; }
+    else { color = "linear-gradient(to top, #cb4b16, #dc322f)"; shadowColor = "#dc322f"; }
+    
+    fill.style.background = color;
+    fill.style.boxShadow = "0 0 10px " + shadowColor;
+    
+    val.innerText = v.toFixed(2);
+    container.value = v;
+    container.dispatchEvent(new CustomEvent("input"));
+  };
+  
+  input.oninput = (e) => { e.stopPropagation(); update(); };
+  setTimeout(update, 0);
+  return container;
+}
+```
+:::
+
+::::
+
 ::: {.results header="Analyse du Tirage au Sort"}
 
 ```{ojs}
@@ -173,7 +303,7 @@ viewof topP = Inputs.range([0.1, 1], {value: 1, step: 0.05, label: html`<b>Top-P
 
 :::
 
-:::
+:::::
 
 ### ✍️ Le Prompt Engineering
 
