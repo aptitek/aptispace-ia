@@ -4,23 +4,23 @@ title: "🧹 Fondations de l'IA & Data"
 
 
 
-{{< include 11_genese.qmd >}}
+{{< include _11_genese.qmd >}}
 
 
 
-{{< include 12_anatomie.qmd >}}
+{{< include _12_anatomie.qmd >}}
 
 
 
-{{< include 13_activation.qmd >}}
+{{< include _13_activation.qmd >}}
 
 
 
-{{< include 14_optimisation.qmd >}}
+{{< include _14_optimisation.qmd >}}
 
 
 
-{{< include 15_data.qmd >}} 
+{{< include _15_data.qmd >}} 
 
 
 

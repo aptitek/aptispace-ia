@@ -10,6 +10,7 @@ project:
   resources:
     - "lab/**"
     - "assets/**"
+    - "**/_*.qmd"
 
 bibliography: bibliography.bib
 

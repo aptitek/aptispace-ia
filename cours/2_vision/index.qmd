@@ -4,31 +4,31 @@ title: "👁️ Deep Learning & Vision"
 
 
 
-{{< include 21_perspective.qmd >}}
+{{< include _21_perspective.qmd >}}
 
 
 
-{{< include 22_fondamentaux.qmd >}}
+{{< include _22_fondamentaux.qmd >}}
 
 
 
-{{< include 23_anatomie.qmd >}}
+{{< include _23_anatomie.qmd >}}
 
 
 
-{{< include 24_alexnet.qmd >}}
+{{< include _24_alexnet.qmd >}}
 
 
 
-{{< include 25_overfitting.qmd >}}
+{{< include _25_overfitting.qmd >}}
 
 
 
-{{< include 26_applications.qmd >}}
+{{< include _26_applications.qmd >}}
 
 
 
-{{< include 27_gans.qmd >}}
+{{< include _27_gans.qmd >}}
 
 
 

@@ -1,0 +1,304 @@
+## 🏛️ Les Fondations Classiques
+
+
+L’histoire du Traitement du Langage Naturel (NLP) est marquée par une transition fondamentale : le passage d'une approche purement statistique (le comptage) à des architectures génératives à haute dimension (la compréhension sémantique). 
+
+La donnée textuelle est, par nature, non structurée pour un ordinateur. La première étape de tout pipeline NLP est la **"féaturisation"**, c'est-à-dire la transformation d'une chaîne de caractères en un format numérique (un vecteur) exploitable par des algorithmes [@meaning_2026_architecture]. 
+
+### 👜 Le Bag of Words (BoW)
+
+Le modèle *Bag of Words* (BoW) est la méthode historique la plus rudimentaire. Il traite un document comme un simple "sac" de jetons (tokens), faisant totalement abstraction de la grammaire, de la syntaxe et, de manière plus critique, de l'ordre des mots [@meaning_2026_architecture].
+
+Chaque dimension d'un vecteur BoW correspond à un mot unique du vocabulaire total, et sa valeur est simplement sa fréquence d'apparition. Cette approche souffre de deux limites rédhibitoires :
+
+* **Le problème de la polysémie :** Le terme "avocat" sera encodé de la même manière, qu'il s'agisse du fruit ou du juriste.
+* **La perte de structure :** Les phrases "L'homme a mordu le chien" et "Le chien a mordu l'homme" génèrent des vecteurs strictement identiques.
+
+### 📊 Le TF-IDF
+
+Pour pallier les défauts du BoW (notamment la domination des "stop-words" comme "le", "et", qui apparaissent tout le temps mais n'apportent aucun sens), l'industrie a inventer la méthode **TF-IDF (Term Frequency-Inverse Document Frequency)** [@meaning_2026_architecture].
+
+Cette méthode introduit une pondération basée sur la spécificité des termes au sein d'un corpus complet. La formule unifiée est la suivante :
+$$ \text{tfidf}(t, d, D) = \text{tf}(t, d) \cdot \log\left(\frac{N}{n_t}\right) $$
+*(Où $tf$ est la fréquence du terme $t$ dans le document $d$, $N$ est le nombre total de documents, et $n_t$ est le nombre de documents contenant ce terme).*
+
+Plus un mot est fréquent dans un document précis, mais rare dans le reste de la base de données, plus son score TF-IDF sera élevé. C'est l'algorithme à la base des premiers moteurs de recherche et du SEO moderne.
+
+### 🧱 Le Mur de la "Sparsité" (Sparsity Problem)
+
+L'obstacle technique majeur de ces deux méthodes classiques est la dimensionnalité vide. Si vous analysez un corpus avec un vocabulaire de 100 000 mots uniques, un tweet de 10 mots sera représenté par un vecteur contenant 99,9 % de zéros ! Effectuer des calculs matriciels sur d'immenses vecteurs remplis de zéros gaspille la mémoire et rend le calcul de similarité sémantique inefficace.
+
+::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : Visualiser le gouffre de la Sparsité"}
+
+::: {.controls header="Action"}
+Cliquez sur le bouton pour déclencher la féaturisation.
+
+```{ojs}
+//| echo: false
+viewof btnSparsity = {
+  const btn = html`<button class="btn-terminal-trigger"><span>🧮</span> Générer le Vecteur BoW</button>`;
+  let count = 0;
+  Object.defineProperty(btn, "value", {get: () => count});
+  btn.onclick = () => {
+    count++;
+    btn.dispatchEvent(new CustomEvent("input"));
+  };
+  return btn;
+}
+
+```
+:::
+
+::: {.render .transparent header="Tweet d'Entrée"}
+```{ojs}
+//| echo: false
+tweetBox = {
+  const words = "L' IA transforme notre façon de travailler chaque jour.".split(" ");
+  return html`<div class="tweet-embed">
+    <div class="tweet-header">
+      <img src="../../assets/twitter.svg" class="twitter-icon" />
+      <span>Twitter @IA_du_69</span>
+    </div>
+    <div class="tweet-content">
+      ${words.flatMap(w => [html`<span>${w}</span>`, " "])}
+    </div>
+    <div class="tweet-footer">10:14 AM · 8 Mai 2026</div>
+  </div>`;
+}
+```
+:::
+
+::: {.separator}
+:::
+
+```{ojs}
+//| echo: false
+// État partagé non-réactif pour éviter les boucles de re-calcul OJS
+simState = ({
+  progress: 0,
+  jitter: 0,
+  // Pré-remplissage pour que le graphique "bouge" dès le chargement
+  history: Array.from({length: 100}, (_, i) => ({ t: Date.now() - (100 - i) * 50, v: 0.05 })),
+  running: false,
+  currentLevel: 0.05
+})
+
+mutable dataTrigger = 0
+
+// Boucle d'animation globale (Jitter + History)
+// Note: Pas de dépendance réactive ici pour éviter les redémarrages intempestifs
+{
+  while (true) {
+    const jitter = (Math.random() - 0.5) * 0.04; // Amplitude très réduite
+    simState.jitter = jitter;
+    
+    // Calcul du niveau consolidé (jitter appliqué APRES le cap pour rester visible à 100%)
+    const base = simState.running ? simState.progress : 0;
+    const cappedBase = Math.max(0, Math.min(0.98, base + 0.05));
+    const level = cappedBase + jitter;
+    simState.currentLevel = level;
+    
+    simState.history.push({ t: Date.now(), v: level });
+    if (simState.history.length > 300) simState.history.shift();
+    
+    mutable dataTrigger++;
+    await Promises.delay(120); // Plus lent (était 50ms)
+  }
+}
+
+mutable bitCounts = ({ zeros: 0, ones: 0 })
+```
+
+::: {.render .terminal-mode header="Vecteur_Sparsité_BoW"}
+```{ojs}
+//| echo: false
+{
+  btnSparsity;
+  tweetBox;
+  
+  if (!btnSparsity || btnSparsity === 0) {
+    simState.running = false;
+    simState.progress = 0;
+    const div = document.createElement("div");
+    div.classList.add("sparsity-waiting");
+    div.innerText = "En attente du signal...";
+    yield div;
+  } else {
+    // Reset des données (On garde l'historique pour la continuité)
+    simState.progress = 0;
+    simState.running = true;
+    mutable bitCounts = ({ zeros: 0, ones: 0 });
+
+    const tweetWords = tweetBox.querySelectorAll(".tweet-content span");
+    tweetWords.forEach(span => span.classList.remove("highlight"));
+
+    const randomIndices = Array.from({length: tweetWords.length}, (_, i) => i)
+                               .sort(() => Math.random() - 0.5);
+    let wordsHighlighted = 0;
+    const totalVisibleTokens = 3500;
+    const onesPositions = new Set();
+    while(onesPositions.size < 10) {
+        onesPositions.add(Math.floor(Math.random() * (totalVisibleTokens - 100)) + 50);
+    }
+
+    const container = document.createElement("div");
+    container.classList.add("sparsity-matrix-view");
+
+    let currentText = "";
+    for (let i = 0; i < totalVisibleTokens; i += 80) {
+      let chunk = "";
+      let cZeros = 0;
+      let cOnes = 0;
+      for (let j = 0; j < 80 && (i+j) < totalVisibleTokens; j++) {
+        if (onesPositions.has(i+j)) {
+          chunk += `<span class="sparsity-token-one">1</span>`;
+          cOnes++;
+          if (wordsHighlighted < randomIndices.length) {
+            const idx = randomIndices[wordsHighlighted];
+            tweetWords[idx].classList.add("highlight");
+            wordsHighlighted++;
+          }
+        } else {
+          chunk += "0";
+          cZeros++;
+        }
+      }
+      currentText += chunk;
+      container.innerHTML = currentText;
+      container.scrollTop = container.scrollHeight;
+      
+      simState.progress = i / totalVisibleTokens;
+      mutable bitCounts.zeros += cZeros;
+      mutable bitCounts.ones += cOnes;
+      
+      yield container;
+      await Promises.delay(50); // Plus lent (était 15ms)
+    }
+
+    const truncation = document.createElement("span");
+    truncation.classList.add("sparsity-token-truncated");
+    truncation.innerText = "... [Mémoire saturée : 96 500 zéros supplémentaires tronqués] ...";
+    
+    container.appendChild(truncation);
+    container.scrollTop = container.scrollHeight;
+    
+    mutable bitCounts.zeros += 96500;
+    simState.progress = 0.96;
+    yield container;
+  }
+}
+```
+:::
+
+::: {.results}
+```{ojs}
+//| echo: false
+{
+  dataTrigger;
+  
+  // 1. LED Meter (Top)
+  const segments = 50;
+  const level = simState.currentLevel;
+  const activeCount = Math.floor(level * segments);
+  const ledContainer = document.createElement("div");
+  ledContainer.classList.add("led-meter-container");
+  const label = document.createElement("div");
+  label.classList.add("led-meter-label");
+  label.innerHTML = `<span>Memory Usage (BoW Vector)</span><span class="${level > 0.85 ? 'status-danger' : ''}">${(level * 100).toFixed(1)}%</span>`;
+  const bar = document.createElement("div");
+  bar.classList.add("led-bar");
+  for (let i = 0; i < segments; i++) {
+    const seg = document.createElement("div");
+    seg.classList.add("led-segment");
+    if (i < activeCount) {
+      if (i < segments * 0.6) seg.classList.add("active-green");
+      else if (i < segments * 0.85) seg.classList.add("active-yellow");
+      else seg.classList.add("active-red");
+    }
+    bar.appendChild(seg);
+  }
+  const ledStats = document.createElement("div");
+  ledStats.classList.add("led-stats");
+  ledStats.innerHTML = `<span>0 GB</span><span>100 000 Dimensions</span><span>8 GB Virtual</span>`;
+  ledContainer.appendChild(label);
+  ledContainer.appendChild(bar);
+  ledContainer.appendChild(ledStats);
+
+  // 2. Charts Grid
+  const grid = html`<div class="results-grid">
+    <div class="grid-item">
+      <h5>Memory History</h5>
+      <div id="history-chart"></div>
+    </div>
+    <div class="grid-item">
+      <h5>Bit Distribution (Pie)</h5>
+      <div id="pie-chart" style="display: flex; justify-content: center; align-items: center;"></div>
+    </div>
+  </div>`;
+
+  // Plot History
+  const now = Date.now();
+  const windowMs = 15000;
+  const historyPlot = Plot.plot({
+    width: 300,
+    height: 120,
+    style: { background: "transparent", color: "#839496" },
+    x: { axis: null, domain: [now - windowMs, now] },
+    y: { domain: [0, 1], axis: "right", ticks: [0, 0.5, 1], tickFormat: "%", label: null },
+    marks: [
+      Plot.areaY(simState.history, { x: "t", y: "v", fill: "#268bd2", fillOpacity: 0.2 }),
+      Plot.lineY(simState.history, { x: "t", y: "v", stroke: "#268bd2", strokeWidth: 2 })
+    ]
+  });
+  grid.querySelector("#history-chart").appendChild(historyPlot);
+
+  // Pie Chart (Donut style)
+  {
+    const width = 120, height = 120;
+    const radius = Math.min(width, height) / 2;
+    
+    // Pour que les '1' soient visibles tout en restant réalistes
+    const total = bitCounts.zeros + bitCounts.ones;
+    const onesProportion = total === 0 ? 0 : bitCounts.ones / total;
+    // On utilise 1.5% minimum pour que ce soit un "cheveu" rouge visible
+    const displayOnes = Math.max(onesProportion, onesProportion > 0 ? 0.015 : 0); 
+    
+    const data = [
+      { name: "0", value: 1 - displayOnes, color: "#859900", count: bitCounts.zeros },
+      { name: "1", value: displayOnes, color: "#dc322f", count: bitCounts.ones }
+    ];
+
+    const svg = d3.create("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+    const arc = d3.arc().innerRadius(radius * 0.5).outerRadius(radius);
+    const pie = d3.pie().value(d => d.value).sort(null);
+
+    svg.selectAll("path")
+      .data(pie(data))
+      .join("path")
+      .attr("fill", d => d.data.color)
+      .attr("d", arc)
+      .attr("stroke", "white")
+      .attr("stroke-width", "1px");
+      
+    // Label central pour les '1'
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .style("font-family", "monospace")
+      .style("font-weight", "bold")
+      .style("fill", "#dc322f")
+      .text(bitCounts.ones);
+
+    grid.querySelector("#pie-chart").appendChild(svg.node());
+  }
+
+  return html`${ledContainer}${grid}`;
+}
+```
+:::
+
+:::

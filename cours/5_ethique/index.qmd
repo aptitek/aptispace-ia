@@ -4,19 +4,19 @@ title: "⚖️ Éthique & Gouvernance"
 
 
 
-{{< include 51_reglementation.qmd >}}
+{{< include _51_reglementation.qmd >}}
 
 
 
-{{< include 52_deepfakes.qmd >}}
+{{< include _52_deepfakes.qmd >}}
 
 
 
-{{< include 53_ethique.qmd >}}
+{{< include _53_ethique.qmd >}}
 
 
 
-{{< include 54_durabilite.qmd >}}
+{{< include _54_durabilite.qmd >}}
 
 
 

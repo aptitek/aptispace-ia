@@ -4,27 +4,27 @@ title: "💬 GenAI & NLP"
 
 
 
-{{< include 31_fondations.qmd >}}
+{{< include _31_fondations.qmd >}}
 
 
 
-{{< include 32_espaces_latents.qmd >}}
+{{< include _32_espaces_latents.qmd >}}
 
 
 
-{{< include 33_transformers.qmd >}}
+{{< include _33_transformers.qmd >}}
 
 
 
-{{< include 34_mecanique_llm.qmd >}}
+{{< include _34_mecanique_llm.qmd >}}
 
 
 
-{{< include 35_pilotage.qmd >}}
+{{< include _35_pilotage.qmd >}}
 
 
 
-{{< include 36_risques.qmd >}}
+{{< include _36_risques.qmd >}}
 
 
 
