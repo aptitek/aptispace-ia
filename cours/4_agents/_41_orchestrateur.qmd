@@ -36,3 +36,303 @@ graph TD
     C & D & E --> F[Moteur de Raisonnement LLM]
     F --> G[Action déterministe ou Réponse]
 ```
+
+
+::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : Le Flux de Données LangChain"}
+
+::: {.controls header="Entrées Utilisateur (Inputs)"}
+Saisissez vos variables. Cliquez sur Exécuter pour voir comment le texte est forgé, généré, puis nettoyé.
+
+```{ojs}
+//| echo: false
+viewof userInput = ui.text_area({
+  label: "Variable {texte} :", 
+  value: "Le chat dort sur le canapé.",
+  rows: 2
+})
+
+viewof persona = ui.select({
+  label: "Variable {persona} :",
+  options: ["Pirate 🏴‍☠️", "Poète 📜", "Corporate 👔"],
+  value: "Pirate 🏴‍☠️"
+})
+
+viewof runChainBtn = {
+  const btn = html`<button class="btn-physics-drop"><span>⚙️</span> Lancer la Chaîne</button>`;
+  btn.value = 0;
+  btn.onclick = () => {
+    btn.value = (btn.value || 0) + 1;
+    btn.dispatchEvent(new CustomEvent("input"));
+  };
+  return btn;
+}
+
+// Base de données des réponses mockées
+llmResponses = ({
+  "Pirate 🏴‍☠️": "Yarrr ! Le greffier pionce sur le pont supérieur !",
+  "Poète 📜": "Ô doux félin, reposant paisiblement sur ce divan de velours...",
+  "Corporate 👔": "Synergie actée : le collaborateur félin est en phase de stand-by sur l'espace lounge."
+});
+
+```
+
+:::
+
+::: {.terminal-mode data-header="1. PromptTemplate (Remplacement des variables)"}
+
+```{ojs}
+//| echo: false
+{
+  runChainBtn; // dépendance
+
+  const container = document.createElement("div");
+  container.className = "terminal-content";
+  container.style.opacity = "0.3";
+  container.style.transition = "all 0.5s";
+
+  if (runChainBtn === 0) {
+    container.innerHTML = `<span class="terminal-line idle">> En attente des données...</span>`;
+    yield container;
+    return;
+  }
+
+  // --- ÉTAPE 1 : PROMPT TEMPLATE ---
+  container.style.opacity = "1";
+  container.style.boxShadow = "0 0 15px rgba(42, 161, 152, 0.2)";
+  
+  const baseTemplate = `Tu es un assistant. Traduis la phrase suivante en style {persona}.
+Texte : "{texte}"
+
+Tu dois IMPÉRATIVEMENT formater ta réponse en JSON avec la clé "traduction".`;
+
+  container.innerHTML = `<span class="terminal-line system">// Template initial :</span>
+<span class="terminal-line">${baseTemplate}</span>`;
+  yield container;
+  
+  await Promises.delay(1200);
+  
+  // Remplacement visuel
+  const formattedPrompt = `Tu es un assistant. Traduis la phrase suivante en style <span style="background: rgba(220, 50, 47, 0.2); color: #dc322f; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${persona}</span>.
+Texte : "<span style="background: rgba(38, 139, 210, 0.2); color: #268bd2; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${userInput}</span>"
+
+Tu dois IMPÉRATIVEMENT formater ta réponse en JSON avec la clé "traduction".`;
+
+  container.innerHTML = `<span class="terminal-line ok">// prompt.format(texte=..., persona=...) :</span>
+<span class="terminal-line">${formattedPrompt}</span>`;
+  
+  await Promises.delay(1000);
+  container.style.boxShadow = "none";
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.terminal-mode data-header="2. LLM (Génération brute / Raw Markdown)"}
+
+```{ojs}
+//| echo: false
+{
+  runChainBtn; // dépendance
+
+  const container = document.createElement("div");
+  container.className = "terminal-content";
+  container.style.opacity = "0.3";
+  container.style.transition = "all 0.5s";
+
+  if (runChainBtn === 0) {
+    container.innerHTML = `<span class="terminal-line idle">> En attente de l'étape 1...</span>`;
+    yield container;
+    return;
+  }
+
+  yield container;
+
+  // Wait for step 1 to finish
+  await Promises.delay(2200);
+
+  // --- ÉTAPE 2 : LLM ---
+  await Promises.delay(500);
+  container.style.opacity = "1";
+  container.style.boxShadow = "0 0 15px rgba(211, 54, 130, 0.2)";
+  
+  const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
+  const rawLlmOutput = `Bien sûr, voici la traduction demandée :
+
+\`\`\`json
+{
+  "traduction": "${traduction}"
+}
+\`\`\`
+
+N'hésitez pas si vous avez d'autres phrases à traduire !`;
+
+  // Effet machine à écrire
+  container.innerHTML = `<span class="terminal-line system">// model.invoke(prompt)</span>
+<span class="terminal-line" style="color: #eee;"></span>`;
+  const textSpan = container.querySelector("span:nth-child(2)");
+  
+  for (let i = 0; i <= rawLlmOutput.length; i += 3) {
+    textSpan.innerText = rawLlmOutput.substring(0, i);
+    await Promises.delay(10); // Vitesse de frappe
+  }
+  textSpan.innerText = rawLlmOutput; // Assure la fin complète
+  
+  await Promises.delay(1000);
+  container.style.boxShadow = "none";
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.terminal-mode data-header="3. OutputParser (Extraction Regex)"}
+
+```{ojs}
+//| echo: false
+{
+  runChainBtn; // dépendance
+
+  const container = document.createElement("div");
+  container.className = "terminal-content";
+  container.style.opacity = "0.3";
+  container.style.transition = "all 0.5s";
+
+  if (runChainBtn === 0) {
+    container.innerHTML = `<span class="terminal-line idle">> En attente de l'étape 2...</span>`;
+    yield container;
+    return;
+  }
+
+  yield container;
+
+  const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
+  const rawLlmOutput = `Bien sûr, voici la traduction demandée :
+
+\`\`\`json
+{
+  "traduction": "${traduction}"
+}
+\`\`\`
+
+N'hésitez pas si vous avez d'autres phrases à traduire !`;
+
+  // Wait for step 1 and step 2 to finish.
+  const step2Time = 500 + (Math.ceil(rawLlmOutput.length / 3) * 10) + 1000;
+  await Promises.delay(2200 + step2Time);
+
+  // --- ÉTAPE 3 : OUTPUT PARSER ---
+  await Promises.delay(500);
+  container.style.opacity = "1";
+  container.style.boxShadow = "0 0 15px rgba(181, 137, 0, 0.2)";
+  
+  container.innerHTML = `<span class="terminal-line system">// parser.parse(raw_output)</span>
+<span class="terminal-line" id="parser-target" style="color: #eee;">${rawLlmOutput}</span>`;
+  
+  await Promises.delay(1500);
+  
+  // Phase 1 : Identification du bruit (Le texte bavard du LLM)
+  const target = container.querySelector("#parser-target");
+  target.innerHTML = `<span style="text-decoration: line-through; color: #dc322f; opacity: 0.6;">Bien sûr, voici la traduction demandée :</span>
+
+<span style="color: #b58900; font-weight: bold;">\`\`\`json</span>
+<span style="color: #859900; font-weight: bold;">{
+  "traduction": "${traduction}"
+}</span>
+<span style="color: #b58900; font-weight: bold;">\`\`\`</span>
+
+<span style="text-decoration: line-through; color: #dc322f; opacity: 0.6;">N'hésitez pas si vous avez d'autres phrases à traduire !</span>`;
+  
+  await Promises.delay(2000);
+  
+  // Phase 2 : Extraction du JSON Propre
+  target.innerHTML = `<span class="terminal-line ok" style="font-weight: bold;">{
+  "traduction": "${traduction}"
+}</span>`;
+  
+  // Petit badge de succès
+  const successBadge = document.createElement("div");
+  successBadge.className = "terminal-line ok";
+  successBadge.innerHTML = "> ✅ Objet JSON prêt pour le code Python/JS";
+  successBadge.style.cssText = "margin-top: 15px; font-weight: bold; border-top: 1px dashed #586e75; padding-top: 10px;";
+  container.appendChild(successBadge);
+
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.terminal-mode data-header="Console d'Orchestration"}
+
+```{ojs}
+//| echo: false
+{
+  runChainBtn;
+  const container = document.createElement("div");
+  container.className = "terminal-content";
+
+  if (runChainBtn === 0) {
+    container.innerHTML = `<span class="terminal-line idle">> Service d'Orchestration prêt...</span>`;
+    yield container;
+    return;
+  }
+
+  const l1 = `<span class="terminal-line system">> [SYSTEM] Initialisation de la chaîne...</span>`;
+  const l2 = `<span class="terminal-line warning">> [PROMPT] Injection des variables : {texte}, {persona}</span>`;
+  const l3 = `<span class="terminal-line system">> [LLM] Envoi de la requête au modèle...</span>`;
+  const l4 = `<span class="terminal-line">> [LLM] Génération de la réponse en cours...</span>`;
+  const l5 = `<span class="terminal-line ok">> [LLM] Réponse reçue (Style: ${persona})</span>`;
+  const l6 = `<span class="terminal-line system">> [PARSER] Analyse et nettoyage du JSON...</span>`;
+  const l7 = `<span class="terminal-line ok">> [SUCCESS] Pipeline exécuté avec succès.</span>`;
+
+  container.innerHTML = l1;
+  yield container;
+  await Promises.delay(600);
+  
+  container.innerHTML = l1 + l2;
+  yield container;
+  await Promises.delay(600); 
+
+  container.innerHTML = l1 + l2 + l3;
+  yield container;
+  await Promises.delay(1000); 
+
+  container.innerHTML = l1 + l2 + l3 + l4;
+  yield container;
+
+  const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
+  const rawLlmOutput = `Bien sûr, voici la traduction demandée :
+
+\`\`\`json
+{
+  "traduction": "${traduction}"
+}
+\`\`\`
+
+N'hésitez pas si vous avez d'autres phrases à traduire !`;
+  const step2Time = 500 + (Math.ceil(rawLlmOutput.length / 3) * 10) + 1000;
+  
+  await Promises.delay(step2Time - 500); 
+  container.innerHTML = l1 + l2 + l3 + l4 + l5;
+  yield container;
+  await Promises.delay(1000);
+
+  container.innerHTML = l1 + l2 + l3 + l4 + l5 + l6;
+  yield container;
+  await Promises.delay(4000); 
+
+  container.innerHTML = l1 + l2 + l3 + l4 + l5 + l6 + l7;
+  yield container;
+}
+```
+
+:::
+
+:::
