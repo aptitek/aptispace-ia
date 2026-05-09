@@ -883,6 +883,12 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
             padding: 15px !important;
         }
 
+        .terminal-mode {
+            flex: 1 1 200px;
+            min-width: 0;
+            padding: 0 !important;
+        }
+
         .controls, .dynamic-graph-controls {
             flex: 1 1 160px;
             min-width: 0;
@@ -892,11 +898,31 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
             flex: 0 0 auto;
             margin: 0 5px;
         }
+
+        .layout-col {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1 1 200px;
+            min-width: 0;
+            
+            > .controls, > .render, > .terminal-mode, > .results, > .dynamic-graph-controls, > .dynamic-graph-canvas, > .dynamic-graph-results {
+                flex: 0 0 auto !important;
+                width: 100% !important;
+                margin-bottom: 0 !important;
+            }
+        }
     }
 }
 
 .render[data-header], .controls[data-header], .results[data-header],
 .dynamic-graph-canvas[data-header], .dynamic-graph-controls[data-header], .dynamic-graph-results[data-header] {
+    background: $sol-base3;
+    border: 1px solid $sol-base1;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    
     &::before {
         content: attr(data-header);
         display: block;
@@ -2075,6 +2101,7 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     width: 100%;
     cursor: crosshair;
     user-select: none;
+    overflow: hidden;
 }
 
 .magnify-base, .magnify-reveal {
