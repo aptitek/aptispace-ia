@@ -340,6 +340,7 @@ Jusqu'à récemment, l'intégration des outils posait un problème d'échelle (f
 En réponse, l'industrie a standardisé les échanges avec le **Model Context Protocol (MCP)**, que l'on peut voir comme le "port USB-C de l'Intelligence Artificielle" [@wikipedia_2026_mcp; @google_2026_mcpguide].
 
 L'architecture MCP repose sur trois entités communiquant via le format JSON-RPC 2.0 [@mcp_2025_spec] :
+
 * **Le Serveur MCP :** Le programme léger qui expose vos données ou vos outils de manière standardisée (ex: un serveur MCP qui lit votre base de données PostgreSQL).
 * **Le Client MCP :** Le connecteur qui interroge le serveur (souvent intégré dans LangChain).
 * **L'Hôte :** L'application IA finale avec laquelle l'utilisateur interagit.
