@@ -2164,3 +2164,183 @@ details[open] > summary > .folder-arrow { transform: rotate(90deg); }
     border-radius: 4px;
     pointer-events: none;
 }
+
+// ==========================================
+// 14. ORCHESTRATOR SIMULATION (CHAINS & AGENTS)
+// ==========================================
+
+.steps-container {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    align-items: center !important;
+    width: 100%;
+    min-height: 0;
+    transition: all 0.5s ease;
+
+    // THE CONTINUOUS CHAIN LINE (Behind everything)
+    &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -20px;
+        right: -20px;
+        height: 60px;
+        transform: translateY(-50%);
+        background-image: url("data:image/svg+xml,%3Csvg width='80' height='60' viewBox='0 0 80 60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='10' y='20' width='35' height='20' rx='10' fill='none' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3Crect x='35' y='20' width='35' height='20' rx='10' fill='none' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3Cline x1='70' y1='30' x2='80' y2='30' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3Cline x1='0' y1='30' x2='10' y2='30' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3C/svg%3E");
+        background-repeat: repeat-x;
+        background-position: 0 center;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 1s ease;
+    }
+
+    // THE GLOW (Now moves along the whole container)
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 120px;
+        height: 8px;
+        background: $sol-green;
+        box-shadow: 0 0 25px 10px $sol-green;
+        border-radius: 4px;
+        transform: translateY(-50%);
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+}
+
+.graph.running {
+    .steps-container {
+        min-height: 450px;
+
+        &::before {
+            opacity: 1;
+            animation: scrollChainBg 8s linear infinite;
+        }
+
+        &::after {
+            opacity: 0.4;
+            animation: globalChainGlow 6s infinite linear;
+        }
+    }
+
+    .terminal-step, 
+    .separator,
+    & + #console-term {
+        display: flex !important;
+        flex-direction: column !important;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        visibility: visible;
+    }
+}
+
+.terminal-step, .separator, #console-term {
+    display: none !important;
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.terminal-step {
+    flex: 1 1 300px;
+    min-width: 0;
+    max-height: 400px;
+    min-height: 150px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    background: $sol-base03 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    
+    .code-copy-button {
+        display: none !important;
+    }
+}
+
+.separator {
+    position: relative;
+    height: 60px;
+    flex: 0 0 100px;
+    margin: 0;
+    z-index: 5;
+}
+
+.marquee {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    z-index: 20;
+    overflow: hidden;
+}
+
+.marquee-content {
+    display: flex;
+    width: max-content;
+    white-space: nowrap;
+    animation: scrollText 15s linear infinite;
+    color: $sol-green;
+    font-family: $font-family-code;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px $sol-base3, 0 0 15px $sol-base3;
+}
+
+/* Specific responsiveness for Orchestrator */
+@media (max-width: 1200px) {
+    .steps-container {
+        flex-direction: column !important;
+        min-height: auto;
+        padding: 0;
+
+        &::before {
+            top: 0; bottom: 0; left: 50%; right: auto;
+            width: 60px; height: auto;
+            transform: translateX(-50%);
+            background-repeat: repeat-y;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='80' viewBox='0 0 60 80' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='20' y='10' width='20' height='35' rx='10' fill='none' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3Crect x='20' y='35' width='20' height='35' rx='10' fill='none' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3Cline x1='30' y1='70' x2='30' y2='80' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3Cline x1='30' y1='0' x2='30' y2='10' stroke='%2393a1a1' stroke-width='6' opacity='0.2'/%3E%3C/svg%3E");
+            animation: scrollChainBgVertical 8s linear infinite;
+        }
+    }
+
+    .graph.running .steps-container {
+        padding: 40px 0;
+    }
+
+    .terminal-step {
+        width: 100% !important;
+        flex: 0 0 auto !important;
+    }
+
+    .separator {
+        flex: 0 0 60px !important;
+        width: 100% !important;
+    }
+}
+
+@keyframes scrollChainBg {
+    from { background-position: 0 center; }
+    to { background-position: -80px center; }
+}
+
+@keyframes scrollChainBgVertical {
+    from { background-position: center 0; }
+    to { background-position: center -80px; }
+}
+
+@keyframes scrollText {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@keyframes globalChainGlow {
+    0% { left: -10%; }
+    100% { left: 110%; }
+}
