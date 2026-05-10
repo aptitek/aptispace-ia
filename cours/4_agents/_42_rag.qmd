@@ -42,151 +42,447 @@ graph TD
     F --> G[LLM génère la réponse finalisée]
 ```
 
+Texte de séparation du contenu.
 
-::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : Le RAG (Retrieval-Augmented Generation)"}
+::: {.graph .horizontal .controls-top header="🕹️ Simulation Interactive : L'Espace Latent du RAG en 3D"}
 
-::: {.controls header="Moteur de Recherche Interne"}
-Posez une question à la base de données de l'entreprise. Essayez des mots comme "télétravail", "vpn", ou "budget".
+::: {.controls header="Moteur de Vectorisation (Embedding)"}
+Saisissez une phrase pour simuler la vectorisation. Pour obtenir des résultats pertinents, utilisez des termes liés aux thèmes suivants :
+<ul style="margin-top: 10px; font-size: 0.9em; color: #93a1a1; list-style: none; padding-left: 0;">
+  <li>🔹 <b>Informatique :</b> vpn, réseau, wifi, configurer, internet...</li>
+  <li>🔹 <b>RH :</b> télétravail, congés, domicile, vacances...</li>
+  <li>🔹 <b>Marketing :</b> budget, publicité, campagne, q3...</li>
+</ul>
+Interagissez avec l'espace 3D (<b>Clic + Glisser</b> pour pivoter, <b>Clic sur un mot</b> pour tracer le lien).
 
 ```{ojs}
 //| echo: false
-viewof userQuery = Inputs.text({
-  label: html`<b>Votre question :</b>`, 
-  value: "Comment configurer le VPN depuis la maison ?",
-  width: "100%"
+viewof userQuery = window.ui.text_area({
+  label: "Texte à vectoriser :", 
+  value: "Comment configurer le vpn pour le télétravail ?",
+  rows: 2
 })
 
-viewof ragBtn = Inputs.button("🔍 Lancer la Recherche RAG")
-```
-
-```{ojs}
-//| echo: false
-// Base de données vectorielle mockée (Chunks de documents d'entreprise)
-dbChunks = [
-  { id: "RH-01", text: "Les congés payés s'élèvent à 25 jours par an.", x: 20, y: 80, color: "#859900", tag: "Ressources Humaines" },
-  { id: "RH-02", text: "La politique de télétravail autorise 2 jours par semaine à domicile.", x: 30, y: 70, color: "#859900", tag: "Ressources Humaines" },
-  { id: "IT-01", text: "Pour réinitialiser ou configurer le VPN, contactez le support IT au 555-0199.", x: 80, y: 20, color: "#b58900", tag: "Support Informatique" },
-  { id: "MK-01", text: "Le budget marketing Q3 est alloué à 40% sur les publicités web.", x: 85, y: 85, color: "#d33682", tag: "Marketing" }
-]
-
-// Machine à états : 0 = Idle, 1 = Embedding, 2 = Search, 3 = Prompting
-mutable ragState = 0;
-mutable retrievedContext = ({ id: "---", text: "...", tag: "..." });
-mutable distanceContext = 100;
-```
-
-```{ojs}
-//| echo: false
-// Logique asynchrone du bouton
-{
-  if (ragBtn > 0) {
-    mutable ragState = 0;
-    await Promises.delay(300);
-    mutable ragState = 1; // Calcul de l'embedding de la question
-    await Promises.delay(1200);
-    mutable ragState = 2; // Recherche du voisin le plus proche
-    await Promises.delay(1500);
-    mutable ragState = 3; // Construction du Prompt Augmenté
-  }
+viewof ragBtn = {
+  const btn = Inputs.button("🌌 Projeter dans l'Espace 3D");
+  btn.querySelector("button").className = "btn-physics-drop";
+  return btn;
 }
+
+// État partagé robuste pour capturer le clic depuis le SVG vers le Terminal
+viewof selectedWordEvent = {
+  const div = html`<div></div>`;
+  div.value = null;
+  return div;
+}
+
 ```
 
 :::
 
-::: {.render .transparent header="Base de Données Vectorielle (Espace Latent 2D)"}
+::: {.render .transparent header="L'Espace Sémantique 3D (Vue Interactive)"}
 
 ```{ojs}
 //| echo: false
 {
-  const width = 400;
-  const height = 300;
+  ragBtn; // Déclencheur
   
-  const svg = d3.create("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .attr("viewBox", `0 0 100 100`)
-    .style("background", "#1e1e1e")
-    .style("border-radius", "8px")
-    .style("box-shadow", "inset 0 0 10px #000");
+  const width = 600;
+  const height = 400;
+  
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", height);
+  // L'ajout de touch-action permet un meilleur comportement sur mobile/tablette
+  svg.style.cssText = "background: #001219; border-radius: 8px; box-shadow: inset 0 0 20px #000; cursor: grab; touch-action: none; display: block;";
 
-  // Grille de fond
-  for(let i=10; i<100; i+=10) {
-    svg.append("line").attr("x1", i).attr("y1", 0).attr("x2", i).attr("y2", 100).attr("stroke", "#333").attr("stroke-width", 0.5);
-    svg.append("line").attr("x1", 0).attr("y1", i).attr("x2", 100).attr("y2", i).attr("stroke", "#333").attr("stroke-width", 0.5);
-  }
+  svg.innerHTML = `
+    <defs>
+      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="6" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+      <filter id="glow-line" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+      <style>
+        @keyframes dashMove {
+          from { stroke-dashoffset: 20; }
+          to { stroke-dashoffset: 0; }
+        }
+        .animated-link {
+          animation: dashMove 0.5s linear infinite;
+        }
+      </style>
+    </defs>
+    <g id="scene"></g>
+    <g id="links"></g>
+    <g id="labels"></g>
+  `;
+  
+  const scene = svg.querySelector("#scene");
+  const linksLayer = svg.querySelector("#links");
+  const labelsLayer = svg.querySelector("#labels");
 
-  // 1. Affichage des documents de l'entreprise
-  svg.selectAll("circle.doc")
-    .data(dbChunks)
-    .join("circle")
-    .attr("class", "doc")
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .attr("r", 2.5)
-    .attr("fill", d => d.color);
+  // ==========================================
+  // 1. DÉFINITION DES DOCUMENTS
+  // ==========================================
+  const docs = [
+    { id: "Doc_IT", text: "Guide de configuration VPN et Support Réseau", x: -140, y: -60, z: 90, color: "#2aa198", kw: ["vpn", "support", "configurer", "réseau", "wifi", "informatique", "internet"] },
+    { id: "Doc_RH", text: "Politique de Télétravail et Congés Payés", x: 120, y: 80, z: 60, color: "#859900", kw: ["télétravail", "maison", "domicile", "congés", "vacances", "rh"] },
+    { id: "Doc_MK", text: "Budget et Campagnes Marketing Q3", x: 30, y: -100, z: -120, color: "#d33682", kw: ["budget", "marketing", "pub", "campagne", "q3", "publicité"] }
+  ];
 
-  // Labels des documents
-  svg.selectAll("text.doc-label")
-    .data(dbChunks)
-    .join("text")
-    .attr("class", "doc-label")
-    .attr("x", d => d.x + 3)
-    .attr("y", d => d.y + 1)
-    .attr("fill", "#586e75")
-    .attr("font-size", "3px")
-    .attr("font-family", "monospace")
-    .text(d => d.id);
-
-  // 2. Traitement de la requête utilisateur (Heuristique simple pour simuler l'Embedding)
-  let qx = 50, qy = 50; // Position par défaut (Au milieu de nulle part)
-  const qLower = userQuery.toLowerCase();
-  if (qLower.includes("télétravail") || qLower.includes("maison") || qLower.includes("domicile")) { qx = 35; qy = 65; }
-  else if (qLower.includes("vpn") || qLower.includes("support") || qLower.includes("configurer")) { qx = 75; qy = 25; }
-  else if (qLower.includes("budget") || qLower.includes("marketing")) { qx = 80; qy = 80; }
-  else if (qLower.includes("congés") || qLower.includes("vacances")) { qx = 25; qy = 75; }
-  else { qx = Math.random() * 60 + 20; qy = Math.random() * 60 + 20; } // Aléatoire si hors sujet
-
-  // Recherche du plus proche voisin
-  let nearestDoc = dbChunks[0];
-  let minDist = Infinity;
-  dbChunks.forEach(doc => {
-    let dist = Math.sqrt(Math.pow(doc.x - qx, 2) + Math.pow(doc.y - qy, 2));
-    if (dist < minDist) { minDist = dist; nearestDoc = doc; }
+  // ==========================================
+  // 2. PARSING ET PLACEMENT DES MOTS
+  // ==========================================
+  // On nettoie la ponctuation, on passe en minuscules pour dédoublonner et on filtre
+  const seen = new Set();
+  const rawWords = userQuery.replace(/[.,!?]/g, "").split(/\s+/).filter(w => {
+    const lower = w.toLowerCase();
+    if (seen.has(lower)) return false;
+    seen.add(lower);
+    return w.length > 0;
   });
 
-  // Animation selon les états
-  if (ragState >= 1) {
-    // Apparition de la requête
-    svg.append("circle")
-      .attr("cx", qx).attr("cy", qy)
-      .attr("r", 3)
-      .attr("fill", "#268bd2")
-      .attr("stroke", "#fff").attr("stroke-width", 0.5);
+  const stopWords = ["le", "la", "les", "l", "de", "d", "du", "des", "un", "une", "ce", "cet", "cette", "ces", "mon", "ton", "son", "ma", "ta", "sa", "mes", "tes", "ses", "notre", "votre", "leur", "nos", "vos", "leurs", "il", "elle", "ils", "elles", "je", "tu", "nous", "vous", "on", "se", "y", "lui", "eux", "et", "ou", "mais", "car", "ni", "or", "donc", "pour", "dans", "en", "par", "avec", "sans", "sous", "sur", "chez", "vers", "comme", "que", "qui", "quoi", "dont", "où", "est", "sont", "était", "étaient", "suis", "es", "sommes", "êtes", "a", "ont", "avait", "avaient", "ai", "as", "avons", "avez", "fait", "font", "va", "vont", "ne", "pas", "plus", "si", "bien", "très"];
+  
+  const words = rawWords.map((word, index) => {
+    let lowerW = word.toLowerCase();
+    let targetDoc = null;
+    let wx, wy, wz;
+    let isKeyWord = false;
+
+    for (let d of docs) {
+      if (d.kw.some(k => lowerW.includes(k) || k.includes(lowerW))) {
+        targetDoc = d;
+        isKeyWord = true;
+        break;
+      }
+    }
+
+    if (isKeyWord) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 60 + Math.random() * 40;
+      wx = targetDoc.x + Math.cos(angle) * radius;
+      wy = targetDoc.y + (Math.random() * 60 - 30);
+      wz = targetDoc.z + Math.sin(angle) * radius;
+    } else if (stopWords.includes(lowerW)) {
+      // Mots de grammaire : concentrés au centre pour libérer l'espace
+      wx = (Math.random() - 0.5) * 50;
+      wy = (Math.random() - 0.5) * 50;
+      wz = (Math.random() - 0.5) * 50;
+    } else {
+      wx = (Math.random() - 0.5) * 400;
+      wy = (Math.random() - 0.5) * 400;
+      wz = (Math.random() - 0.5) * 400;
+    }
+
+    let nearestDist = Infinity;
+    let nearestDoc = docs[0];
+    docs.forEach(d => {
+      let dist = Math.sqrt(Math.pow(d.x-wx, 2) + Math.pow(d.y-wy, 2) + Math.pow(d.z-wz, 2));
+      if (dist < nearestDist) { nearestDist = dist; nearestDoc = d; }
+    });
+
+    return { type: "word", id: `w_${index}`, text: word, x: wx, y: wy, z: wz, isKeyWord, nearest: nearestDoc, distance: nearestDist, color: isKeyWord ? "#268bd2" : "#586e75" };
+  });
+
+  const docEntities = docs.map(d => ({...d, type: "doc"}));
+  const docEntityMap = new Map(docs.map((d, i) => [d, docEntities[i]]));
+  const entities = [...docEntities, ...words.map(w => ({...w, nearestEntity: docEntityMap.get(w.nearest)}))];
+  const domMap = new Map();
+  
+  // Le trait de liaison
+  const connectionLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  connectionLine.setAttribute("stroke", "#b58900");
+  connectionLine.setAttribute("stroke-width", "2.5");
+  connectionLine.setAttribute("stroke-dasharray", "6,4");
+  connectionLine.setAttribute("filter", "url(#glow-line)");
+  connectionLine.setAttribute("class", "animated-link");
+  connectionLine.style.opacity = "0";
+  linksLayer.appendChild(connectionLine);
+
+  // Labels de coordonnées (pour la sélection)
+  const coordLabelWord = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  coordLabelWord.setAttribute("font-size", "10px");
+  coordLabelWord.setAttribute("fill", "#268bd2");
+  coordLabelWord.setAttribute("font-family", "monospace");
+  coordLabelWord.setAttribute("font-weight", "bold");
+  coordLabelWord.style.opacity = "0";
+  coordLabelWord.style.pointerEvents = "none";
+  labelsLayer.appendChild(coordLabelWord);
+
+  const coordLabelDoc = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  coordLabelDoc.setAttribute("font-size", "10px");
+  coordLabelDoc.setAttribute("fill", "#b58900");
+  coordLabelDoc.setAttribute("font-family", "monospace");
+  coordLabelDoc.setAttribute("font-weight", "bold");
+  coordLabelDoc.style.opacity = "0";
+  coordLabelDoc.style.pointerEvents = "none";
+  labelsLayer.appendChild(coordLabelDoc);
+
+  let currentSelectedWord = null;
+
+  entities.forEach(ent => {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    
+    if (ent.type === "doc") {
+      const selectionCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      selectionCircle.setAttribute("r", "22");
+      selectionCircle.setAttribute("fill", ent.color);
+      selectionCircle.setAttribute("filter", "url(#glow)");
+      selectionCircle.style.opacity = "0";
+      selectionCircle.style.transition = "opacity 0.3s";
+
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("r", "16");
+      circle.setAttribute("fill", ent.color);
+      circle.setAttribute("filter", "url(#glow)");
+      circle.setAttribute("opacity", "0.85");
       
-    svg.append("text").attr("x", qx - 8).attr("y", qy - 4).attr("fill", "#268bd2").attr("font-size", "3.5px").attr("font-weight", "bold").text("Requête Q");
+      const icon = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      icon.setAttribute("text-anchor", "middle");
+      icon.setAttribute("dy", "5");
+      icon.setAttribute("fill", "#fdf6e3");
+      icon.setAttribute("font-size", "14px");
+      icon.textContent = "📄";
+      
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      label.setAttribute("text-anchor", "middle");
+      label.setAttribute("dy", "-22");
+      label.setAttribute("fill", ent.color);
+      label.setAttribute("font-size", "12px");
+      label.setAttribute("font-family", "monospace");
+      label.setAttribute("font-weight", "bold");
+      label.textContent = ent.id;
+
+      group.appendChild(selectionCircle);
+      group.appendChild(circle);
+      group.appendChild(icon);
+      group.appendChild(label);
+      domMap.set(ent, { group, selectionCircle, label });
+    } 
+    else {
+      const selectionCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      selectionCircle.setAttribute("r", "22");
+      selectionCircle.setAttribute("fill", ent.color);
+      selectionCircle.setAttribute("filter", "url(#glow)");
+      selectionCircle.style.opacity = "0";
+      selectionCircle.style.transition = "opacity 0.3s";
+
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("fill", ent.color);
+      text.setAttribute("font-family", "sans-serif");
+      text.setAttribute("font-weight", ent.isKeyWord ? "bold" : "normal");
+      text.style.transition = "fill 0.2s";
+      text.textContent = ent.text; 
+      
+      const hitbox = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      hitbox.setAttribute("r", "25");
+      hitbox.setAttribute("fill", "transparent");
+      hitbox.style.cursor = "pointer";
+      
+      // CLIC : Transmission de l'événement à OJS
+      hitbox.addEventListener("pointerdown", (e) => {
+        e.stopPropagation(); 
+        if (currentSelectedWord === ent) {
+          currentSelectedWord = null;
+          viewof selectedWordEvent.value = null;
+        } else {
+          currentSelectedWord = ent;
+          viewof selectedWordEvent.value = ent;
+          lineProgress = 0; // Relance l'animation de croissance
+        }
+        viewof selectedWordEvent.dispatchEvent(new CustomEvent("input"));
+      });
+      hitbox.addEventListener("mouseenter", () => text.setAttribute("fill", "#fdf6e3"));
+      hitbox.addEventListener("mouseleave", () => text.setAttribute("fill", ent.color));
+
+      group.appendChild(selectionCircle);
+      group.appendChild(text);
+      group.appendChild(hitbox);
+      domMap.set(ent, { group, selectionCircle, text });
+    }
+    
+    scene.appendChild(group);
+  });
+
+  // ==========================================
+  // 3. MOTEUR 3D ET GESTION DE LA SOURIS (DRAG)
+  // ==========================================
+  let angleY = 0;
+  let pitch = 0.3; // Angle de vue caméra (haut/bas)
+  let velocityY = 0;
+  let velocityPitch = 0;
+  const friction = 0.96;
+  
+  let isDragging = false;
+  let lastX = 0, lastY = 0;
+
+  // Contrôles de rotation
+  svg.addEventListener("pointerdown", (e) => {
+    // Si on clique sur le fond, on déselectionne
+    if (e.target === svg) {
+      currentSelectedWord = null;
+      viewof selectedWordEvent.value = null;
+      viewof selectedWordEvent.dispatchEvent(new CustomEvent("input"));
+    }
+    
+    isDragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    svg.style.cursor = "grabbing";
+  });
+
+  const onMove = (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - lastX;
+    const deltaY = e.clientY - lastY;
+    
+    velocityY = deltaX * 0.012;
+    velocityPitch = deltaY * 0.012;
+    
+    angleY -= velocityY;
+    pitch -= velocityPitch;
+    
+    pitch = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, pitch));
+    
+    lastX = e.clientX;
+    lastY = e.clientY;
+  };
+
+  const onUp = () => {
+    isDragging = false;
+    svg.style.cursor = "grab";
+  };
+
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+
+  invalidation.then(() => {
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    isAnimating = false;
+  });
+
+  let isAnimating = true;
+  let lineProgress = 0;
+
+  function render3D() {
+    if (!isAnimating) return;
+    
+    if (!isDragging) {
+      // Inertie
+      angleY -= velocityY;
+      pitch -= velocityPitch;
+      pitch = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, pitch));
+      
+      velocityY *= friction;
+      velocityPitch *= friction;
+      
+      // Auto-rotation de base (très lente)
+      angleY += 0.0015;
+    }
+    
+    const cosY = Math.cos(angleY);
+    const sinY = Math.sin(angleY);
+    const cosP = Math.cos(pitch);
+    const sinP = Math.sin(pitch);
+    
+    const projected = entities.map(ent => {
+      // Rotation Y
+      const xRot = ent.x * cosY - ent.z * sinY;
+      const zRot = ent.x * sinY + ent.z * cosY;
+      
+      // Rotation X (Pitch)
+      const yProj = ent.y * cosP - zRot * sinP;
+      const zProj = ent.y * sinP + zRot * cosP;
+      
+      const depth = 500; 
+      const scale = depth / (depth + zProj);
+      
+      const x2d = (width / 2) + (xRot * scale);
+      const y2d = (height / 2) + (yProj * scale);
+      
+      return { ent, x2d, y2d, zProj, scale };
+    });
+
+    projected.sort((a, b) => b.zProj - a.zProj);
+    
+    projected.forEach((p) => {
+      const data = domMap.get(p.ent);
+      const g = data.group || data; // Compatibilité avec les docs (group direct)
+      
+      g.setAttribute("transform", `translate(${p.x2d}, ${p.y2d}) scale(${Math.max(0.1, p.scale)})`);
+      
+      const isSelected = currentSelectedWord === p.ent;
+      const isTargetDoc = currentSelectedWord && p.ent === currentSelectedWord.nearestEntity;
+      const baseOpacity = p.ent.type === "doc" ? 0.9 : 0.7;
+      const opacity = Math.min(baseOpacity, Math.max(0.1, p.scale * 1.5));
+      
+      if (isSelected || (isTargetDoc && lineProgress > 0.9)) {
+        g.setAttribute("opacity", 1);
+        if (data.selectionCircle) {
+           data.selectionCircle.style.opacity = "0.6";
+           if (data.text) data.text.setAttribute("fill", "#fdf6e3");
+           if (data.label) data.label.setAttribute("fill", "#fdf6e3");
+        }
+      } else {
+        const dimmedOpacity = currentSelectedWord && !isTargetDoc ? opacity * 0.3 : opacity;
+        g.setAttribute("opacity", dimmedOpacity);
+        if (data.selectionCircle) {
+          data.selectionCircle.style.opacity = "0";
+          if (data.text) data.text.setAttribute("fill", p.ent.color);
+          if (data.label) data.label.setAttribute("fill", p.ent.color);
+        }
+      }
+      
+      scene.appendChild(g); // Z-Index sorting
+    });
+
+    if (currentSelectedWord) {
+      lineProgress = Math.min(1, lineProgress + 0.08);
+      const pWord = projected.find(p => p.ent === currentSelectedWord);
+      const pDoc = projected.find(p => p.ent === currentSelectedWord.nearestEntity);
+      if (pWord && pDoc) {
+        connectionLine.setAttribute("x1", pWord.x2d);
+        connectionLine.setAttribute("y1", pWord.y2d);
+        connectionLine.setAttribute("x2", pWord.x2d + (pDoc.x2d - pWord.x2d) * lineProgress);
+        connectionLine.setAttribute("y2", pWord.y2d + (pDoc.y2d - pWord.y2d) * lineProgress);
+        connectionLine.style.opacity = lineProgress;
+        
+        // Coordonnées flottantes
+        if (lineProgress > 0.3) {
+          coordLabelWord.textContent = `[${currentSelectedWord.x.toFixed(0)},${currentSelectedWord.y.toFixed(0)},${currentSelectedWord.z.toFixed(0)}]`;
+          coordLabelWord.setAttribute("x", pWord.x2d);
+          coordLabelWord.setAttribute("y", pWord.y2d + 20);
+          coordLabelWord.setAttribute("text-anchor", "middle");
+          coordLabelWord.style.opacity = lineProgress;
+
+          coordLabelDoc.textContent = `[${currentSelectedWord.nearest.x.toFixed(0)},${currentSelectedWord.nearest.y.toFixed(0)},${currentSelectedWord.nearest.z.toFixed(0)}]`;
+          coordLabelDoc.setAttribute("x", pDoc.x2d);
+          coordLabelDoc.setAttribute("y", pDoc.y2d + 35);
+          coordLabelDoc.setAttribute("text-anchor", "middle");
+          coordLabelDoc.style.opacity = lineProgress;
+        }
+      }
+    } else {
+      lineProgress = 0;
+      connectionLine.style.opacity = "0";
+      coordLabelWord.style.opacity = "0";
+      coordLabelDoc.style.opacity = "0";
+    }
+
+    requestAnimationFrame(render3D);
   }
 
-  if (ragState >= 2) {
-    // Animation de recherche radar (Halo)
-    svg.append("circle")
-      .attr("cx", qx).attr("cy", qy).attr("r", 0)
-      .attr("fill", "none").attr("stroke", "#268bd2").attr("stroke-width", 0.5)
-      .append("animate").attr("attributeName", "r").attr("from", 0).attr("to", minDist).attr("dur", "1s").attr("fill", "freeze");
+  render3D();
 
-    // Ligne de similarité vers le plus proche
-    svg.append("line")
-      .attr("x1", qx).attr("y1", qy)
-      .attr("x2", nearestDoc.x).attr("y2", nearestDoc.y)
-      .attr("stroke", "#2aa198").attr("stroke-width", 0.8).attr("stroke-dasharray", "1,1")
-      .attr("opacity", 0)
-      .append("animate").attr("attributeName", "opacity").attr("from", 0).attr("to", 1).attr("begin", "1s").attr("dur", "0.5s").attr("fill", "freeze");
-  }
-
-  // Stockage pour l'étape 3
-  mutable retrievedContext = nearestDoc;
-  mutable distanceContext = minDist;
-
-  return svg.node();
+  return svg;
 }
 
 ```
@@ -196,84 +492,82 @@ mutable distanceContext = 100;
 ::: {.separator}
 :::
 
-::: {.results header="Construction du Prompt Augmenté"}
+::: {.results header="Terminal RAG : Pipeline de Récupération"}
 
 ```{ojs}
 //| echo: false
 {
+  const word = selectedWordEvent;
+  
   const container = document.createElement("div");
-  container.style.cssText = "font-family: monospace; display: flex; flex-direction: column; gap: 15px; font-size: 13px;";
+  container.style.cssText = "font-family: 'Courier New', Courier, monospace; background: #002b36; border: 1px solid #073642; border-radius: 6px; overflow: hidden; font-size: 13px; color: #839496; display: flex; flex-direction: column; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);";
 
-  if (ragState === 0) {
-    container.innerHTML = `<div style="color: #586e75; text-align: center; margin-top: 40px; font-style: italic;">En attente de la requête... Cliquez sur le bouton "Lancer la Recherche RAG".</div>`;
+  // En-tête Terminal
+  const termHeader = document.createElement("div");
+  termHeader.style.cssText = "background: #073642; padding: 5px 15px; border-bottom: 1px solid #586e75; display: flex; align-items: center; gap: 8px;";
+  termHeader.innerHTML = `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#dc322f;"></span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#b58900;"></span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#859900;"></span><span style="margin-left: 10px; color: #93a1a1; font-weight: bold;">RAG_Agent_Trace.log</span>`;
+  container.appendChild(termHeader);
+
+  const termBody = document.createElement("div");
+  termBody.style.cssText = "padding: 15px; display: flex; flex-direction: column; gap: 12px; min-height: 250px;";
+  container.appendChild(termBody);
+
+  if (!word) {
+    termBody.innerHTML = `<span style="color: #586e75;">> Service RAG Initialisé.<br>> En attente d'un événement...<br>> <span style="color: #2aa198; font-weight: bold;" class="blinking">Veuillez cliquer sur un mot dans le graphique 3D.</span></span>`;
     return container;
   }
 
-  // --- ÉTAPE 1 : EMBEDDING ---
-  let statusHtml = `
-    <div style="padding: 10px; background: #073642; border-radius: 4px; display: flex; align-items: center; gap: 10px;">
-      <span style="font-size: 1.5em; ${ragState >= 1 ? 'color: #268bd2;' : 'color: #586e75; opacity: 0.5;'}">1️⃣</span>
-      <div style="${ragState >= 1 ? 'color: #eee;' : 'color: #586e75;'}">
-        <strong style="color: #268bd2;">Vectorisation (Embedding)</strong><br/>
-        La question a été transformée en coordonnées mathématiques.
-      </div>
-    </div>`;
-
-  // --- ÉTAPE 2 : RETRIEVAL ---
-  let scoreClass = distanceContext < 25 ? '#859900' : (distanceContext < 50 ? '#b58900' : '#dc322f');
-  let scoreText = distanceContext < 25 ? 'Excellente' : (distanceContext < 50 ? 'Moyenne' : 'Faible (Hors Sujet)');
+  // --- GÉNÉRATION DYNAMIQUE DES ÉTAPES DU TERMINAL ---
+  const doc = word.nearest;
+  const isKw = word.isKeyWord;
+  const score = (100 - word.distance / 5).toFixed(1); // Conversion distance en "Score de Confiance"
+  const barWidth = Math.max(5, Math.min(100, score));
   
-  if (ragState >= 2) {
-    statusHtml += `
-    <div style="padding: 10px; background: #073642; border-radius: 4px; display: flex; align-items: center; gap: 10px; margin-top: -5px;">
-      <span style="font-size: 1.5em; color: #2aa198;">2️⃣</span>
-      <div style="color: #eee;">
-        <strong style="color: #2aa198;">Recherche Sémantique (Nearest Neighbor)</strong><br/>
-        Document trouvé : <b>[${retrievedContext.id}]</b> (${retrievedContext.tag})<br/>
-        <span style="font-size: 0.9em; color: ${scoreClass};">Pertinence sémantique : ${scoreText}</span>
+  // Etape 1: Vectorisation
+  const step1 = document.createElement("div");
+  step1.innerHTML = `
+    <div style="color: #268bd2; font-weight: bold;">[ÉTAPE 1] EXTRACT_EMBEDDING</div>
+    <div style="margin-left: 10px; border-left: 1px solid #586e75; padding-left: 10px; margin-top: 5px;">
+      <span style="color: #eee;">Token ciblé :</span> <span style="background: rgba(38,139,210,0.2); color: #2aa198; padding: 0 4px;">"${word.text}"</span><br/>
+      <span style="color: #eee;">Projection Latente :</span> [X: ${word.x.toFixed(2)}, Y: ${word.y.toFixed(2)}, Z: ${word.z.toFixed(2)}]<br/>
+      <span style="color: #586e75;">> Vectorisation terminée (4ms)</span>
+    </div>
+  `;
+
+  // Etape 2: Recherche (Nearest Neighbor)
+  const step2 = document.createElement("div");
+  step2.innerHTML = `
+    <div style="color: #b58900; font-weight: bold; margin-top: 5px;">[ÉTAPE 2] COSINE_SIMILARITY_SEARCH</div>
+    <div style="margin-left: 10px; border-left: 1px solid #586e75; padding-left: 10px; margin-top: 5px;">
+      <span style="color: #eee;">Top-1 Document :</span> <b style="color: ${doc.color};">${doc.id}</b><br/>
+      <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+        <span style="color: #eee;">Confiance :</span> 
+        <div style="width: 150px; background: #073642; height: 12px; border-radius: 2px; overflow: hidden; border: 1px solid #586e75;">
+          <div style="width: ${barWidth}%; height: 100%; background: ${isKw ? '#859900' : '#dc322f'};"></div>
+        </div>
+        <span style="color: ${isKw ? '#859900' : '#dc322f'}; font-weight: bold;">${score}%</span>
       </div>
-    </div>`;
-  }
+      <span style="color: #586e75;">> Distance vectorielle calculée : ${word.distance.toFixed(1)} unités</span>
+    </div>
+  `;
 
-  container.innerHTML = statusHtml;
+  // Etape 3: Résultat (Injection)
+  const step3 = document.createElement("div");
+  let promptAction = isKw 
+    ? `<span style="color: #859900;">[SUCCÈS]</span> Pertinence sémantique validée. Le fragment suivant sera injecté dans le Prompt du LLM :<br/><br/><div style="padding: 8px; background: rgba(133,153,0,0.1); border-left: 3px solid ${doc.color}; color: #eee; font-family: sans-serif;">"${doc.text}"</div>`
+    : `<span style="color: #dc322f;">[ÉCHEC]</span> Seuil de pertinence non atteint (Bruit/Liaison). Le document <b style="color:${doc.color}">${doc.id}</b> a été identifié comme le plus proche, mais reste sémantiquement trop éloigné. <span style="color:#b58900;">Ce token sera ignoré par le RAG.</span>`;
 
-  // --- ÉTAPE 3 : AUGMENTATION ET GÉNÉRATION ---
-  if (ragState >= 3) {
-    const promptBuilder = document.createElement("div");
-    promptBuilder.style.cssText = "margin-top: 10px; background: #002b36; border: 1px solid #586e75; border-radius: 6px; overflow: hidden;";
-    
-    promptBuilder.innerHTML = `
-      <div style="background: #073642; padding: 8px 15px; font-weight: bold; color: #b58900; border-bottom: 1px solid #586e75;">
-        3️⃣ Le Prompt Injecté (Envoyé au LLM)
-      </div>
-      <div style="padding: 15px; white-space: pre-wrap; line-height: 1.5; color: #93a1a1;">
-<span style="color: #586e75;"># 1. Directives système (Instruction)</span>
-<span style="color: #d33682;">Tu es un assistant RH/IT interne. Réponds à la question de l'employé en utilisant <b>UNIQUEMENT</b> le contexte fourni. Si la réponse n'y est pas, dis "Je ne sais pas".</span>
+  step3.innerHTML = `
+    <div style="color: #859900; font-weight: bold; margin-top: 5px;">[ÉTAPE 3] PROMPT_AUGMENTATION</div>
+    <div style="margin-left: 10px; border-left: 1px solid #586e75; padding-left: 10px; margin-top: 5px; line-height: 1.4;">
+      ${promptAction}
+    </div>
+  `;
 
-<span style="color: #586e75;"># 2. Le contexte récupéré de la base vectorielle (Augmentation)</span>
-Context: <span style="background: rgba(133, 153, 0, 0.15); color: #859900; padding: 2px 4px; border-radius: 3px;">${retrievedContext.text}</span>
-
-<span style="color: #586e75;"># 3. La question de l'utilisateur</span>
-Question: <span style="background: rgba(38, 139, 210, 0.15); color: #268bd2; padding: 2px 4px; border-radius: 3px;">${userQuery}</span>
-      </div>
-    `;
-    
-    // Réponse finale simulée
-    let finalAnswer = "";
-    if (distanceContext > 50) {
-      finalAnswer = "Je ne dispose pas d'informations dans la base de données interne pour répondre à cette question.";
-    } else {
-      // Extraction très simple d'un morceau de réponse pour la simulation
-      finalAnswer = `D'après le document interne [${retrievedContext.id}], ${retrievedContext.text.toLowerCase()}`;
-    }
-
-    const answerBox = document.createElement("div");
-    answerBox.style.cssText = "margin-top: 15px; padding: 15px; background: #073642; border-left: 4px solid #859900; border-radius: 4px;";
-    answerBox.innerHTML = `<strong style="color: #859900;">🤖 Réponse finale du modèle :</strong><br/><span style="color: #eee; font-family: sans-serif; display: inline-block; margin-top: 8px;">"${finalAnswer}"</span>`;
-
-    container.appendChild(promptBuilder);
-    container.appendChild(answerBox);
-  }
+  // Rendu avec animation (effet cascade)
+  termBody.appendChild(step1);
+  setTimeout(() => termBody.appendChild(step2), 300);
+  setTimeout(() => termBody.appendChild(step3), 700);
 
   return container;
 }
