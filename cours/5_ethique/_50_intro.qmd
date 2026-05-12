@@ -1,5 +1,54 @@
 
 ## 🧭 Introduction : La Boussole Éthique
 
-* **Narratif :** Le mythe de Prométhée (la technique donnée aux hommes sans la sagesse pour la maîtriser).
-* **Concepts abordés :** Définition de l'éthique comme *processus de questionnement* continu face à l'inconnu, distinction avec la morale (règles figées), l'éthique comme outil de prise de décision.
+### Les Fondements de l'Éthique
+
+#### L'Éthique versus La Morale
+
+Il est très fréquent de confondre ces deux termes, mais en philosophie et en sciences humaines, on fait généralement une distinction claire :
+
+* **La Morale :** C'est l'ensemble des règles, des valeurs et des normes prescriptives imposées par une société, une culture ou une religion à un moment donné. Elle relève du **commandement** et définit ce qui est « Bien » et ce qui est « Mal ». (Exemple : *Il ne faut pas mentir*).
+* **L'Éthique :** C'est la **réflexion philosophique** sur la morale. Elle n'édicte pas de règles absolues, mais interroge le « comment agir au mieux » dans une situation donnée, particulièrement lorsque plusieurs valeurs entrent en conflit. Elle relève de la **délibération** et du choix rationnel.
+
+#### La Subjectivité des Valeurs Morales
+
+Les valeurs morales ne sont pas des objets physiques naturels ; elles sont des constructions humaines. Par conséquent, elles sont soumises à une forte **subjectivité et relativité** :
+
+* **Relativisme culturel :** Ce qui est perçu comme une obligation morale dans une société (ex: la pudeur, les devoirs filiaux) peut être vu différemment ou ignoré dans une autre.
+* **Évolution temporelle :** Les valeurs changent avec le temps. L'esclavage, par exemple, a été moralement toléré voire justifié pendant des millénaires avant d'être condamné.
+* L'éthique intervient précisément pour éviter le piège du relativisme absolu (où "tout se vaut") en cherchant des principes d'action justifiables par la raison au-delà de la simple coutume.
+
+#### L'Éthique comme Discipline de Questionnement
+
+L'éthique n'est pas un manuel de prêt-à-penser offrant des réponses binaires. C'est avant tout une **discipline du doute et du questionnement**.
+
+* Face à un **dilemme éthique** (une situation où toute décision entraîne la violation d'un principe moral), l'éthique propose une méthode d'analyse.
+* Elle exige d'évaluer les intentions (éthique déontologique de Kant), les conséquences de nos actes (utilitarisme de Stuart Mill) ou les vertus incarnées (éthique des vertus d'Aristote). C'est l'outil qui permet de passer d'une morale d'obéissance aveugle à une responsabilité assumée et réfléchie.
+
+---
+
+### Définitions et Enjeux Éthiques des Notions Clés
+
+#### Propriété
+
+**Définition :** Droit d'user, de jouir et de disposer d'une chose de la manière la plus absolue (traditionnellement divisé en droit romain en *usus*, *fructus*, *abusus*), sous réserve des lois.
+
+* **Enjeux éthiques :** L'éthique questionne la légitimité et les limites de l'appropriation. Est-il juste de posséder des ressources naturelles vitales (l'eau, le vivant) ? Aujourd'hui, le questionnement éthique s'étend massivement à la propriété intellectuelle et à la propriété des données personnelles à l'ère numérique. L'éthique met en balance le droit individuel à posséder et le bien commun.
+
+#### Justice
+
+**Définition :** Principe moral et institutionnel visant à respecter les droits de chacun et à établir l'équité. Elle est le pilier du vivre-ensemble.
+
+* **Enjeux éthiques :** On distingue traditionnellement la justice **commutative** (qui règle les échanges de manière strictement égale) et la justice **distributive** (qui répartit les richesses et les honneurs selon les mérites ou les besoins). Le questionnement éthique contemporain s'attarde sur la notion d'équité (faut-il donner plus à ceux qui ont moins pour rétablir l'égalité réelle ?) et de justice sociale.
+
+#### Responsabilité
+
+**Définition :** L'obligation, pour une personne ou une entité, de répondre de ses actes, de les assumer et d'en supporter les conséquences (qu'elles soient morales, civiles ou pénales).
+
+* **Enjeux éthiques :** L'éthique moderne, notamment avec des penseurs comme Hans Jonas, a élargi la responsabilité. Nous ne sommes plus seulement responsables des conséquences immédiates de nos actes envers nos contemporains, mais nous avons une **responsabilité prospective** envers les générations futures et l'environnement (le principe de précaution). C'est le passage d'une responsabilité de réparation à une responsabilité de prévention.
+
+#### Gouvernance
+
+**Définition :** L'ensemble des règles, des processus, des normes et des institutions par lesquels une organisation (entreprise, État, institution internationale) est dirigée, contrôlée et régulée.
+
+* **Enjeux éthiques :** La gouvernance éthique dépasse le simple respect des lois (compliance). Elle s'interroge sur la transparence, le partage du pouvoir et la lutte contre la corruption. Une « bonne gouvernance » implique de prendre en compte non seulement les intérêts des dirigeants ou des actionnaires, mais aussi ceux de l'ensemble des parties prenantes (employés, société civile, environnement).
