@@ -1,29 +1,23 @@
 ---
 title: "⚖️ Éthique & Gouvernance"
+number-sections: false
 ---
 
+{{< include _50_intro.qmd >}}
+
+{{< include _51_propriété.qmd >}}
+
+{{< include _52_justice.qmd >}}
+
+{{< include _53_responsabilite.qmd >}}
+
+{{< include _54_gouvernance.qmd >}}
 
 
-{{< include _51_reglementation.qmd >}}
-
-
-
-{{< include _52_deepfakes.qmd >}}
-
-
-
-{{< include _53_ethique.qmd >}}
-
-
-
-{{< include _54_durabilite.qmd >}}
-
-
-
-## 🎓 Conclusion du Module
+## 🌉 Conclusion et Clôture
 
 Félicitations ! Vous avez parcouru le chemin qui mène des fondations mathématiques à la création d'agents autonomes, tout en gardant un œil critique sur les enjeux de société. 
 
 Vous êtes maintenant armés pour devenir des **Architectes de l'IA**, capables de concevoir des systèmes robustes, éthiques et performants.
 
-Pour aller plus loin, n'oubliez pas de consulter le [**Glossaire**](../../glossaire.qmd) et l'[**Aide-Mémoire**](../../aide-memoire.qmd).
+Pour consolider vos acquis ou explorer des cas pratiques, vous pouvez consulter le [**Glossaire**](../../glossaire.qmd), l'[**Aide-Mémoire**](../../aide-memoire.qmd) ou vous lancer dans les [**Projets du Lab**](../../lab/projet.qmd).

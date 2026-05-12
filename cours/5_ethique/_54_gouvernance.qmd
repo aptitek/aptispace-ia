@@ -1,0 +1,8 @@
+
+## 🌍 La Gouvernance et La Durabilité
+
+*Comment la société reprend le contrôle pour assurer sa survie à long terme ?*
+
+* **Déclencheur narratif & Débat :** Les procès en cours (ex: le New York Times contre OpenAI) et l'état de l'art de la régulation (L'IA Act européen).
+* **Concepts abordés :** Le rôle du législateur face à une technologie qui avance plus vite que la loi. L'autonomie humaine et le libre arbitre face à la manipulation (deepfakes, bulles de filtres).
+* **Glissement vers la tech :** La durabilité environnementale. Le coût écologique massif des serveurs et de l'entraînement des modèles face à l'urgence climatique.

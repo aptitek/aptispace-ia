@@ -1,0 +1,96 @@
+
+## ⚖️ La Propriété : L'Architecture du « Mien »
+Voici la version finalisée et structurée de cette deuxième partie de votre cours. Les citations ont été converties au format demandé et harmonisées avec les clés de votre fichier BibTeX.
+
+#### Introduction : La Propriété comme Construction Narrative
+
+La propriété n'est pas une donnée naturelle ou une vérité biologique immuable, mais le résultat d'une série de constructions narratives. Comme l'ont démontré Jim Salzman et Michael Heller, l'arbitrage des ressources mondiales — qu'il s'agisse de terres, d'idées ou de données — ne repose pas sur une logique objective, mais sur des récits concurrents que nous racontons pour légitimer l'exclusion.
+
+Comprendre ces récits est une nécessité stratégique : celui qui impose sa narration contrôle la structure des pouvoirs mondiaux. Cette analyse nous mènera des enclosures de la Renaissance aux « anti-communs » de l'intelligence artificielle, en commençant par le plus viscéral des principes : la priorité temporelle.
+
+### Le Premier Arrivé (*First Come, First Served*)
+
+Le récit de la priorité, ou *First Possession*, s'appuie sur une force logique apparente : il simplifie les conflits en récompensant l'ordre d'arrivée. Pourtant, cette simplicité est le masque d'une violence profonde qui ignore les inégalités structurelles de départ.
+
+Historiquement, ce récit a été l'instrument de la colonisation via la doctrine de la *Terra Nullius*.
+
+* En s'appuyant sur les analyses de Locke, les colonisateurs ont prétendu que les terres américaines n'appartenaient à personne.
+* Ce récit a permis de définir les nations autochtones, comme les Iroquois, comme étant dans un « état de nature » car elles ne possédaient pas de système d'autorité centralisé et unifié aux yeux des Européens.
+
+On a ainsi utilisé l'arrivée des colons pour décréter une « première possession », effaçant des siècles d'occupation par des populations dont le droit n'était pas formellement reconnu par le prisme occidental.
+
+### La Possession (*Possession*)
+
+Si le premier récit s'appuie sur le temps, le second se fonde sur l'espace. Il faut distinguer la possession physique comme preuve légale de la propriété. Pour Locke, l'enclosure (la clôture) est l'acte fondateur de cette preuve. Cette insistance sur la démarcation physique a engendré une mutation ontologique dans le droit international, délégitimant les modes de vie non sédentaires :
+
+* **Possession « Visible » (Européenne) :** Elle est physique, sans ambiguïté, marquée par des clôtures et des transformations permanentes du paysage.
+* **Possession « Notionnelle » (Autochtone) :** Elle est souvent perméable, basée sur des usages ancestraux et des limites partagées connues par la coutume, mais sans barrières physiques.
+
+Locke a rejeté la validité des frontières autochtones car elles n'étaient pas physiquement démarquées, justifiant ainsi l'appropriation par ceux qui érigeaient des barrières visibles.
+
+### Le Travail (*Labor*)
+
+La théorie du travail de John Locke est le pivot moral de la propriété moderne. Si la possession est la preuve, le travail est la justification : l'individu « mélange son travail » avec la nature, y incorporant une part de lui-même.
+
+Ce récit a servi de caution morale à l'expropriation coloniale.
+
+* Locke et ses contemporains ont prétendu que le travail européen, par l'agriculture intensive, était « rationnel et industrieux ».
+* En affirmant que la productivité européenne était cent à mille fois supérieure à celle des autochtones, ils ont conclu que ces derniers « gaspillaient » la terre.
+
+Pourtant, Locke assortit ce droit du *Lockean Proviso* (clause de suffisance), stipulant qu'on ne peut s'approprier une ressource que s'il en reste « assez et d'aussi bonne qualité » pour les autres. Comme nous le verrons, cette clause est aujourd'hui le fer de lance de la résistance numérique.
+
+### La Famille (*Family*)
+
+Le récit de l'héritage transforme la propriété en un outil de continuité dynastique. La propriété n'est plus le fruit d'un mérite individuel immédiat, mais une extension de la lignée.
+
+Cette transmission assure une concentration des richesses qui fige les hiérarchies sociales. Dans la pensée de Locke, la propriété est intrinsèquement liée à un « statut » et un « rang ». L'humanité n'est pas seulement un état de fait, c'est un rang que l'on gagne par une conduite industrieuse. L'héritage permet ainsi de préserver ce rang au sein des élites, créant une reproduction sociale où la propriété devient un marqueur de distinction ontologique plutôt qu'une récompense pour un effort actuel.
+
+### Le Corps (*Body*)
+
+Le concept de propriété de soi (*self-ownership*) est le pivot central des théories libérales. Locke dérive le droit de propriété du droit inaliénable sur son propre corps. Si je possède mon corps, je possède mon travail et ses fruits.
+
+Toutefois, ce récit a paradoxalement coexisté avec l'esclavage. Pour résoudre cette contradiction, les philosophes libéraux ont argué que la « pleine humanité » était conditionnée par l'exercice de la raison. Les populations colonisées, jugées sous-rationnelles car elles ne cherchaient pas à accumuler de richesse, étaient perçues comme ayant échoué à atteindre le rang d'humain complet, perdant ainsi leur droit à la propriété de soi. Aujourd'hui, ce récit se déplace vers le contrôle de nos données biométriques et de notre travail intellectuel face aux algorithmes.
+
+### L'Attachement et la Souveraineté (*Home/Need*)
+
+Le récit du besoin ou de l'attachement affectif (le « foyer ») s'oppose à la logique marchande. Il oppose le droit du propriétaire à exclure au droit de la communauté à accéder.
+
+Ce récit défend les « Communs » (*The Commons*), ces ressources gérées collectivement pour éviter l'épuisement. À l'ère numérique, cette tension est exacerbée : la propriété individuelle absolue se heurte à la nécessité d'un accès universel au savoir. La gestion des biens communs devient alors un acte de souveraineté contre l'enclôture généralisée.
+
+---
+
+### Application à l'IA et au Néo-colonialisme Numérique
+
+Les récits lockéens sont aujourd'hui réactivés pour justifier une nouvelle forme de dépossession numérique.
+
+#### L'IA et l'Enclôture de l'Esprit
+
+Le débat sur l'intelligence artificielle ravive le récit du travail.
+
+* Dans l'arrêt *Li v. Liu*, la Cour d'Internet de Pékin a reconnu un droit d'auteur sur une image générée par IA, jugeant que l'ajustement constant des prompts par l'humain constituait un « mélange de travail » suffisant. Cette décision est une enclosure moderne de l'esprit : elle transforme un processus mécanique en une propriété privée par la fiction du travail.
+* Il faut ici mobiliser une distinction cruciale : le droit d'auteur admet la création indépendante comme défense, contrairement aux brevets. Si deux humains créent la même œuvre séparément, les deux sont protégés. En accordant un droit d'auteur aux productions d'IA, on risque de saturer l'espace créatif, empêchant les humains futurs de créer indépendamment sans enfreindre une propriété préexistante.
+
+#### La Dépossession par la Licence
+
+Nous assistons à une substitution de la propriété physique par le contrat. Ce n'est plus une possession de droit, mais une précarité organisée. Le cas de la *Nintendo Switch 2*, capable de rendre une console « permanemment inutilisable » en cas de violation des CGU, illustre cette dépossession matérielle par le biais logiciel. Le consommateur n'est plus un propriétaire, mais un locataire dont l'accès dépend du bon vouloir d'un serveur distant.
+
+| Caractéristique | Propriété Physique (Ancien Monde) | Licence Numérique (Steam, Nintendo) |
+| --- | --- | --- |
+| **Base Légale** | Droit des Biens (Inaliénable) | Droit des Contrats / CGU (Révocable) |
+| **Droit de revente** | Total (épuisement du droit) | Interdit (Arrêt Valve/UFC Que Choisir) |
+| **Souveraineté** | Contrôle autonome total | Possibilité de « briquage » à distance |
+| **Législation** | Droit commun traditionnel | Ex : California AB 2426 (obligation de transparence) |
+
+#### La Tragédie des Anti-Communs
+
+Alors que Hardin craignait la surconsommation (Tragédie des Communs), Michael Heller et Herman Tavani alertent sur la « Tragédie des Anti-Communs » : une sous-utilisation des ressources due à un excès de droits de propriété. En multipliant les brevets et les copyrights sur des fragments de données, les entreprises technologiques bloquent l'innovation et fragmentent le savoir commun. C'est le stade ultime du néo-colonialisme : la capture des données comme nouvelle *Terra Nullius*.
+
+### Synthèse et Conséquences : Vers une Nouvelle Éthique de l'Accès
+
+L'analyse de ces récits impose trois conclusions critiques pour les professionnels de demain :
+
+* **L'illusion du mérite :** Le récit du travail est détourné par les géants de l'IA pour privatiser des communs informationnels sans commune mesure avec l'effort humain réellement fourni (le simple *prompting*).
+* **La dépossession ontologique :** Le passage de la propriété à la licence acte la fin de la souveraineté de l'individu sur ses propres outils du quotidien.
+* **Le retour de l'exclusion par le Rang :** La capacité à naviguer dans ces systèmes complexes recrée une hiérarchie stricte entre l'infrastructure (les plateformes) et les usagers précaires.
+
+Pour l'avenir, nous devons réclamer une application rigoureuse du *Lockean Proviso*. S'approprier les données du monde pour entraîner des IA n'est légitime que si l'on laisse « assez et d'aussi bonne qualité » de ressources informationnelles pour la création humaine indépendante. Nous devons passer de la « Thèse Forte » (partage égal des ressources) à la « Thèse Faible » protectrice du *no-harm* : aucune appropriation numérique ne doit laisser l'usager dans une situation plus précaire qu'avant l'innovation. La survie de nos communs de l'esprit en dépend.

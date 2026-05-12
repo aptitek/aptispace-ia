@@ -1,0 +1,61 @@
+
+## ⚖️ La Justice : Équité, Accessibilité et Contrat Social
+
+### Introduction : La Crise de la Justice Distributive face à l'Automatisation
+
+La transition vers l’intelligence artificielle (IA) n’est pas un destin technologique inexorable, mais une bifurcation politique majeure. Alors que le cabinet McKinsey projette la disparition de 800 millions d’emplois à l’échelle mondiale d’ici 2030 [@youtube_korea], le débat public s’enferme trop souvent dans une déploration de la fatalité technique. En tant qu’observateurs des dynamiques de pouvoir, nous devons au contraire situer cette crise au cœur de la justice distributive : l’IA fragilise les mécanismes traditionnels de redistribution fondés sur le salariat, imposant une redéfinition urgente de la valeur de l’effort humain.
+
+#### Le Mythe de la Fin du Travail vs la Transformation de sa Valeur
+Les prophéties catastrophistes, héritées du rapport Frey et Osborne sur l'automatisation de 47 % des métiers [@casilli_review], occultent une réalité sociologique plus profonde. Sous l'impulsion d'Antonio Casilli, il apparaît que l'IA ne supprime pas le travail mais le fragmente en « tâches » et en « données ». Cette « tâcheronisation » déplace la valeur de l’expertise métier vers un *digital labor* souvent non reconnu, où l'humain devient le rouage invisible de l'apprentissage machine.
+
+#### Le « Piège de la Vision »
+Selon Daron Acemoglu et Simon Johnson, nous subissons une trajectoire technologique imposée par une élite dont la vision privilégie l’automatisation pure au détriment de l’utilité sociale [@montaigne_power]. Ce choix délibéré, qui cherche à remplacer l'humain plutôt qu'à augmenter ses capacités, constitue un verrou stratégique que nous devons briser pour rétablir une prospérité partagée.
+
+### Travail et Redistribution des Richesses
+
+La capture de la productivité par les géants technologiques exige la mise en place de nouveaux contre-pouvoirs. Le progrès n'est jamais spontanément partagé ; il est le fruit de négociations sociales et de cadres législatifs contraignants [@cato_power].
+
+#### Souveraineté Créative et Grèves Hollywoodiennes
+Les accords WGA et SAG-AFTRA de 2023 marquent un tournant historique face à la menace du « clonage numérique », illustrée de manière prémonitoire par l'épisode *Joan is Awful* de *Black Mirror* [@uggc_greve]. Les protections obtenues sont exemplaires :
+* **Clones numériques :** Obligation d'obtenir un consentement explicite.
+* **Droit d'auteur :** L'IA est statutairement exclue de la qualité d'auteur.
+* **Revenus résiduels :** Instauration de primes basées sur l'audience réelle [@wga_agreement].
+
+#### Nouveaux Leviers de Financement Social
+* **Taxe sur les Robots :** La Corée du Sud expérimente déjà un « Robot Levy » [@econstor_korea].
+* **Revenu de Base Universel (UBI) :** Défini comme le socle d'un nouveau contrat social, l'UBI permettrait de découpler la survie de l'individu de la volatilité du marché [@lse_ubi].
+
+### Équité et Exploitation Invisible
+
+L'invisibilisation du travail humain est le moteur secret du capitalisme de surveillance. Derrière le prestige des algorithmes se cache un « surplus comportemental » extrait sans consentement [@zuboff_zulma2].
+
+#### Le « Digital Labor » et l'Injustice Systémique
+La neutralité algorithmique est une fiction qui masque la reproduction des rapports de domination. À titre d'exemple, les chauffeurs Uber passent près de 60 % de leur activité à produire des données pour la plateforme [@casilli_review]. Aujourd'hui, cette « tâche-ingrate » est délocalisée dans le Sud Global, notamment au Kenya [@time_openai].
+
+| Caractéristiques | Travail Visible (Nord) | Micro-travail Invisible (Sud Global) |
+| :--- | :--- | :--- |
+| **Localisation** | Silicon Valley, Europe | Philippines, Kenya [@time_openai] |
+| **Rémunération** | Salaires de prestige | Micro-paiements |
+| **Nature de la tâche** | Conception et management | Détourage, modération [@somo_bigtech] |
+
+### Accessibilité et Fracture Épistémique
+
+L'architecture des IA génératives agit comme un outil de colonisation numérique, privilégiant les infrastructures dominantes.
+
+#### Le « Matthew Effect » Algorithmique
+La visibilité est une fonction de la puissance technique. Les algorithmes favorisent systématiquement les serveurs rapides du Nord, invisibilisant les savoirs du Sud [@unu_divide].
+
+#### Souveraineté et Leapfrogging
+Le salut réside dans le développement d'IA locales. En s'appuyant sur les principes d'inclusion de l'ONU, les pays en développement peuvent opérer un saut technologique (*leapfrogging*) [@bakermckenzie].
+
+### Gouvernance et Cadre Républicain
+
+L'urgence d'une régulation mondiale ne doit pas se limiter à une gestion technique, mais viser la protection contre le pouvoir instrumentarien [@zuboff_bigother].
+
+* **EU AI Act :** Une approche pionnière de régulation par le risque [@eu_parliament].
+* **Processus d'Hiroshima (G7) :** Un code de conduite visant à responsabiliser les développeurs [@hiroshima_process].
+* **Données comme Bien Commun :** Promouvoir l'open source et les audits participatifs [@republic_algorithm].
+
+### Conclusion
+
+La renégociation du contrat social repose sur trois piliers indissociables : la reconnaissance statutaire du *digital labor*, une redistribution fiscale indexée sur l'automatisation, et une souveraineté épistémique garantissant la visibilité de tous.
