@@ -27,7 +27,7 @@ Même avec une température bien réglée, il reste toujours une "longue traîne
 
 Le **Prompt Engineering** n'est pas de la "magie" ou de la simple rédaction. Techniquement, c'est l'art de fournir un contexte initial suffisamment riche pour orienter la distribution de probabilité de l'attention vers le sous-domaine de réponse souhaité [@souchere_2025_prompt].
 
-Parmi les techniques avancées, la plus efficace est le **Chain-of-Thought (CoT)**. 
+Parmi les techniques avancées, la plus efficace est le **Chain-of-Thought (CoT)**.
 En incitant le modèle à "penser étape par étape", on le force à générer des tokens intermédiaires de raisonnement. Puisque l'attention de la fenêtre de contexte se nourrit des mots précédemment générés, ces étapes intermédiaires guident mathématiquement la prédiction finale vers une solution logique, évitant ainsi les conclusions hâtives et erronées.
 
 ```{mermaid}

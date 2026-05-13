@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : Interpolation dans l'Espace Latent (AE vs VAE)"} 
+::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Interpolation dans l'Espace Latent (AE vs VAE)"}
 
 ::: {.controls header="Modèle"}
 Sélectionnez l'architecture et naviguez directement dans l'espace mathématique en faisant glisser le curseur.
@@ -94,7 +94,7 @@ _updateLatent2D = {
   // Update Visual State (AE vs VAE)
   const layerDist = svg.select(".layer-dist");
   layerDist.selectAll("*").remove();
-  
+
   if (mode === "vae") {
     layerDist.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 5).style("fill", "url(#gradA2D)");
     layerDist.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 5).style("fill", "url(#gradB2D)");
@@ -111,7 +111,7 @@ alphaLatent = {
   const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
   const dA = Math.sqrt(Math.pow(pos.x - pA.x, 2) + Math.pow(pos.y - pA.y, 2));
   const dB = Math.sqrt(Math.pow(pos.x - pB.x, 2) + Math.pow(pos.y - pB.y, 2));
-  
+
   // Le ratio de distance dA / (dA + dB) est plus intuitif en 2D pour l'alpha
   return dA / (dA + dB);
 }
@@ -131,7 +131,7 @@ alphaLatent = {
 {
   const container = document.createElement("div");
   container.style.cssText = "display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 10px;";
-  
+
   let emoji = "";
   let confidence = 0;
   let textOut = "";
@@ -174,7 +174,7 @@ alphaLatent = {
       span.style.cssText = `position: absolute; opacity: ${op}; transition: opacity 0.1s;`;
       return span;
     };
-    
+
     let opCat = 0, opFox = 0, opDog = 0;
     if (alphaLatent <= 0.5) {
       opCat = 1 - (alphaLatent * 2);
@@ -183,7 +183,7 @@ alphaLatent = {
       opFox = 1 - ((alphaLatent - 0.5) * 2);
       opDog = (alphaLatent - 0.5) * 2;
     }
-    
+
     displayEmoji.appendChild(createLayer("🐱", opCat));
     displayEmoji.appendChild(createLayer("🦊", opFox));
     displayEmoji.appendChild(createLayer("🐶", opDog));
@@ -201,7 +201,7 @@ alphaLatent = {
   const fill = document.createElement("div");
   fill.style.cssText = `width: ${confidence * 100}%; height: 100%; background: ${confidence > 0.5 ? theme.green : theme.red}; transition: width 0.3s;`;
   meterCont.appendChild(fill);
-  
+
   const meterLabel = document.createElement("div");
   meterLabel.style.cssText = `font-size: 0.8em; color: ${theme.base03}; margin-top: 5px;`;
   meterLabel.innerText = `Cohérence sémantique : ${(confidence * 100).toFixed(1)}%`;

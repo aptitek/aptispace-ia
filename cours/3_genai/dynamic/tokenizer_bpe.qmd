@@ -1,13 +1,13 @@
-::: {.dynamic .controls-top header="🕹️ Simulation Interactive : Le Tokenizer BPE (Byte-Pair Encoding)"}
+::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Le Tokenizer BPE (Byte-Pair Encoding)"}
 
-::: {.controls header="Saisie du Texte Brut"}
+::: {.controls header="Saisie du Texte Brut" style="flex: 0 0 400px;"}
 Tapez une phrase ci-dessous. Observez comment le modèle découpe les mots fréquents, les mots rares et la ponctuation avant de les transformer en vecteurs.
 
 ```{ojs}
 //| echo: false
 viewof rawTextInput = ui.text_area({
-  value: "L'IA comprend-elle le mot anticonstitutionnellement ? 🤔", 
-  rows: 3, 
+  value: "L'IA comprend-elle le mot anticonstitutionnellement ? 🤔",
+  rows: 3,
   label: "Texte à tokeniser :"
 })
 
@@ -19,7 +19,7 @@ tokenizerResults = {
 
   // Découpage primaire (Regex BPE-like)
   const baseTokens = text.match(/ ?[a-zA-ZÀ-ÿ0-9]+| ?[^\s\w\p{Emoji_Presentation}]+| ?\p{Emoji_Presentation}/gu) || [];
-  
+
   let finalTokens = [];
   baseTokens.forEach(t => {
     let cleanT = t;
@@ -60,7 +60,7 @@ tokenizerResults = {
 //| echo: false
 {
   const { tokens } = tokenizerResults;
-  
+
   if (tokens.length === 0) {
     return html`<div class="text-muted p-4 italic">Saisissez du texte pour démarrer la simulation...</div>`;
   }
@@ -71,9 +71,9 @@ tokenizerResults = {
   tokens.forEach((tok, index) => {
     const color = colors[index % colors.length];
     const id = Math.floor(Math.random() * 50000);
-    
+
     const tokenEl = html`<div class="mol-token">
-      <div class="token-node ${tok.isFragment ? 'is-fragment' : ''}" 
+      <div class="token-node ${tok.isFragment ? 'is-fragment' : ''}"
            style="background: ${color}22; color: ${color}; border-color: ${color}44;"
            title="Token ID: ${id}\nFragment: ${tok.isFragment ? 'Oui' : 'Non'}">
         ${tok.hasSpace ? html`<span class="space-marker">Ġ</span>` : ''}
@@ -103,9 +103,6 @@ tokenizerResults = {
 
 :::
 
-::: {.separator}
-:::
-
 ::: {.results header="Analyse Statistique du BPE"}
 
 ```{ojs}
@@ -115,7 +112,7 @@ tokenizerResults = {
   if (!stats.tokens || stats.tokens.length === 0) return html`<div class="text-muted">En attente de texte...</div>`;
 
   const ratio = (stats.chars / stats.count).toFixed(2);
-  
+
   return html`<div class="org-matrix-grid">
     <div class="mol-stat-card" style="border-color: ${theme.blue}">
       <div class="stat-label">Caractères</div>
@@ -133,7 +130,9 @@ tokenizerResults = {
 }
 ```
 
-::: {.org-card is-debug .debug}
+:::
+
+:::: {.org-card .is-debug .debug}
 
 ```{ojs}
 //| echo: false
@@ -143,7 +142,7 @@ tokenizerResults = {
 
   let hasG = stats.tokens.some(t => t.hasSpace);
   let hasFragment = stats.tokens.some(t => t.isFragment);
-  
+
   return html`<div class="d-flex flex-column gap-2">
     ${hasG ? html`<div class="d-flex gap-3">
         <div style="color: ${theme.orange}; font-weight: bold; min-width: 80px;">Espaces :</div>
@@ -166,7 +165,5 @@ tokenizerResults = {
 }
 ```
 
-:::
-
-:::
+::::
 :::

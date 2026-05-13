@@ -1,6 +1,6 @@
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
+::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
 
-::: {.controls header="Paramètres d'Échantillonnage"}
+::: {.controls header="Paramètres d'Échantillonnage" style="flex: 0 0 450px;"}
 
 :::: {.d-flex .flex-wrap .gap-3 .align-items-center .justify-content-center .py-4}
 
@@ -35,7 +35,7 @@ viewof temp = {
   const update = () => {
     const sliderVal = parseFloat(input.value);
     const v = 2.01 - sliderVal;
-    const pct = (v / 2) * 100; 
+    const pct = (v / 2) * 100;
     fill.style.height = Math.max(5, pct) + "%";
     hotEmoji.style.opacity = Math.max(0, (v - 1.2) / 0.8);
     hotEmoji.style.top = Math.max(0, (v - 1.2) * 60) + "px";
@@ -219,7 +219,7 @@ viewof topP = {
 ```
 :::
 
-::: {.separator}
+::: {.separator .is-vertical}
 :::
 
 ::: {.results header="Configuration de l'Échantillonnage"}
@@ -235,10 +235,10 @@ viewof topP = {
         <div class="card-metric-label">Température</div>
         <div class="card-metric-value" style="color: ${tempStatus === 'warning' ? theme.yellow : (tempStatus === 'success' ? theme.orange : theme.blue)};">${temp.toFixed(2)}</div>
         <div class="small opacity-75 mt-2" style="line-height: 1.3;">
-          ${temp < 0.4 
-            ? "<b>Déterministe</b>. Distribution pincée, focus sur la logique pure." 
-            : (temp > 1.4 
-              ? "<b>Créatif</b>. Distribution aplatie, focus sur l'originalité." 
+          ${temp < 0.4
+            ? "<b>Déterministe</b>. Distribution pincée, focus sur la logique pure."
+            : (temp > 1.4
+              ? "<b>Créatif</b>. Distribution aplatie, focus sur l'originalité."
               : "<b>Équilibré</b>. Navigation fluide entre logique et variabilité.")
           }
         </div>
@@ -254,8 +254,8 @@ viewof topP = {
         <div class="card-metric-label">Top-K (Candidates)</div>
         <div class="card-metric-value" style="color: ${theme.cyan};">${topK}</div>
         <div class="small opacity-75 mt-2" style="line-height: 1.3;">
-          ${topK <= 3 
-            ? "<b>Cercle Restreint</b>. Seul le haut du panier est autorisé." 
+          ${topK <= 3
+            ? "<b>Cercle Restreint</b>. Seul le haut du panier est autorisé."
             : "<b>Large Éventail</b>. Le modèle explore une plus grande diversité."
           }
         </div>
@@ -271,8 +271,8 @@ viewof topP = {
         <div class="card-metric-label">Top-P (Nucleus)</div>
         <div class="card-metric-value" style="color: ${theme.yellow};">${(topP * 100).toFixed(0)}%</div>
         <div class="small opacity-75 mt-2" style="line-height: 1.3;">
-          ${topP < 0.6 
-            ? "<b>Nucleus Serré</b>. On ne garde que le cœur de la probabilité." 
+          ${topP < 0.6
+            ? "<b>Nucleus Serré</b>. On ne garde que le cœur de la probabilité."
             : "<b>Masse Ouverte</b>. La traîne de probabilité est conservée."
           }
         </div>

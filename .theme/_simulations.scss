@@ -322,6 +322,10 @@
             &::after {
                 transform: rotate(0deg) !important;
             }
+
+            &.is-vertical::after {
+                transform: rotate(90deg) !important;
+            }
         }
     }
 }

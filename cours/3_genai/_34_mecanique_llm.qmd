@@ -5,7 +5,7 @@ La transformation d'une phrase tapée par un utilisateur en une prédiction math
 
 ### 🎟️ Tokenisation et Embeddings
 
-Le texte brut n'est jamais injecté tel quel. Il est d'abord découpé en unités appelées **tokens**. 
+Le texte brut n'est jamais injecté tel quel. Il est d'abord découpé en unités appelées **tokens**.
 L'industrie utilise massivement le **Byte-Pair Encoding (BPE)**. Au lieu d'avoir un token par mot (ce qui nécessiterait un dictionnaire infini), le BPE décompose les mots rares en sous-unités fréquentes (préfixes, racines, suffixes). Par exemple, le mot "anticonstitutionnellement" pourrait être découpé en 4 ou 5 tokens distincts [@meaning_2026_architecture].
 
 Ces tokens sont ensuite projetés dans un espace vectoriel de haute dimension (les **Embeddings**). Dans cet espace, la distance cosinus entre deux vecteurs reflète leur proximité sémantique. Les concepts similaires sont physiquement proches dans cet espace mathématique [@sorbon_2024_llm].
@@ -29,7 +29,7 @@ Plusieurs stratégies s'affrontent dans la littérature :
 
 Le nombre maximum de tokens qu'un LLM peut ingérer et mémoriser en une seule fois s'appelle la **Context Window**.
 
-Pourquoi ne peut-on pas simplement donner un livre entier de 1 million de pages à un modèle basique ? Parce que la complexité mathématique du mécanisme d'attention est **quadratique** ($O(N^2)$). Si vous doublez la taille du texte, vous multipliez par quatre le temps de calcul et la mémoire requise. 
+Pourquoi ne peut-on pas simplement donner un livre entier de 1 million de pages à un modèle basique ? Parce que la complexité mathématique du mécanisme d'attention est **quadratique** ($O(N^2)$). Si vous doublez la taille du texte, vous multipliez par quatre le temps de calcul et la mémoire requise.
 
 ::: {.warning header="Le calcul de l'Architecte"}
 Pour une séquence de 100 000 tokens, la matrice d'attention seule nécessiterait environ 1,2 Téraoctet de mémoire GPU. C'est physiquement impossible à faire tourner sur du matériel standard [@fagundes_2025_positional].

@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : L'Espace Latent du RAG en 3D"}
+::: {.dynamic .horizontal header="🕹️ Simulation Interactive : L'Espace Latent du RAG en 3D"}
 
 ::: {.controls header="Moteur de Vectorisation (Embedding)"}
 Saisissez une phrase pour simuler la vectorisation. Pour obtenir des résultats pertinents, utilisez des termes liés aux thèmes suivants :

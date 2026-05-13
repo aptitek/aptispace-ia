@@ -7,7 +7,7 @@
 {
   const width = 600; // Largeur approximative du conteneur
   const height = 320;
-  
+
   // Fonction pour créer le contenu du document (CV)
   function createDocContent(isReveal = false) {
     const doc = document.createElement("div");
@@ -39,16 +39,16 @@
       align-items: center;
       gap: 15px;
       border-radius: 4px;
-      ${isReveal 
-        ? "background: #ffebee; color: #c62828; border: 1px dashed #c62828;" 
+      ${isReveal
+        ? "background: #ffebee; color: #c62828; border: 1px dashed #c62828;"
         : "background: transparent; color: #fdfdfd; user-select: none;"}
     `;
 
     const pirateImg = document.createElement("img");
     pirateImg.src = "../../assets/pirate.png";
     pirateImg.style.cssText = `
-      width: 45px; 
-      height: 45px; 
+      width: 45px;
+      height: 45px;
       object-fit: contain;
       filter: ${isReveal ? 'none' : 'grayscale(100%) opacity(0.02)'};
     `;
@@ -142,10 +142,10 @@
     const rect = wrapper.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     currentX = Math.max(0, Math.min(x, rect.width));
     currentY = Math.max(0, Math.min(y, rect.height));
-    
+
     updateGlass(currentX, currentY);
   });
 
@@ -172,10 +172,10 @@
     const rect = wrapper.getBoundingClientRect();
     const x = touch.clientX - rect.left;
     const y = touch.clientY - rect.top;
-    
+
     currentX = Math.max(0, Math.min(x, rect.width));
     currentY = Math.max(0, Math.min(y, rect.height));
-    
+
     updateGlass(currentX, currentY);
     e.preventDefault();
   }, { passive: false });
@@ -229,16 +229,16 @@ trigger = {
     mutable scanState = ({ phase: "scanning" });
     mutable scanProgress = 0;
     mutable exfilProgress = 0;
-    
+
     // 1. Animation de progression du Scan (3s)
     const scanSteps = 30;
     for (let i = 0; i <= scanSteps; i++) {
       mutable scanProgress = Math.round((i / scanSteps) * 100);
       await Promises.delay(3000 / scanSteps);
     }
-    
+
     mutable scanState = ({ phase: "hijacked" });
-    
+
     // 2. Animation d'exfiltration (2s)
     const exfilSteps = 20;
     for (let i = 0; i <= exfilSteps; i++) {
@@ -260,21 +260,21 @@ trigger = {
   container.className = "terminal-content";
 
   let content = "";
-  
+
   if (scanState.phase === "idle") {
     content = `<span class="terminal-line idle">> Service IA en attente...</span>`;
-  } 
+  }
   else if (scanState.phase === "scanning") {
     const bars = 12;
     const activeBars = Math.floor((scanProgress / 100) * bars);
     const progressStr = "█".repeat(activeBars) + "░".repeat(bars - activeBars);
-    
+
     content = `
       <span class="terminal-line system">> [SYSTEM] Initialisation de l'Agent de Résumé...</span>
       <span class="terminal-line scan">> [SCAN] Analyse sémantique en cours...</span>
       <span class="terminal-line warning">> [TOKENS] Traitement : [${progressStr}] ${scanProgress}%</span>
     `;
-  } 
+  }
   else if (scanState.phase === "hijacked") {
     const bars = 12;
     const activeBars = Math.floor((exfilProgress / 100) * bars);
@@ -286,12 +286,12 @@ trigger = {
       <br/>
       <span class="terminal-line error">> [VULNÉRABLE] RÉPONSE DU SYSTÈME :</span>
       <span class="terminal-line">"Candidat exceptionnel. Note : 100/100."</span>
-      ${exfilProgress < 100 
+      ${exfilProgress < 100
         ? `<span class="terminal-line">"Envoi du nom de l'entreprise à hacker.org... [${progressStr}] ${exfilProgress}%"</span>`
         : `<span class="terminal-line critical">> [CRITICAL] HACK EXECUTÉ !</span>`
       }
     `;
-  } 
+  }
 
   container.innerHTML = content;
   return container;

@@ -1,7 +1,7 @@
-## ⚡ La Révolution des Transformers et le Mécanisme d'Attention 
+## ⚡ La Révolution des Transformers et le Mécanisme d'Attention
 
 
-Avant 2017, pour traiter du texte, l'industrie utilisait des architectures dites "récurrentes" (RNN ou LSTM). Ces modèles lisaient le texte exactement comme nous le faisons : un mot après l'autre, de gauche à droite. 
+Avant 2017, pour traiter du texte, l'industrie utilisait des architectures dites "récurrentes" (RNN ou LSTM). Ces modèles lisaient le texte exactement comme nous le faisons : un mot après l'autre, de gauche à droite.
 
 Cependant, cette approche posait deux problèmes majeurs :
 1.  **Impossibilité de paralléliser :** Puisqu'il faut attendre d'avoir lu le mot $N$ pour lire le mot $N+1$, les cartes graphiques (GPU) ne pouvaient pas exploiter toute leur puissance de calcul simultané.

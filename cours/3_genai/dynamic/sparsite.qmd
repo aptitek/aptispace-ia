@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : Visualiser le gouffre de la Sparsité"}
+::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Visualiser le gouffre de la Sparsité"}
 
 ::: {.controls header="Action"}
 Cliquez sur le bouton pour déclencher la féaturisation.
@@ -40,7 +40,7 @@ tweetBox = {
 
 :::
 
-::: {.separator}
+::: {.separator .is-vertical}
 :::
 
 ```{ojs}
@@ -63,16 +63,16 @@ mutable dataTrigger = 0
   while (true) {
     const jitter = (Math.random() - 0.5) * 0.04; // Amplitude très réduite
     simState.jitter = jitter;
-    
+
     // Calcul du niveau consolidé (jitter appliqué APRES le cap pour rester visible à 100%)
     const base = simState.running ? simState.progress : 0;
     const cappedBase = Math.max(0, Math.min(0.98, base + 0.05));
     const level = cappedBase + jitter;
     simState.currentLevel = level;
-    
+
     simState.history.push({ t: Date.now(), v: level });
     if (simState.history.length > 300) simState.history.shift();
-    
+
     mutable dataTrigger++;
     await Promises.delay(120); // Plus lent (était 50ms)
   }
@@ -88,7 +88,7 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
 {
   btnSparsity;
   tweetBox;
-  
+
   if (!btnSparsity || btnSparsity === 0) {
     simState.running = false;
     simState.progress = 0;
@@ -140,11 +140,11 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
       currentText += chunk;
       container.innerHTML = currentText;
       container.scrollTop = container.scrollHeight;
-      
+
       simState.progress = i / totalVisibleTokens;
       mutable bitCounts.zeros += cZeros;
       mutable bitCounts.ones += cOnes;
-      
+
       yield container;
       await Promises.delay(50); // Plus lent (était 15ms)
     }
@@ -152,10 +152,10 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
     const truncation = document.createElement("span");
     truncation.classList.add("atom-truncation");
     truncation.innerText = "... [Mémoire saturée : 96 500 zéros supplémentaires tronqués] ...";
-    
+
     container.appendChild(truncation);
     container.scrollTop = container.scrollHeight;
-    
+
     mutable bitCounts.zeros += 96500;
     simState.progress = 0.96;
     yield container;
@@ -171,7 +171,7 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
 //| echo: false
 {
   dataTrigger;
-  
+
   // 1. LED Meter (Top)
   const segments = 50;
   const level = simState.currentLevel;
@@ -232,13 +232,13 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
   {
     const width = 120, height = 120;
     const radius = Math.min(width, height) / 2;
-    
+
     // Pour que les '1' soient visibles tout en restant réalistes
     const total = bitCounts.zeros + bitCounts.ones;
     const onesProportion = total === 0 ? 0 : bitCounts.ones / total;
     // On utilise 1.5% minimum pour que ce soit un "cheveu" rouge visible
-    const displayOnes = Math.max(onesProportion, onesProportion > 0 ? 0.015 : 0); 
-    
+    const displayOnes = Math.max(onesProportion, onesProportion > 0 ? 0.015 : 0);
+
     const data = [
       { name: "0", value: 1 - displayOnes, color: "#859900", count: bitCounts.zeros },
       { name: "1", value: displayOnes, color: "#dc322f", count: bitCounts.ones }
@@ -259,7 +259,7 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
       .attr("d", arc)
       .attr("stroke", theme.base2)
       .attr("stroke-width", "1px");
-      
+
     // Label central pour les '1'
     svg.append("text")
       .attr("text-anchor", "middle")
@@ -279,7 +279,5 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
   `, { title: "Moniteur de Ressources (Temps Réel)", status: level > 0.85 ? "danger" : "info" });
 }
 ```
-
-:::
 
 :::

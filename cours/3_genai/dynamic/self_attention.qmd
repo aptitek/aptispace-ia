@@ -15,13 +15,13 @@ sentence = [
 ]
 
 attentionMatrix = [
-  [0.80, 0.15, 0.05, 0.00, 0.00, 0.00, 0.00], 
-  [0.10, 0.60, 0.30, 0.00, 0.00, 0.00, 0.00], 
-  [0.05, 0.25, 0.50, 0.05, 0.15, 0.00, 0.00], 
-  [0.00, 0.00, 0.10, 0.40, 0.50, 0.00, 0.00], 
-  [0.00, 0.00, 0.35, 0.05, 0.20, 0.05, 0.35], 
-  [0.00, 0.00, 0.00, 0.00, 0.00, 0.70, 0.30], 
-  [0.00, 0.00, 0.05, 0.00, 0.25, 0.10, 0.60]  
+  [0.80, 0.15, 0.05, 0.00, 0.00, 0.00, 0.00],
+  [0.10, 0.60, 0.30, 0.00, 0.00, 0.00, 0.00],
+  [0.05, 0.25, 0.50, 0.05, 0.15, 0.00, 0.00],
+  [0.00, 0.00, 0.10, 0.40, 0.50, 0.00, 0.00],
+  [0.00, 0.00, 0.35, 0.05, 0.20, 0.05, 0.35],
+  [0.00, 0.00, 0.00, 0.00, 0.00, 0.70, 0.30],
+  [0.00, 0.00, 0.05, 0.00, 0.25, 0.10, 0.60]
 ]
 
 mutable activeQ = 4;
@@ -32,34 +32,12 @@ mutable activeQ = 4;
 ```{ojs}
 //| echo: false
 {
-  const svgWidth = 1000;
-  const svgHeight = 550;
-  const svg = d3.create("svg")
-    .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    .style("border-radius", "20px")
-    .style("overflow", "hidden")
-    .style("font-size", "18px");
-
-  const defs = svg.append("defs");
-
-  // Masque de découpe pour respecter les bords arrondis (rx=20)
-  defs.append("clipPath")
-    .attr("id", "cardClip")
-    .append("rect")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight)
-    .attr("rx", 20);
-
-  // Appliquer le clipPath aux calques de contenu
-  const mainContent = svg.append("g").attr("clip-path", "url(#cardClip)");
-
-  // Fond explicite
-  mainContent.append("rect")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight)
-    .attr("rx", 20)
-    .attr("fill", theme.base3);
+  const terminalHeight = 550;
+  const canvas = ui.canvas({ width: 1000, height: terminalHeight });
+  const { node, mainNode, defsNode, width, height } = canvas;
+  const svg = d3.select(node);
+  const main = d3.select(mainNode);
+  const defs = d3.select(defsNode);
 
   const weights = attentionMatrix[activeQ];
 
@@ -68,11 +46,11 @@ mutable activeQ = 4;
     const isRow1 = i < 4;
     const items = isRow1 ? 4 : 3;
     const idx = isRow1 ? i : i - 4;
-    const marginX = svgWidth * 0.15;
+    const marginX = width * 0.15;
     const marginY = 100; // Expanded to avoid halo clipping
-    const innerWidth = svgWidth - (2 * marginX);
-    const innerHeight = svgHeight - (2 * marginY);
-    
+    const innerWidth = width - (2 * marginX);
+    const innerHeight = height - (2 * marginY);
+
     return {
       x: marginX + (innerWidth / (items - 1 + 2)) * (idx + 1),
       y: marginY + (isRow1 ? 0 : innerHeight)
@@ -82,10 +60,10 @@ mutable activeQ = 4;
   const qPos = getPos(activeQ);
 
   // Couches (Layers) groupées dans le conteneur de découpe (mainContent)
-  const haloLayer = mainContent.append("g").attr("class", "halo-layer").style("pointer-events", "none");
-  const linkLayer = mainContent.append("g").attr("class", "link-layer").style("pointer-events", "none");
-  const tokenLayer = mainContent.append("g").attr("class", "token-layer");
-  const labelLayer = mainContent.append("g").attr("class", "label-layer").style("pointer-events", "none");
+  const haloLayer = main.append("g").attr("class", "halo-layer").style("pointer-events", "none");
+  const linkLayer = main.append("g").attr("class", "link-layer").style("pointer-events", "none");
+  const tokenLayer = main.append("g").attr("class", "token-layer");
+  const labelLayer = main.append("g").attr("class", "label-layer").style("pointer-events", "none");
 
   // Filtre de flou pour le heatmap (utilisant la déclaration defs du haut)
   defs.append("filter")
@@ -135,7 +113,7 @@ mutable activeQ = 4;
         const dx = tPos.x - qPos.x;
         const dy = tPos.y - qPos.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        
+
         // Courbure plus prononcée pour éviter les nœuds centraux
         const bendFactor = 0.5;
         const controlX = midX - (dy * bendFactor * weight);
@@ -154,7 +132,7 @@ mutable activeQ = 4;
           .attr("stroke-width", weight * 50)
           .attr("opacity", weight + 0.25) // Légèrement plus opaque pour la visibilité
           .style("pointer-events", "none");
-          
+
         // Bulles de Score (Couche supérieure)
         const bubblePos = { x: controlX, y: controlY };
         const bubble = labelLayer.append("g")
@@ -172,7 +150,7 @@ mutable activeQ = 4;
           .attr("rx", 10)
           .style("pointer-events", "none");
 
-          
+
         bubble.append("text")
           .attr("dy", 6)
           .attr("fill", theme.base01)
@@ -242,7 +220,7 @@ mutable activeQ = 4;
     .style("pointer-events", "none")
     .text(d => d.word);
 
-    
+
   svg.append("text")
     .attr("x", qPos.x)
     .attr("y", qPos.y + (activeQ < 4 ? 85 : -85))
@@ -254,14 +232,18 @@ mutable activeQ = 4;
     .text(`Self: ${(weights[activeQ]*100).toFixed(0)}%`);
 
 
-  return svg.node();
+  // 7. Légende Automatique
+  canvas.legend([
+    { label: "Attention Faible", color: theme.blue },
+    { label: "Attention Moyenne", color: theme.green },
+    { label: "Attention Forte", color: theme.red }
+  ]);
+
+  return canvas.node;
 }
 ```
 
 :::
-
-
-
 
 ::: {.results header="Décomposition Mathématique : Q × K = Softmax"}
 
@@ -270,7 +252,7 @@ mutable activeQ = 4;
 {
   const qToken = sentence[activeQ].word;
   const weights = attentionMatrix[activeQ];
-  
+
   // Identifier les mots ayant reçu le plus d'attention (hors "Self" si possible)
   const sortedAttentions = weights
     .map((w, i) => ({ word: sentence[i].word, w: w, id: i }))
@@ -297,7 +279,7 @@ mutable activeQ = 4;
     const textColor = item.w > 0.4 ? theme.base3 : theme.base03;
     return `<span style="background: ${bgColor}; color: ${textColor}; padding: 1px 6px; border-radius: 4px; font-weight: bold; font-size: 0.85em; border: 1px solid rgba(${theme.base3_rgb}, 0.1); margin-right: 3px; display: inline-block; margin-bottom: 3px;">${item.word} (${(item.w * 100).toFixed(0)}%)</span>`;
   }).join("");
-  
+
   const step2 = document.createElement("div");
   step2.innerHTML = `<div style="color: ${theme.cyan}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 2] SOFTMAX_DIST</div>
     <div style="margin-left: 8px; border-left: 1px solid ${theme.base01}; padding-left: 8px; margin-bottom: 6px;">

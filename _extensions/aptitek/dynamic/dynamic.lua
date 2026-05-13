@@ -10,7 +10,7 @@ end
 
 local function handle_controls(div)
   local title = div.attributes["header"] or div.attributes["title"]
-  
+
   -- If first element is a paragraph with just strong text, use it as title (legacy support)
   if not title and #div.content > 0 and div.content[1].t == "Para" and #div.content[1].content == 1 and div.content[1].content[1].t == "Strong" then
     title = pandoc.utils.stringify(div.content[1])
@@ -18,11 +18,11 @@ local function handle_controls(div)
   end
 
   local new_content = pandoc.List()
-  local group_div = pandoc.Div(div.content, pandoc.Attr("", {"org-controls-group"}))
-  
+  local group_div = pandoc.Div(div.content, pandoc.Attr("", { "org-controls-group" }))
+
   new_content:insert(group_div)
-  
-  local attr = pandoc.Attr(div.identifier, {"org-controls"}, div.attributes)
+
+  local attr = pandoc.Attr(div.identifier, { "org-controls" }, div.attributes)
   return pandoc.Div(new_content, attr)
 end
 
@@ -31,9 +31,9 @@ local function transform_dynamic_div(el)
     local has_controls = false
     local components = pandoc.List()
     local header_text = el.attributes["header"]
-    
+
     if header_text then
-      local figcaption = pandoc.Div({pandoc.Plain({pandoc.Str(header_text)})}, pandoc.Attr("", {"tpl-main-title"}))
+      local figcaption = pandoc.Div({ pandoc.Plain({ pandoc.Str(header_text) }) }, pandoc.Attr("", { "tpl-main-title" }))
       components:insert(figcaption)
     end
 
@@ -59,23 +59,23 @@ local function transform_dynamic_div(el)
           block.classes = new_classes
           components:insert(block)
         elseif has_class(block, "separator") then
-           block.classes = pandoc.List({"mol-separator"})
-           components:insert(block)
+          block.classes = pandoc.List({ "mol-separator" })
+          components:insert(block)
         else
           components:insert(block)
         end
       elseif block.t == "Header" and block.level == 4 then
         -- Legacy support for #### Title inside .dynamic
         if not header_text then
-          local figcaption = pandoc.Div({pandoc.Plain(block.content)}, pandoc.Attr("", {"tpl-main-title"}))
+          local figcaption = pandoc.Div({ pandoc.Plain(block.content) }, pandoc.Attr("", { "tpl-main-title" }))
           components:insert(figcaption)
         end
       else
         components:insert(block)
       end
     end
-    
-    local container_classes = {"tpl-dynamic"}
+
+    local container_classes = { "tpl-dynamic" }
     if has_controls then
       table.insert(container_classes, "has-controls")
     end
@@ -85,7 +85,7 @@ local function transform_dynamic_div(el)
         el.classes:insert(c)
       end
     end
-    
+
     el.content = components
     return el
   end
@@ -184,16 +184,16 @@ window.ui = (function() {
       // Use explicit state if provided, otherwise fallback to value for backward compatibility
       const colorState = state !== undefined ? state : value;
       container.setAttribute('data-state', colorState);
-      
+
       const header = document.createElement('div');
       header.className = 'slider-header';
-      
+
       const labelEl = atom.label(label);
       const badgeEl = atom.badge(labels ? labels[value] : value);
-      
+
       header.appendChild(labelEl);
       header.appendChild(badgeEl);
-      
+
       const input = document.createElement('input');
       input.type = 'range';
       input.min = min;
@@ -201,10 +201,10 @@ window.ui = (function() {
       input.step = step;
       input.value = value;
       input.className = 'premium-slider'; // Keep for track styling
-      
+
       container.appendChild(header);
       container.appendChild(input);
-      
+
       if (labels) {
         const ticks = document.createElement('div');
         ticks.className = 'slider-ticks';
@@ -215,7 +215,7 @@ window.ui = (function() {
         });
         container.appendChild(ticks);
       }
-      
+
       input.oninput = () => {
         // Maintain the color state even when value changes
         container.setAttribute('data-state', state !== undefined ? state : input.value);
@@ -223,32 +223,32 @@ window.ui = (function() {
         container.value = step % 1 === 0 ? parseInt(input.value) : parseFloat(input.value);
         container.dispatchEvent(new CustomEvent("input"));
       };
-      
+
       container.value = value;
       return container;
     },
     toggle: ({label, options, value, states, layout = 'horizontal'}) => {
       const container = document.createElement('div');
       container.className = `mol-toggle ${layout === 'horizontal' ? 'is-horizontal' : ''}`;
-      
+
       if (label) container.appendChild(atom.label(label));
-      
+
       const group = document.createElement('div');
       group.className = 'toggle-group';
-      
+
       const isObjectOptions = !Array.isArray(options);
       const keys = isObjectOptions ? Object.keys(options) : options;
-      
+
       keys.forEach(key => {
         const displayValue = isObjectOptions ? options[key] : key;
         const btn = document.createElement('button');
         btn.className = `toggle-option ${key === value ? 'active' : ''}`;
-        
+
         // Semantic states
         if (states && states[key]) {
           btn.setAttribute('data-state', states[key]);
         }
-        
+
         btn.innerText = displayValue;
         btn.onclick = () => {
           group.querySelectorAll('.toggle-option').forEach(b => b.classList.remove('active'));
@@ -258,7 +258,7 @@ window.ui = (function() {
         };
         group.appendChild(btn);
       });
-      
+
       container.appendChild(group);
       container.value = value;
       return container;
@@ -266,21 +266,21 @@ window.ui = (function() {
     checkbox: ({label, value = false}) => {
       const container = document.createElement('div');
       container.className = 'mol-checkbox';
-      
+
       const btn = document.createElement('button');
       btn.className = `checkbox-toggle ${value ? 'is-active' : ''}`;
-      
+
       const icon = document.createElement('span');
       icon.className = 'checkbox-icon';
       icon.innerText = value ? '✓' : '';
-      
+
       const text = document.createElement('span');
       text.className = 'checkbox-text';
       text.innerText = label;
-      
+
       btn.appendChild(icon);
       btn.appendChild(text);
-      
+
       btn.onclick = () => {
         const newValue = !container.value;
         container.value = newValue;
@@ -288,7 +288,7 @@ window.ui = (function() {
         icon.innerText = newValue ? '✓' : '';
         container.dispatchEvent(new CustomEvent("input"));
       };
-      
+
       container.appendChild(btn);
       container.value = value;
       return container;
@@ -298,7 +298,7 @@ window.ui = (function() {
       container.className = 'mol-field';
       if (label) container.appendChild(atom.label(label));
       container.appendChild(element);
-      
+
       // Mirror value and events
       element.oninput = () => {
         container.value = element.value;
@@ -332,16 +332,16 @@ window.ui = (function() {
     terminal: ({header, status = 'primary'} = {}) => {
       const container = document.createElement('div');
       container.className = 'org-terminal';
-      
+
       const head = document.createElement('div');
       head.className = 'terminal-header';
-      
+
       ['red', 'yellow', 'green'].forEach(c => {
         const dot = document.createElement('span');
         dot.className = `terminal-dot is-${c}`;
         head.appendChild(dot);
       });
-      
+
       if (header) {
         const title = document.createElement('span');
         title.className = 'terminal-title';
@@ -349,14 +349,86 @@ window.ui = (function() {
         title.innerText = header;
         head.appendChild(title);
       }
-      
+
       const body = document.createElement('div');
       body.className = 'terminal-body';
-      
+
       container.appendChild(head);
       container.appendChild(body);
       container.body = body;
       return container;
+    },
+    canvas: ({width = 1000, height = 600, shadow = true} = {}) => {
+      const id = "canvas_" + Math.random().toString(36).substr(2, 9);
+      const filterId = id + "_shadow";
+
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "100%");
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.style.maxWidth = "100%";
+      svg.style.height = "auto";
+      svg.style.display = "block";
+
+      const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      svg.appendChild(defs);
+
+      if (shadow) {
+        const filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+        filter.setAttribute("id", filterId);
+        filter.setAttribute("x", "-20%");
+        filter.setAttribute("y", "-20%");
+        filter.setAttribute("width", "140%");
+        filter.setAttribute("height", "140%");
+
+        const dropShadow = document.createElementNS("http://www.w3.org/2000/svg", "feDropShadow");
+        dropShadow.setAttribute("dx", "0");
+        dropShadow.setAttribute("dy", "2");
+        dropShadow.setAttribute("stdDeviation", "3");
+        dropShadow.setAttribute("flood-opacity", "0.1");
+
+        filter.appendChild(dropShadow);
+        defs.appendChild(filter);
+      }
+
+      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("width", width);
+      rect.setAttribute("height", height);
+      rect.setAttribute("rx", "20");
+      rect.setAttribute("fill", theme.base3);
+      svg.appendChild(rect);
+
+      const main = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      if (shadow) main.setAttribute("filter", `url(#${filterId})`);
+      svg.appendChild(main);
+
+      return {
+        id,
+        node: svg,
+        mainNode: main,
+        defsNode: defs,
+        width,
+        height,
+        cx: width / 2,
+        cy: height / 2,
+        legend: (items, { x = 40, y = height - 40, gap = 140 } = {}) => {
+          if (typeof d3 === 'undefined') return null;
+          const l = d3.select(svg).append("g")
+            .attr("transform", `translate(${x}, ${y})`)
+            .style("font-family", "var(--font-base)")
+            .style("font-size", "11px")
+            .style("font-weight", "600")
+            .style("text-transform", "uppercase")
+            .style("letter-spacing", "1px");
+
+          items.forEach((item, i) => {
+            const g = l.append("g").attr("transform", `translate(${i * gap}, 0)`);
+            g.append("rect").attr("width", 12).attr("height", 12).attr("rx", 3).attr("y", -6).attr("fill", item.color);
+            g.append("text").attr("x", 20).attr("y", 4).text(item.label).attr("fill", theme.base01);
+          });
+          return l;
+        }
+      };
     }
   };
 
@@ -368,7 +440,8 @@ window.ui = (function() {
     checkbox: (args) => mol.checkbox(args),
     text_area: (args) => mol.field({label: args.label, element: atom.textarea(args)}),
     select: (args) => mol.field({label: args.label, element: atom.select(args)}),
-    card: (content, args) => org.card(content, args)
+    card: (content, args) => org.card(content, args),
+    canvas: (args) => org.canvas(args)
   };
 })();
 </script>

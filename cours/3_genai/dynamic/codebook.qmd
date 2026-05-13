@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : Le Codebook (VQ-VAE)"}
+::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Le Codebook (VQ-VAE)"}
 
 ::: {.controls header="Vecteur Continu (Sortie de l'Encodeur)"}
 Déplacez les curseurs pour générer un vecteur d'information continu. Observez comment l'IA l'associe obligatoirement à un "concept type" de son dictionnaire.
@@ -10,10 +10,10 @@ codebookData = {
   const data = [];
   // On génère 16 vecteurs distribués aléatoirement
   for(let i = 0; i < 16; i++) {
-    data.push({ 
-      id: `Vect_${(i+1).toString().padStart(2, '0')}`, 
-      x: 1 + Math.random() * 8, 
-      y: 1 + Math.random() * 8 
+    data.push({
+      id: `Vect_${(i+1).toString().padStart(2, '0')}`,
+      x: 1 + Math.random() * 8,
+      y: 1 + Math.random() * 8
     });
   }
   return data;
@@ -79,11 +79,11 @@ viewof vqSpace = {
       const [mx, my] = d3.pointer(event, svg.node());
       const x = Math.max(0, Math.min(10, mx));
       const y = Math.max(0, Math.min(10, my));
-      
+
       // Update des sliders OJS directement via leurs références viewof
       const elX = viewof vecX;
       const elY = viewof vecY;
-      
+
       if (elX) {
         elX.querySelector('input').value = x;
         elX.value = x;
@@ -104,11 +104,11 @@ viewof vqSpace = {
 // 2. Mise à jour réactive du SVG sans re-render
 _update = {
   // Dépendances OJS
-  vecX; vecY; 
-  
+  vecX; vecY;
+
   const svg = d3.select(viewof vqSpace);
   const codebook = codebookData;
-  
+
   // Calcul du voisin le plus proche
   let minDist = Infinity;
   let nearest = codebook[0];
@@ -122,11 +122,11 @@ _update = {
     .attr("cx", vecX)
     .attr("cy", vecY)
     .style("filter", "drop-shadow(0 0 0.1 rgba(0,0,0,0.5))");
-    
+
   svg.select(".quant-line")
     .attr("x1", vecX).attr("y1", vecY)
     .attr("x2", nearest.x).attr("y2", nearest.y);
-    
+
   svg.selectAll("circle.codebook")
     .attr("fill", d => (d.id === nearest.id) ? theme.green : theme.base01)
     .attr("stroke", d => (d.id === nearest.id) ? theme.base3 : "none")

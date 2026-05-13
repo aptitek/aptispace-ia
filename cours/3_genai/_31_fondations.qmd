@@ -1,9 +1,9 @@
 ## 🏛️ Les Fondations Classiques
 
 
-L’histoire du Traitement du Langage Naturel (NLP) est marquée par une transition fondamentale : le passage d'une approche purement statistique (le comptage) à des architectures génératives à haute dimension (la compréhension sémantique). 
+L’histoire du Traitement du Langage Naturel (NLP) est marquée par une transition fondamentale : le passage d'une approche purement statistique (le comptage) à des architectures génératives à haute dimension (la compréhension sémantique).
 
-La donnée textuelle est, par nature, non structurée pour un ordinateur. La première étape de tout pipeline NLP est la **"féaturisation"**, c'est-à-dire la transformation d'une chaîne de caractères en un format numérique (un vecteur) exploitable par des algorithmes [@meaning_2026_architecture]. 
+La donnée textuelle est, par nature, non structurée pour un ordinateur. La première étape de tout pipeline NLP est la **"féaturisation"**, c'est-à-dire la transformation d'une chaîne de caractères en un format numérique (un vecteur) exploitable par des algorithmes [@meaning_2026_architecture].
 
 ### 👜 Le Bag of Words (BoW)
 
