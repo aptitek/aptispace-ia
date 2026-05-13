@@ -32,105 +32,114 @@ viewof vecY = ui.slider({label: "Axe Y", value: 7.8, min: 0, max: 10, step: 0.1,
 ```{ojs}
 //| echo: false
 // 1. Initialisation de l'espace (Rendu persistant pour un drag fluide)
+// 1. Initialisation de l'espace avec l'architecture atomique
 viewof vqSpace = {
-  const svg = d3.create("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .attr("viewBox", `0 0 10 10`)
-    .style("background", theme.base03)
-    .style("border-radius", "12px")
-    .style("box-shadow", "inset 0 0 15px rgba(0,0,0,0.5)");
+  const canvas = ui.canvas({ width: width, height: 400, bg: theme.base3, shadow: true });
+  const root = canvas.node;
 
-  // Points du Codebook (Utilise codebookData)
-  svg.selectAll("circle.codebook")
-    .data(codebookData)
-    .join("circle")
-    .attr("class", "codebook")
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .attr("r", 0.28)
-    .attr("fill", theme.base01)
-    .style("transition", "fill 0.2s, stroke 0.2s");
-
-  // Ligne de quantification
-  svg.append("line")
-    .attr("class", "quant-line")
-    .attr("stroke", theme.red)
-    .attr("stroke-dasharray", "0.2,0.1")
-    .attr("stroke-width", 0.08)
-    .attr("opacity", 0.8);
-
-  // Point d'entrée (Interactif)
-  const inputPoint = svg.append("circle")
-    .attr("class", "input-point")
-    .attr("cx", 3.4) // Initialisation explicite
-    .attr("cy", 7.8)
-    .attr("r", 0.45)
-    .attr("fill", theme.blue)
-    .attr("stroke", theme.base3)
-    .attr("stroke-width", 0.08)
-    .style("cursor", "grab")
-    .style("filter", "drop-shadow(0 0 0.1 rgba(0,0,0,0.5))");
-
-  // Logique de Dragging Bidirectionnel
-  inputPoint.call(d3.drag()
-    .on("start", function() { d3.select(this).style("cursor", "grabbing").attr("r", 0.55); })
-    .on("drag", function(event) {
-      const [mx, my] = d3.pointer(event, svg.node());
-      const x = Math.max(0, Math.min(10, mx));
-      const y = Math.max(0, Math.min(10, my));
-
-      // Update des sliders OJS directement via leurs références viewof
+  // Dragging logic (coordonnées 0-10 mappées sur pixels)
+  root.addEventListener("mousedown", (e) => {
+    const onMove = (ev) => {
+      const rect = root.getBoundingClientRect();
+      const x = Math.max(0, Math.min(10, (ev.clientX - rect.left) / rect.width * 10));
+      const y = Math.max(0, Math.min(10, (ev.clientY - rect.top) / rect.height * 10));
+      
       const elX = viewof vecX;
       const elY = viewof vecY;
+      if (elX) { elX.value = x; elX.dispatchEvent(new Event("input", { bubbles: true })); }
+      if (elY) { elY.value = y; elY.dispatchEvent(new Event("input", { bubbles: true })); }
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  });
 
-      if (elX) {
-        elX.querySelector('input').value = x;
-        elX.value = x;
-        elX.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-      if (elY) {
-        elY.querySelector('input').value = y;
-        elY.value = y;
-        elY.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-    })
-    .on("end", function() { d3.select(this).style("cursor", "grab").attr("r", 0.45); })
-  );
-
-  return svg.node();
+  root.__canvas = canvas;
+  return root;
 }
 
-// 2. Mise à jour réactive du SVG sans re-render
+// 2. Mise à jour réactive (Nodes, Link, Quantification)
 _update = {
-  // Dépendances OJS
-  vecX; vecY;
+  // Dépendances réactives
+  const x = vecX;
+  const y = vecY;
+  const data = codebookData;
+  const canvasElement = viewof vqSpace;
+  if (!canvasElement.__canvas) return;
+  const canvas = canvasElement.__canvas;
 
-  const svg = d3.select(viewof vqSpace);
-  const codebook = codebookData;
+  canvas.clear();
+  const w = canvas.getWidth() || 800;
+  const h = canvas.height;
+
+  // Mapping 0-10 -> Pixels
+  const toPX = (v, max) => v / 10 * max;
 
   // Calcul du voisin le plus proche
   let minDist = Infinity;
-  let nearest = codebook[0];
-  codebook.forEach(pt => {
-    const d = Math.sqrt(Math.pow(pt.x - vecX, 2) + Math.pow(pt.y - vecY, 2));
+  let nearest = data[0];
+  data.forEach(pt => {
+    const d = Math.sqrt(Math.pow(pt.x - x, 2) + Math.pow(pt.y - y, 2));
     if (d < minDist) { minDist = d; nearest = pt; }
   });
 
-  // Update DOM direct pour la fluidité
-  svg.select(".input-point")
-    .attr("cx", vecX)
-    .attr("cy", vecY)
-    .style("filter", "drop-shadow(0 0 0.1 rgba(0,0,0,0.5))");
+  // Rendu du Codebook (Points statiques)
+  data.forEach(pt => {
+    canvas.atom.node({
+      x: toPX(pt.x, w),
+      y: toPX(pt.y, h),
+      radius: 6,
+      color: (pt.id === nearest.id) ? theme.green : theme.base01,
+      aura: (pt.id === nearest.id) ? "solid" : false,
+      auraRadius: 15,
+      auraOpacity: 0.3
+    });
+  });
 
-  svg.select(".quant-line")
-    .attr("x1", vecX).attr("y1", vecY)
-    .attr("x2", nearest.x).attr("y2", nearest.y);
+  // Ligne de quantification
+  canvas.atom.link({
+    source: { x: toPX(x, w), y: toPX(y, h) },
+    target: { x: toPX(nearest.x, w), y: toPX(nearest.y, h) },
+    color: theme.red,
+    width: 2,
+    dashed: true
+  });
 
-  svg.selectAll("circle.codebook")
-    .attr("fill", d => (d.id === nearest.id) ? theme.green : theme.base01)
-    .attr("stroke", d => (d.id === nearest.id) ? theme.base3 : "none")
-    .attr("stroke-width", 0.08);
+  // Point d'entrée (Le vecteur continu)
+  const inputPX = { x: toPX(x, w), y: toPX(y, h) };
+  const inputNode = canvas.atom.node({
+    x: inputPX.x, y: inputPX.y, radius: 12, color: theme.blue,
+    aura: "solid", auraRadius: 20, auraOpacity: 0.2
+  });
+  if (inputNode._el) inputNode._el.style.cursor = "grab";
+
+  const nearPX = { x: toPX(nearest.x, w), y: toPX(nearest.y, h) };
+
+  // Affichage de la distance en premier (pour être dessous)
+  if (minDist > 0.8) {
+    canvas.atom.badge({
+      x: (inputPX.x + nearPX.x) / 2,
+      y: (inputPX.y + nearPX.y) / 2 - 10,
+      text: `d=${minDist.toFixed(2)}`,
+      bg: theme.base2, color: theme.base01, size: "9px"
+    });
+  }
+
+  // Badges d'information (Dessus)
+  canvas.atom.badge({
+    x: inputPX.x + 15, y: inputPX.y - 25,
+    text: `IN [${x.toFixed(1)}, ${y.toFixed(1)}]`,
+    bg: theme.blue, color: theme.base3
+  });
+
+  canvas.atom.badge({
+    x: nearPX.x + 10, y: nearPX.y + 15,
+    text: `VQ [${nearest.x.toFixed(1)}, ${nearest.y.toFixed(1)}]`,
+    bg: theme.green, color: theme.base3
+  });
 }
 ```
 

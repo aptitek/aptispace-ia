@@ -1,4 +1,4 @@
-window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true} = {}) => {
+window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = window.theme.base3, margin = "10px 0"} = {}) => {
   const id = "canvas_" + Math.random().toString(36).substr(2, 9);
 
   // --- Root container ---
@@ -10,12 +10,12 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true} = {})
     width: ${initialWidth ? (typeof initialWidth === 'number' ? initialWidth + 'px' : initialWidth) : '100%'};
     max-width: 100%;
     height: ${height}px;
-    background: ${window.theme.base3};
+    background: ${bg};
     border-radius: 16px;
     overflow: hidden;
     box-sizing: border-box;
     display: block;
-    margin: 10px 0;
+    margin: ${margin};
     ${shadow ? `
       box-shadow: inset 0 2px 15px rgba(0,0,0,0.1);
     ` : ''}
@@ -46,7 +46,7 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true} = {})
   });
   ro.observe(root);
 
-  const getWidth = () => renderedWidth || root.offsetWidth || 600;
+  const getWidth = () => renderedWidth || root.offsetWidth || (typeof initialWidth === 'number' ? initialWidth : 0) || 800;
 
   const clear = () => {
     while (svgMain.firstChild) svgMain.removeChild(svgMain.firstChild);
@@ -154,6 +154,27 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true} = {})
           font-weight: ${weight};
           color: ${color};
           white-space: nowrap;
+        `;
+        div.textContent = text;
+        htmlLayer.appendChild(div);
+        return div;
+      },
+
+      badge: ({ x, y, text, color = window.theme.base3, bg = window.theme.base01, size = "10px" }) => {
+        const div = document.createElement("div");
+        div.style.cssText = `
+          position: absolute;
+          left: ${x}px; top: ${y}px;
+          padding: 2px 6px;
+          background: ${bg};
+          color: ${color};
+          border-radius: 4px;
+          font-family: var(--font-code, monospace);
+          font-size: ${size};
+          font-weight: 700;
+          white-space: nowrap;
+          pointer-events: none;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         `;
         div.textContent = text;
         htmlLayer.appendChild(div);
