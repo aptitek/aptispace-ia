@@ -227,7 +227,7 @@ window.ui = (function() {
       container.value = value;
       return container;
     },
-    toggle: ({label, options, value, layout = 'horizontal'}) => {
+    toggle: ({label, options, value, states, layout = 'horizontal'}) => {
       const container = document.createElement('div');
       container.className = `mol-toggle ${layout === 'horizontal' ? 'is-horizontal' : ''}`;
       
@@ -243,6 +243,12 @@ window.ui = (function() {
         const displayValue = isObjectOptions ? options[key] : key;
         const btn = document.createElement('button');
         btn.className = `toggle-option ${key === value ? 'active' : ''}`;
+        
+        // Semantic states
+        if (states && states[key]) {
+          btn.setAttribute('data-state', states[key]);
+        }
+        
         btn.innerText = displayValue;
         btn.onclick = () => {
           group.querySelectorAll('.toggle-option').forEach(b => b.classList.remove('active'));

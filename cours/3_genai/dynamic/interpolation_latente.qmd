@@ -1,112 +1,119 @@
 ::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : Interpolation dans l'Espace Latent (AE vs VAE)"} 
 
-::: {.controls header="Paramètres Latents"}
-Sélectionnez l'architecture et naviguez dans l'espace mathématique entre deux concepts (Chat et Chien).
+::: {.controls header="Modèle"}
+Sélectionnez l'architecture et naviguez directement dans l'espace mathématique en faisant glisser le curseur.
 
 ```{ojs}
 //| echo: false
 // 1. Toggle pour choisir entre AE et VAE
 viewof modeVAE = ui.toggle({
-  label: "Architecture",
+  label: "Modèle",
   options: {
-    "ae": "🔴 AE Classique",
-    "vae": "🟢 AE Variationnel"
+    "ae": "AE",
+    "vae": "VAE"
+  },
+  states: {
+    "ae": "danger",
+    "vae": "success"
   },
   value: "ae"
 })
-
-// 2. Curseur pour naviguer dans l'espace latent (Interpolation)
-viewof alphaLatent = ui.slider({
-  label: "Position Latente (α)",
-  value: 0,
-  min: 0,
-  max: 1,
-  step: 0.01
-})
-
 ```
 
 :::
 
-::: {.render .transparent header="Représentation de l'Espace Latent"}
+::: {.render .transparent .flex-grow-2 header="Espace Latent 2D (AE vs VAE)"}
 
 ```{ojs}
 //| echo: false
-// Rendu visuel de l'Espace Latent 2D
-{
-  const width = 450;
-  const height = 200;
+// 1. Initialisation de l'espace 2D (Inspiré du Codebook VQ-VAE)
+viewof latentPos = {
+  const width = 10;
+  const height = 10;
   const svg = d3.create("svg")
     .attr("width", "100%")
     .attr("height", "100%")
     .attr("viewBox", `0 0 ${width} ${height}`)
-    .style("background", "#1e1e1e")
-    .style("border-radius", "8px")
-    .style("box-shadow", "inset 0 0 10px #000");
+    .style("background", theme.base03)
+    .style("border-radius", "12px")
+    .style("box-shadow", "inset 0 0 15px rgba(0,0,0,0.5)");
 
-  // Définition des dégradés pour simuler les distributions gaussiennes du VAE
+  // Définition des dégradés VAE
   const defs = svg.append("defs");
-  const gradA = defs.append("radialGradient").attr("id", "gradA");
-  gradA.append("stop").attr("offset", "0%").attr("stop-color", "#268bd2").attr("stop-opacity", 0.6);
-  gradA.append("stop").attr("offset", "100%").attr("stop-color", "#268bd2").attr("stop-opacity", 0);
-  
-  const gradB = defs.append("radialGradient").attr("id", "gradB");
-  gradB.append("stop").attr("offset", "0%").attr("stop-color", "#dc322f").attr("stop-opacity", 0.6);
-  gradB.append("stop").attr("offset", "100%").attr("stop-color", "#dc322f").attr("stop-opacity", 0);
+  const gradA = defs.append("radialGradient").attr("id", "gradA2D");
+  gradA.append("stop").attr("offset", "0%").attr("stop-color", theme.blue).attr("stop-opacity", 0.4);
+  gradA.append("stop").attr("offset", "100%").attr("stop-color", theme.blue).attr("stop-opacity", 0);
+  const gradB = defs.append("radialGradient").attr("id", "gradB2D");
+  gradB.append("stop").attr("offset", "0%").attr("stop-color", theme.red).attr("stop-opacity", 0.4);
+  gradB.append("stop").attr("offset", "100%").attr("stop-color", theme.red).attr("stop-opacity", 0);
 
-  // Positions des deux concepts
-  const pA = {x: 100, y: 100, label: "Concept A: Chat"};
-  const pB = {x: 350, y: 100, label: "Concept B: Chien"};
-  
-  // Ligne de navigation
-  svg.append("line")
-    .attr("x1", pA.x)
-    .attr("y1", pA.y)
-    .attr("x2", pB.x)
-    .attr("y2", pB.y)
-    .attr("stroke", "#586e75")
-    .attr("stroke-dasharray", "5,5")
-    .attr("stroke-width", 2);
+  const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
 
-  if (modeVAE === "vae") {
-    // Mode VAE : Affichage des distributions (Moyenne et Variance)
-    svg.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 90).style("fill", "url(#gradA)");
-    svg.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 90).style("fill", "url(#gradB)");
-    
-    // Annotation Loi Normale
-    svg.append("text").attr("x", width/2).attr("y", 30).attr("fill", "#859900").attr("text-anchor", "middle").style("font-family", "monospace").text("Distribution Continue : N(μ, σ²)");
-  } else {
-    // Mode AE : Points stricts, le reste est vide
-    svg.append("text").attr("x", width/2).attr("y", 30).attr("fill", "#cb4b16").attr("text-anchor", "middle").style("font-family", "monospace").text("Espace Discret : Risque de 'Trous'");
-  }
+  // Calques
+  const layerDist = svg.append("g").attr("class", "layer-dist");
+  const layerPoints = svg.append("g").attr("class", "layer-points");
+  const handle = svg.append("g").attr("class", "handle").style("cursor", "grab");
 
-  // Les points d'ancrage
-  svg.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 6).attr("fill", "#268bd2");
-  svg.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 6).attr("fill", "#dc322f");
-  
-  // Labels
-  svg.append("text").attr("x", pA.x).attr("y", pA.y + 25).attr("fill", "#eee").attr("text-anchor", "middle").style("font-family", "sans-serif").text(pA.label);
-  svg.append("text").attr("x", pB.x).attr("y", pB.y + 25).attr("fill", "#eee").attr("text-anchor", "middle").style("font-family", "sans-serif").text(pB.label);
+  // Points d'ancrage fixes
+  layerPoints.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 0.2).attr("fill", theme.blue);
+  layerPoints.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 0.2).attr("fill", theme.red);
+  layerPoints.append("text").attr("x", pA.x).attr("y", pA.y - 0.5).attr("fill", theme.base3).attr("text-anchor", "middle").style("font-size", "0.6px").style("font-weight", "bold").text("Chat");
+  layerPoints.append("text").attr("x", pB.x).attr("y", pB.y + 1).attr("fill", theme.base3).attr("text-anchor", "middle").style("font-size", "0.6px").style("font-weight", "bold").text("Chien");
 
-  // Curseur actuel
-  const currentX = pA.x + alphaLatent * (pB.x - pA.x);
-  
-  // Halo du curseur
-  svg.append("circle")
-    .attr("cx", currentX)
-    .attr("cy", 100)
-    .attr("r", 15)
-    .attr("fill", "none")
-    .attr("stroke", "#b58900")
-    .attr("stroke-width", 2);
-    
-  svg.append("circle")
-    .attr("cx", currentX)
-    .attr("cy", 100)
-    .attr("r", 5)
-    .attr("fill", "#b58900");
+  // Handle (Curseur 2D)
+  handle.append("circle").attr("r", 0.4).attr("fill", "none").attr("stroke", theme.yellow).attr("stroke-width", 0.08);
+  handle.append("circle").attr("r", 0.15).attr("fill", theme.yellow);
 
+  // Dragging logic
+  svg.call(d3.drag()
+    .on("start", () => handle.style("cursor", "grabbing"))
+    .on("drag", (event) => {
+      const [mx, my] = d3.pointer(event, svg.node());
+      const x = Math.max(0, Math.min(width, mx));
+      const y = Math.max(0, Math.min(height, my));
+      svg.node().value = {x, y};
+      svg.node().dispatchEvent(new CustomEvent("input"));
+    })
+    .on("end", () => handle.style("cursor", "grab"))
+  );
+
+  svg.node().value = {x: 2, y: 2};
   return svg.node();
+}
+
+// 2. Mise à jour réactive précise
+_updateLatent2D = {
+  const pos = latentPos;
+  const mode = modeVAE;
+  const svg = d3.select(viewof latentPos);
+  const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
+
+  // Update Handle Position
+  svg.select(".handle").attr("transform", `translate(${pos.x}, ${pos.y})`);
+
+  // Update Visual State (AE vs VAE)
+  const layerDist = svg.select(".layer-dist");
+  layerDist.selectAll("*").remove();
+  
+  if (mode === "vae") {
+    layerDist.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 5).style("fill", "url(#gradA2D)");
+    layerDist.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 5).style("fill", "url(#gradB2D)");
+  } else {
+    // AE: Zones restreintes
+    layerDist.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 1.2).attr("fill", "rgba(38, 139, 210, 0.2)");
+    layerDist.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 1.2).attr("fill", "rgba(220, 50, 47, 0.2)");
+  }
+}
+
+// 3. Calcul de l'alpha consolidé pour le rendu final
+alphaLatent = {
+  const pos = latentPos;
+  const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
+  const dA = Math.sqrt(Math.pow(pos.x - pA.x, 2) + Math.pow(pos.y - pA.y, 2));
+  const dB = Math.sqrt(Math.pow(pos.x - pB.x, 2) + Math.pow(pos.y - pB.y, 2));
+  
+  // Le ratio de distance dA / (dA + dB) est plus intuitif en 2D pour l'alpha
+  return dA / (dA + dB);
 }
 ```
 
@@ -185,18 +192,18 @@ viewof alphaLatent = ui.slider({
   }
 
   const desc = document.createElement("div");
-  desc.style.cssText = `font-family: monospace; margin-top: 10px; color: ${isGlitch ? '#dc322f' : '#2aa198'}; font-weight: bold;`;
+  desc.style.cssText = `font-family: monospace; margin-top: 10px; color: ${isGlitch ? theme.red : theme.cyan}; font-weight: bold;`;
   desc.innerText = textOut;
 
   // Jauge de cohérence mathématique
   const meterCont = document.createElement("div");
-  meterCont.style.cssText = "width: 100%; background: #333; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;";
+  meterCont.style.cssText = `width: 100%; background: ${theme.base2}; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;`;
   const fill = document.createElement("div");
-  fill.style.cssText = `width: ${confidence * 100}%; height: 100%; background: ${confidence > 0.5 ? '#859900' : '#dc322f'}; transition: width 0.3s;`;
+  fill.style.cssText = `width: ${confidence * 100}%; height: 100%; background: ${confidence > 0.5 ? theme.green : theme.red}; transition: width 0.3s;`;
   meterCont.appendChild(fill);
   
   const meterLabel = document.createElement("div");
-  meterLabel.style.cssText = "font-size: 0.8em; color: #839496; margin-top: 5px;";
+  meterLabel.style.cssText = `font-size: 0.8em; color: ${theme.base03}; margin-top: 5px;`;
   meterLabel.innerText = `Cohérence sémantique : ${(confidence * 100).toFixed(1)}%`;
 
   container.appendChild(displayEmoji);

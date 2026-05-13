@@ -67,10 +67,10 @@ viewof vqSpace = {
     .attr("cy", 7.8)
     .attr("r", 0.45)
     .attr("fill", theme.blue)
-    .attr("stroke", "#fff")
+    .attr("stroke", theme.base3)
     .attr("stroke-width", 0.08)
     .style("cursor", "grab")
-    .style("filter", "drop-shadow(0 0 2px rgba(0,0,0,0.5))");
+    .style("filter", "drop-shadow(0 0 0.1 rgba(0,0,0,0.5))");
 
   // Logique de Dragging Bidirectionnel
   inputPoint.call(d3.drag()
@@ -118,14 +118,19 @@ _update = {
   });
 
   // Update DOM direct pour la fluidité
-  svg.select(".input-point").attr("cx", vecX).attr("cy", vecY);
+  svg.select(".input-point")
+    .attr("cx", vecX)
+    .attr("cy", vecY)
+    .style("filter", "drop-shadow(0 0 0.1 rgba(0,0,0,0.5))");
+    
   svg.select(".quant-line")
     .attr("x1", vecX).attr("y1", vecY)
     .attr("x2", nearest.x).attr("y2", nearest.y);
     
   svg.selectAll("circle.codebook")
     .attr("fill", d => (d.id === nearest.id) ? theme.green : theme.base01)
-    .attr("stroke", d => (d.id === nearest.id) ? "#fff" : "none");
+    .attr("stroke", d => (d.id === nearest.id) ? theme.base3 : "none")
+    .attr("stroke-width", 0.08);
 }
 ```
 

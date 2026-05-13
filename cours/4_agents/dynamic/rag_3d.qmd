@@ -192,7 +192,7 @@ viewof selectedWordEvent = {
       const icon = document.createElementNS("http://www.w3.org/2000/svg", "text");
       icon.setAttribute("text-anchor", "middle");
       icon.setAttribute("dy", "5");
-      icon.setAttribute("fill", "#fdf6e3");
+      icon.setAttribute("fill", theme.base3);
       icon.setAttribute("font-size", "14px");
       icon.textContent = "📄";
       
@@ -245,7 +245,7 @@ viewof selectedWordEvent = {
         }
         viewof selectedWordEvent.dispatchEvent(new CustomEvent("input"));
       });
-      hitbox.addEventListener("mouseenter", () => text.setAttribute("fill", "#fdf6e3"));
+      hitbox.addEventListener("mouseenter", () => text.setAttribute("fill", theme.base3));
       hitbox.addEventListener("mouseleave", () => text.setAttribute("fill", ent.color));
 
       group.appendChild(selectionCircle);
@@ -374,8 +374,8 @@ viewof selectedWordEvent = {
         g.setAttribute("opacity", 1);
         if (data.selectionCircle) {
            data.selectionCircle.style.opacity = "0.6";
-           if (data.text) data.text.setAttribute("fill", "#fdf6e3");
-           if (data.label) data.label.setAttribute("fill", "#fdf6e3");
+           if (data.text) data.text.setAttribute("fill", theme.base3);
+           if (data.label) data.label.setAttribute("fill", theme.base3);
         }
       } else {
         const dimmedOpacity = currentSelectedWord && !isTargetDoc ? opacity * 0.3 : opacity;
@@ -492,8 +492,8 @@ viewof selectedWordEvent = {
   // Etape 3: Résultat (Injection)
   const step3 = document.createElement("div");
   let promptAction = isKw 
-    ? `<span style="color: #859900;">[SUCCÈS]</span> Pertinence sémantique validée. Le fragment suivant sera injecté dans le Prompt du LLM :<br/><br/><div style="padding: 8px; background: rgba(133,153,0,0.1); border-left: 3px solid ${doc.color}; color: #eee; font-family: sans-serif;">"${doc.text}"</div>`
-    : `<span style="color: #dc322f;">[ÉCHEC]</span> Seuil de pertinence non atteint (Bruit/Liaison). Le document <b style="color:${doc.color}">${doc.id}</b> a été identifié comme le plus proche, mais reste sémantiquement trop éloigné. <span style="color:#b58900;">Ce token sera ignoré par le RAG.</span>`;
+    ? `<span style="color: ${theme.green};">[SUCCÈS]</span> Pertinence sémantique validée. Le fragment suivant sera injecté dans le Prompt du LLM :<br/><br/><div style="padding: 8px; background: rgba(${theme.green_rgb}, 0.1); border-left: 3px solid ${doc.color}; color: ${theme.base0}; font-family: sans-serif;">"${doc.text}"</div>`
+    : `<span style="color: ${theme.red};">[ÉCHEC]</span> Seuil de pertinence non atteint (Bruit/Liaison). Le document <b style="color:${doc.color}">${doc.id}</b> a été identifié comme le plus proche, mais reste sémantiquement trop éloigné. <span style="color:${theme.yellow};">Ce token sera ignoré par le RAG.</span>`;
 
   step3.innerHTML = `
     <div style="color: #859900; font-weight: bold; margin-top: 5px;">[ÉTAPE 3] PROMPT_AUGMENTATION</div>
@@ -507,7 +507,7 @@ viewof selectedWordEvent = {
   setTimeout(() => termBody.appendChild(step2), 300);
   setTimeout(() => termBody.appendChild(step3), 700);
 
-  return container;
+  return term;
 }
 ```
 

@@ -1,4 +1,29 @@
 
+/* ==========================================
+   GLOBAL SCROLLBAR STYLING
+   ========================================== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba($sol-base1, 0.4);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 10px;
+    
+    &:hover {
+        background: rgba($sol-base1, 0.8);
+        border: 2px solid transparent;
+        background-clip: content-box;
+    }
+}
+
 // ==========================================
 // 3. LAYOUT & TYPOGRAPHY
 // ==========================================
@@ -138,7 +163,7 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
 // Emphasized Container (Softer, deeper shadow)
 %card-emphasized {
     @extend %card-base;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8));
+    background: linear-gradient(145deg, rgba($sol-base3, 1), rgba($sol-base3, 0.8));
     border-radius: 16px;
     border-color: rgba($sol-base1, 0.5);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);

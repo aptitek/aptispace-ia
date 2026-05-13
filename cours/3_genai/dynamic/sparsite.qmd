@@ -18,7 +18,6 @@ viewof btnSparsity = {
 ```
 
 :::
-:::
 
 ::: {.render .transparent header="Tweet d'Entrée"}
 
@@ -258,7 +257,7 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
       .join("path")
       .attr("fill", d => d.data.color)
       .attr("d", arc)
-      .attr("stroke", "white")
+      .attr("stroke", theme.base2)
       .attr("stroke-width", "1px");
       
     // Label central pour les '1'
@@ -273,8 +272,14 @@ mutable bitCounts = ({ zeros: 0, ones: 0 })
     grid.querySelector("#pie-chart").appendChild(svg.node());
   }
 
-  return html`${ledContainer}${grid}`;
+  // 3. Final Assembly in a single card
+  return ui.card(html`
+    ${ledContainer}
+    ${grid}
+  `, { title: "Moniteur de Ressources (Temps Réel)", status: level > 0.85 ? "danger" : "info" });
 }
 ```
+
+:::
 
 :::

@@ -5,7 +5,15 @@
 ```{ojs}
 //| echo: false
 // 1. Contrôles de l'interface utilisateur
-viewof method = ui.toggle({label: "Méthode :", options: ["Z-Score", "IQR"], value: "Z-Score"})
+viewof method = ui.toggle({
+  label: "Méthode :", 
+  options: ["Z-Score", "IQR"], 
+  value: "Z-Score",
+  states: {
+    "Z-Score": "info",
+    "IQR": "success"
+  }
+})
 
 // Le curseur s'adapte automatiquement selon la méthode choisie
 viewof threshold = method === "Z-Score" 
