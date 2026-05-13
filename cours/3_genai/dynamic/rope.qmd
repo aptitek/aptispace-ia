@@ -1,4 +1,13 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
+```{css}
+/* Suppression des marges excessives pour cette simulation */
+.tpl-dynamic { margin-bottom: 1.5rem !important; }
+.org-controls { padding: 15px !important; flex: 0 0 220px !important; }
+.org-render { padding: 5px !important; }
+.org-render::before { margin-bottom: 5px !important; }
+.org-results { padding: 15px !important; }
+```
+
+::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
 
 ::: {.controls header="Saisie et Sélection Textuelle"}
 Saisissez une phrase pour générer les ancres de position, puis sélectionnez deux mots pour comparer leur encodage rotatif.
@@ -81,31 +90,50 @@ viewof thetaBase = ui.slider({
 
 :::
 
+::: {.separator}
+:::
+
 ::: {.render .transparent header="Visualisation de l'Espace Rotatif"}
 
 ```{ojs}
 //| echo: false
 {
-  const canvas = ui.canvas({ width: 1000, height: 600 });
-  const { node, mainNode, cx, cy, width, height } = canvas;
-  const radius = Math.min(width, height) * 0.40;
-  const svg = d3.select(node);
-  const main = d3.select(mainNode);
+  const width = 400;
+  const height = 400;
+  const cx = width / 2;
+  const cy = height / 2;
+  const radius = 140;
 
-  // Dessin de TOUS les tokens de la phrase (Fond)
+  const svg = d3.create("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .style("background", theme.base03)
+    .style("border-radius", "12px")
+    .style("box-shadow", `inset 0 4px 15px ${theme.base02}88`);
+
+  // Fond : Cadran gradué (Simplifié)
+  svg.append("circle")
+    .attr("cx", cx).attr("cy", cy).attr("r", radius)
+    .attr("fill", "none")
+    .attr("stroke", theme.base02)
+    .attr("stroke-width", 1);
+
+  // Dessin de TOUS les tokens de la phrase
   tokens.forEach(t => {
     const angle = t.id * thetaBase * (Math.PI / 180);
-    main.append("circle")
+    svg.append("circle")
       .attr("cx", cx + radius * Math.sin(angle))
       .attr("cy", cy - radius * Math.cos(angle))
-      .attr("r", 4)
-      .attr("fill", theme.base1);
+      .attr("r", 5)
+      .attr("fill", theme.base02)
+      .attr("stroke", theme.base01);
   });
 
   // Calculs pour les deux mots sélectionnés
   const radA = (idxA * thetaBase) * (Math.PI / 180);
   const radB = (idxB * thetaBase) * (Math.PI / 180);
-
+  
   const getPos = (rad, r) => ({ x: cx + r * Math.sin(rad), y: cy - r * Math.cos(rad) });
   const pA = getPos(radA, radius);
   const pB = getPos(radB, radius);
@@ -116,15 +144,15 @@ viewof thetaBase = ui.slider({
     .startAngle(Math.min(radA, radB))
     .endAngle(Math.max(radA, radB));
 
-  main.append("path")
+  svg.append("path")
     .attr("transform", `translate(${cx}, ${cy})`)
     .attr("d", arc())
-    .attr("fill", theme.orange)
-    .attr("opacity", 0.15);
+    .attr("fill", theme.yellow)
+    .attr("opacity", 0.3);
 
   // Vecteurs (Aiguilles)
   const drawVector = (p, color) => {
-    main.append("line")
+    svg.append("line")
       .attr("x1", cx).attr("y1", cy).attr("x2", p.x).attr("y2", p.y)
       .attr("stroke", color)
       .attr("stroke-width", 4)
@@ -137,42 +165,40 @@ viewof thetaBase = ui.slider({
 
   // Labels textuels
   const drawLabel = (p, text, color) => {
-    const labelGroup = main.append("g").attr("transform", `translate(${p.x}, ${p.y - 25})`);
+    const labelGroup = svg.append("g").attr("transform", `translate(${p.x}, ${p.y - 25})`);
     const textEl = labelGroup.append("text")
       .attr("text-anchor", "middle")
-      .attr("fill", theme.base00)
-      .attr("font-size", "14px")
-      .attr("font-weight", "800")
-      .style("font-family", theme.font_code)
+      .attr("fill", theme.base3)
+      .attr("font-size", "12px")
       .attr("font-weight", "900")
       .style("font-family", "var(--font-base)")
       .text(text);
-
+      
     // Fallback measurement if getBBox fails (common in OJS)
     let bbox = textEl.node().getBBox();
     let w = bbox.width > 0 ? bbox.width : text.length * 8;
     let h = bbox.height > 0 ? bbox.height : 14;
-
-    const px = 15;
-    const py = 8;
-
+    
+    const px = 15; 
+    const py = 8; 
+    
     textEl.remove();
-
+    
     labelGroup.append("rect")
       .attr("x", - (w/2 + px)).attr("y", - (h/2 + py))
       .attr("width", w + px * 2).attr("height", h + py * 2)
-      .attr("rx", 10)
-      .attr("fill", theme.base2)
-      .attr("stroke", color)
-      .attr("stroke-width", 2.5);
-
+      .attr("fill", color)
+      .attr("stroke", theme.base3)
+      .attr("stroke-width", 1.5)
+      .attr("rx", 8); 
+      
     labelGroup.append("text")
       .attr("text-anchor", "middle")
       .attr("dy", "0.35em")
-      .attr("fill", theme.base01)
-      .attr("font-size", "14px")
-      .attr("font-weight", "800")
-      .style("font-family", theme.font_code)
+      .attr("fill", theme.base3)
+      .attr("font-size", "13px")
+      .attr("font-weight", "900")
+      .style("font-family", "var(--font-base)")
       .text(text);
   };
 
@@ -182,14 +208,7 @@ viewof thetaBase = ui.slider({
   // Point central
   svg.append("circle").attr("cx", cx).attr("cy", cy).attr("r", 5).attr("fill", theme.base1);
 
-  // 6. Légende Premium
-  canvas.legend([
-    { label: "Sélection A", color: theme.blue },
-    { label: "Sélection B", color: theme.red },
-    { label: "Déphasage", color: theme.orange }
-  ]);
-
-  return canvas.node;
+  return svg.node();
 }
 ```
 
