@@ -21,7 +21,7 @@ Comprendre les rouages du Deep Learning (apprentissage profond) est devenu une n
 
 #### L'imprévisibilité et l'opacité maximale
 
-L'apprentissage profond repose sur une architecture à multiples couches où le système apprend de manière autonome. Comme le souligne Alexei Grinbaum, cette imbrication de méthodes (supervisées ou non) rend impossible toute "description mathématique rigoureuse" du processus interne [@castex_2019]. Il en résulte une "opacité maximale" : le scientifique lui-même ne peut plus expliquer analytiquement le cheminement de la machine ; il "ne peut que regarder le système agir" [@castex_2019]. Ce vide explicatif brise le lien de causalité rationnel indispensable à l'établissement d'une preuve juridique.
+L'apprentissage profond repose sur une architecture à multiples couches où le système apprend de manière autonome. Comme le souligne Alexei Grinbaum, cette imbrication de méthodes (supervisées ou non) rend impossible toute "description mathématique rigoureuse" du processus interne [@steyer_2021_ia_pourquoi]. Il en résulte une "opacité maximale" : le scientifique lui-même ne peut plus expliquer analytiquement le cheminement de la machine ; il "ne peut que regarder le système agir" [@steyer_2021_ia_pourquoi]. Ce vide explicatif brise le lien de causalité rationnel indispensable à l'établissement d'une preuve juridique.
 
 #### Le Problème des "Mains Multiples" et la chaîne fractale
 
@@ -38,7 +38,7 @@ Le développement actuel sacrifie systématiquement la transparence sur l'autel 
 | Réseaux Bayésiens | Modérée | Modérée |
 | Deep Learning (Apprentissage profond) | Maximale | Minimale (Opacité) |
 
-*Source : [@castex_2019]*
+*Source : [@steyer_2021_ia_pourquoi]*
 
 Cette opacité technique fragilise les fondements de la justice et ouvre la voie à des dérives sociales majeures, notamment en matière de manipulation de l'opinion.
 
@@ -50,11 +50,11 @@ L'impact de l'IA dépasse la défaillance technique pour devenir un enjeu de sé
 
 #### Biais, Discriminations et l'Affaire Roumaine
 
-Les algorithmes amplifient les préjugés et peuvent être instrumentalisés pour des stratégies d'ingérence. L'élection présidentielle roumaine de novembre 2024 constitue, à cet égard, un cas d'école. Un candidat marginal (Călin Georgescu) a dominé le scrutin via TikTok grâce à une campagne d'astroturfing sophistiquée [@assemblee_nationale_2025]. La manipulation a reposé sur l'utilisation d'adresses IP uniques pour simuler une viralité organique et contourner la détection. Plus grave encore, TikTok a exploité une faille de labellisation en affirmant que le contenu n'était pas "politique", se déchargeant ainsi de sa responsabilité éditoriale. L'enquête a révélé que des influenceurs étaient rémunérés de manière occulte via des sociétés écrans liées à des groupes de casinos en ligne [@assemblee_nationale_2025].
+Les algorithmes amplifient les préjugés et peuvent être instrumentalisés pour des stratégies d'ingérence. L'élection présidentielle roumaine de novembre 2024 constitue, à cet égard, un cas d'école. Un candidat marginal (Călin Georgescu) a dominé le scrutin via TikTok grâce à une campagne d'astroturfing sophistiquée [@iordanoff_2025_rapport_proposition]. La manipulation a reposé sur l'utilisation d'adresses IP uniques pour simuler une viralité organique et contourner la détection. Plus grave encore, TikTok a exploité une faille de labellisation en affirmant que le contenu n'était pas "politique", se déchargeant ainsi de sa responsabilité éditoriale. L'enquête a révélé que des influenceurs étaient rémunérés de manière occulte via des sociétés écrans liées à des groupes de casinos en ligne [@iordanoff_2025_rapport_proposition].
 
 #### Dilemmes Moraux et Domaines Vitaux
 
-Le cas des véhicules autonomes illustre le "choix tragique" : la machine doit-elle privilégier les passagers ou les piétons selon des critères d'âge ou de nombre ? En santé, le paradoxe est plus profond. Comme le note Eric Topol, nous tendons vers une "symbiose" entre le médecin et la machine [@castex_2019]. Les praticiens acceptent d'utiliser des modèles dont ils ne comprennent pas le fonctionnement par pur pragmatisme clinique, dès lors que les essais valident leur efficacité. Ce "consentement à l'aveugle" pose un défi majeur au principe du consentement éclairé du patient.
+Le cas des véhicules autonomes illustre le "choix tragique" : la machine doit-elle privilégier les passagers ou les piétons selon des critères d'âge ou de nombre ? En santé, le paradoxe est plus profond. Comme le note Eric Topol, nous tendons vers une "symbiose" entre le médecin et la machine [@frank_2019_is_watson]. Les praticiens acceptent d'utiliser des modèles dont ils ne comprennent pas le fonctionnement par pur pragmatisme clinique, dès lors que les essais valident leur efficacité. Ce "consentement à l'aveugle" pose un défi majeur au principe du consentement éclairé du patient.
 
 ---
 
@@ -68,12 +68,12 @@ Face à l'autonomie de l'IA, la preuve de la "faute" humaine est souvent impossi
 
 #### Le Basculement : Hébergeur vs Éditeur (Le Cas X)
 
-Le statut des plateformes est en pleine mutation. Traditionnellement protégées par l'immunité d'hébergeur passif (directive e-commerce), des plateformes comme X (ex-Twitter) adoptent désormais un rôle d'éditeur actif. Les enquêtes prouvent l'utilisation de « green lights » : des règles algorithmiques spéciales favorisant des comptes spécifiques. L'algorithme a ainsi été manipulé pour augmenter de 138 % les vues des publications d'Elon Musk après juillet 2024 [@assemblee_nationale_2025].
+Le statut des plateformes est en pleine mutation. Traditionnellement protégées par l'immunité d'hébergeur passif (directive e-commerce), des plateformes comme X (ex-Twitter) adoptent désormais un rôle d'éditeur actif. Les enquêtes prouvent l'utilisation de « green lights » : des règles algorithmiques spéciales favorisant des comptes spécifiques. L'algorithme a ainsi été manipulé pour augmenter de 138 % les vues des publications d'Elon Musk après juillet 2024 [@iordanoff_2025_rapport_proposition].
 
 L'asymétrie de modération confirme ce basculement politique :
 
 * **TikTok :** 4 millions de publications supprimées en un mois.
-* **X (ex-Twitter) :** Seulement 28 500 suppressions sur deux mois pour une base d'utilisateurs massive [@assemblee_nationale_2025].
+* **X (ex-Twitter) :** Seulement 28 500 suppressions sur deux mois pour une base d'utilisateurs massive [@iordanoff_2025_rapport_proposition].
 
 Cette inaction délibérée, couplée à une mise en avant algorithmique ciblée, engage la responsabilité éditoriale de la plateforme.
 
@@ -85,14 +85,14 @@ La réponse au risque systémique ne peut être que proactive et structurelle.
 
 #### Régulation par les Risques : AI Act et SB-1047
 
-L'Union européenne impose une graduation des obligations selon le risque [@eu_aiact]. En Californie, le projet SB-1047 (*Safe and Secure Innovation for Frontier Artificial Intelligence Models Act*) vise les modèles de pointe ("Frontier Models") [@santrot_2024]. Ce texte impose aux géants de l'IA de prouver, via des évaluations de sécurité obligatoires, que leurs modèles ne causeront pas de "dommages considérables" avant tout déploiement [@santrot_2024].
+L'Union européenne impose une graduation des obligations selon le risque [@eu_aiact]. En Californie, le projet SB-1047 (*Safe and Secure Innovation for Frontier Artificial Intelligence Models Act*) vise les modèles de pointe ("Frontier Models") [@santrot_2024_intelligence_artificielle]. Ce texte impose aux géants de l'IA de prouver, via des évaluations de sécurité obligatoires, que leurs modèles ne causeront pas de "dommages considérables" avant tout déploiement [@santrot_2024_intelligence_artificielle].
 
 #### Le Cadre DSA et DMA
 
 Le droit européen s'appuie sur deux piliers :
 
 * **DSA (Digital Services Act) :** Régule la modération et impose la figure des « trusted flaggers » (signaleurs de confiance). Il exige la transparence sur le shadowbanning et le scraping.
-* **DMA (Digital Markets Act) :** Cible les « gatekeepers » (contrôleurs d'accès) selon des critères stricts : une capitalisation boursière de 75 milliards d'euros ou un chiffre d'affaires européen de 7,5 milliards [@assemblee_nationale_2025].
+* **DMA (Digital Markets Act) :** Cible les « gatekeepers » (contrôleurs d'accès) selon des critères stricts : une capitalisation boursière de 75 milliards d'euros ou un chiffre d'affaires européen de 7,5 milliards [@iordanoff_2025_rapport_proposition].
 
 #### Supervision Humaine (Human-in-command)
 
@@ -102,6 +102,6 @@ Le principe "Human-in-the-loop" reste le garde-fou ultime. Il exige qu'aucune d�
 
 ### Conclusion : Vers une Culture de la Diligence
 
-La responsabilité s'est déplacée de la sanction *a posteriori* vers une gouvernance *a priori*. Face au "réchauffement médiatique" théorisé par Dominique Boullier [@assemblee_nationale_2025], où la viralité émotionnelle supplante la vérité factuelle, la réponse ne peut être uniquement législative.
+La responsabilité s'est déplacée de la sanction *a posteriori* vers une gouvernance *a priori*. Face au "réchauffement médiatique" théorisé par Dominique Boullier [@iordanoff_2025_rapport_proposition], où la viralité émotionnelle supplante la vérité factuelle, la réponse ne peut être uniquement législative.
 
 La souveraineté numérique européenne repose désormais sur la mise en place d'un « bouclier intellectuel » : une éducation aux médias renforcée et une transparence algorithmique radicale. La diligence n'est plus une option technique, mais la condition *sine qua non* de la survie de l'espace public démocratique face à l'autonomie des machines.

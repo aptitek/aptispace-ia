@@ -1,6 +1,5 @@
 ---
 title: "⚖️ Éthique & Gouvernance"
-number-sections: false
 ---
 
 {{< include _50_intro.qmd >}}
