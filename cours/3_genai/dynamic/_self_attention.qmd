@@ -27,219 +27,119 @@ attentionMatrix = [
 mutable activeQ = 4;
 ```
 
-::: {.render .transparent header="Cliquer sur un mot pour analyser son Attention"}
+::: {.render .transparent .flex-grow-2 header="Cliquer sur un mot pour analyser son Attention"}
 
 ```{ojs}
 //| echo: false
 {
-  const terminalHeight = 550;
-  const canvas = ui.canvas({ width: 1000, height: terminalHeight });
-  const { node, mainNode, defsNode, width, height } = canvas;
-  const svg = d3.select(node);
-  const main = d3.select(mainNode);
-  const defs = d3.select(defsNode);
+  const canvas = ui.canvas({ height: 600, shadow: true });
+  yield canvas.node;
 
+  // À ce stade, le nœud est dans le DOM, getWidth() sera précis
+  const w = canvas.getWidth();
   const weights = attentionMatrix[activeQ];
-
-  // Layout Multi-ligne (Wrapped) avec marges de sécurité pour les halos
-  const getPos = (i) => {
-    const isRow1 = i < 4;
-    const items = isRow1 ? 4 : 3;
-    const idx = isRow1 ? i : i - 4;
-    const marginX = width * 0.15;
-    const marginY = 100; // Expanded to avoid halo clipping
-    const innerWidth = width - (2 * marginX);
-    const innerHeight = height - (2 * marginY);
-
-    return {
-      x: marginX + (innerWidth / (items - 1 + 2)) * (idx + 1),
-      y: marginY + (isRow1 ? 0 : innerHeight)
-    };
-  };
-
-  const qPos = getPos(activeQ);
-
-  // Couches (Layers) groupées dans le conteneur de découpe (mainContent)
-  const haloLayer = main.append("g").attr("class", "halo-layer").style("pointer-events", "none");
-  const linkLayer = main.append("g").attr("class", "link-layer").style("pointer-events", "none");
-  const tokenLayer = main.append("g").attr("class", "token-layer");
-  const labelLayer = main.append("g").attr("class", "label-layer").style("pointer-events", "none");
-
-  // Filtre de flou pour le heatmap (utilisant la déclaration defs du haut)
-  defs.append("filter")
-    .attr("id", "blurHalo")
-    .attr("x", "-50%")
-    .attr("y", "-50%")
-    .attr("width", "200%")
-    .attr("height", "200%")
-    .append("feGaussianBlur")
-    .attr("stdDeviation", 35);
-
-  // Ombre pour les étiquettes
-  defs.append("filter")
-    .attr("id", "labelShadow")
-    .append("feDropShadow")
-    .attr("dx", 0).attr("dy", 2).attr("stdDeviation", 3).attr("flood-opacity", 0.3);
-
   const heatmapScale = d3.scaleLinear()
     .domain([0, 0.2, 0.5, 0.9])
     .range([theme.blue, theme.green, theme.yellow, theme.red])
     .clamp(true);
 
-  // 1. Dessin des Halos (Couche inférieure)
+  // Layout Multi-ligne (Wrapped)
+  const getPos = (i) => {
+    const isRow1 = i < 4;
+    const items = isRow1 ? 4 : 3;
+    const idx = isRow1 ? i : i - 4;
+    const marginX = w * 0.25; // Closer together horizontally
+    const marginY = 160;      // Closer together vertically
+    const innerWidth = w - (2 * marginX);
+    const innerHeight = 600 - (2 * marginY);
+
+    const x = items > 1 
+      ? marginX + (innerWidth / (items - 1)) * idx 
+      : marginX + (innerWidth / 2);
+
+    return { x, y: marginY + (isRow1 ? 0 : innerHeight) };
+  };
+
+  const qPos = getPos(activeQ);
+
+  // 1. Heatmap Halos (Gradient)
   sentence.forEach((token, i) => {
     const p = getPos(i);
     const weight = weights[i];
     if (weight > 0.05) {
-      haloLayer.append("circle")
-        .attr("cx", p.x)
-        .attr("cy", p.y)
-        .attr("r", 120) // Slightly smaller to fit expanded rect
-        .style("fill", heatmapScale(weight))
-        .style("opacity", weight * 0.7)
-        .style("filter", "url(#blurHalo)")
-        .style("pointer-events", "none");
+      canvas.atom.node({
+        x: p.x, y: p.y, radius: 0,
+        aura: "gradient", auraRadius: w * 0.22, auraOpacity: weight * 0.8,
+        color: heatmapScale(weight)
+      });
     }
   });
 
-  // 2. Dessin des liens d'attention
+  // 2. Attention Links (Curved)
   sentence.forEach((token, i) => {
     if (i !== activeQ) {
       const tPos = getPos(i);
       const weight = weights[i];
       if (weight > 0.01) {
+        const linkColor = heatmapScale(weight);
+        const bend = 0.4 * weight;
+        canvas.atom.link({
+          source: qPos, target: tPos,
+          color: linkColor,
+          width: weight * 40,
+          curve: bend
+        });
+
         const midX = (qPos.x + tPos.x) / 2;
         const midY = (qPos.y + tPos.y) / 2;
         const dx = tPos.x - qPos.x;
         const dy = tPos.y - qPos.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-
-        // Courbure plus prononcée pour éviter les nœuds centraux
-        const bendFactor = 0.5;
-        const controlX = midX - (dy * bendFactor * weight);
-        const controlY = midY + (dx * bendFactor * weight) - (dist * 0.15);
-
-        const path = d3.path();
-        path.moveTo(qPos.x, qPos.y);
-        path.quadraticCurveTo(controlX, controlY, tPos.x, tPos.y);
-
-        const linkColor = heatmapScale(weight);
-
-        linkLayer.append("path")
-          .attr("d", path)
-          .attr("fill", "none")
-          .attr("stroke", linkColor)
-          .attr("stroke-width", weight * 50)
-          .attr("opacity", weight + 0.25) // Légèrement plus opaque pour la visibilité
-          .style("pointer-events", "none");
-
-        // Bulles de Score (Couche supérieure)
-        const bubblePos = { x: controlX, y: controlY };
-        const bubble = labelLayer.append("g")
-          .attr("transform", `translate(${bubblePos.x}, ${bubblePos.y})`)
-          .style("filter", "url(#labelShadow)");
-
-        bubble.append("rect")
-          .attr("x", -30)
-          .attr("y", -15)
-          .attr("width", 60)
-          .attr("height", 30)
-          .attr("fill", theme.base3)
-          .attr("stroke", linkColor) // Bordure de la bulle à la couleur du score
-          .attr("stroke-width", 2)
-          .attr("rx", 10)
-          .style("pointer-events", "none");
-
-
-        bubble.append("text")
-          .attr("dy", 6)
-          .attr("fill", theme.base01)
-          .attr("font-size", "1.1em")
-          .attr("font-weight", "900")
-          .attr("text-anchor", "middle")
-          .style("font-family", "monospace")
-          .style("pointer-events", "none")
-          .text((weight * 100).toFixed(0) + "%");
+        
+        canvas.atom.badge({
+          x: midX - (dy * bend) - (dx * 0.05),
+          y: midY + (dx * bend) - (dist * 0.1),
+          text: `${(weight * 100).toFixed(0)}%`,
+          bg: theme.base3, color: linkColor
+        });
       }
     }
   });
 
-  // 3. Dessin des Tokens (Couche supérieure)
-  const nodes = tokenLayer.selectAll("g.viz-token")
-    .data(sentence)
-    .join("g")
-    .attr("class", "viz-token")
-    .attr("transform", d => {
-        const p = getPos(d.id);
-        return `translate(${p.x}, ${p.y})`;
-    })
-    .style("cursor", "pointer")
-    .on("click", (event, d) => {
-      mutable activeQ = d.id;
-    })
-    .on("mouseenter", function() {
-      d3.select(this).select("circle.main-node").transition().duration(200).attr("r", 58);
-    })
-    .on("mouseleave", function() {
-      d3.select(this).select("circle.main-node").transition().duration(200).attr("r", 50);
+  // 3. Tokens (HTML Nodes)
+  sentence.forEach((token, i) => {
+    const p = getPos(i);
+    const isSelected = i === activeQ;
+    const weight = weights[i];
+    const nodeColor = isSelected ? heatmapScale(weight) : theme.base2;
+    const labelColor = isSelected ? (weight > 0.4 ? theme.base3 : theme.base03) : theme.base03;
+
+    const n = canvas.atom.node({
+      x: p.x, y: p.y,
+      radius: isSelected ? 45 : 35,
+      color: nodeColor,
+      label: token.word,
+      labelColor: labelColor,
+      labelSize: isSelected ? "1.6rem" : "1.2rem"
     });
 
-  // Zone de clic étendue (Invisible) pour pallier la petitesse de certains tokens (l')
-  nodes.append("circle")
-    .attr("r", 75)
-    .attr("fill", "transparent")
-    .style("pointer-events", "all");
+    n._el.onclick = () => { mutable activeQ = i; };
+    n._el.onmouseenter = () => { n._el.style.transform = "scale(1.15)"; };
+    n._el.onmouseleave = () => { n._el.style.transform = "scale(1)"; };
+  });
 
-  nodes.append("circle")
-    .attr("class", "main-node")
-    .attr("r", 50)
-    .style("fill", d => {
-        if (d.id === activeQ) return heatmapScale(weights[d.id]);
-        return theme.base2;
-    })
-    .style("stroke", d => {
-        if (d.id === activeQ) return heatmapScale(weights[d.id]);
-        return theme.base1;
-    })
-    .style("stroke-width", d => d.id === activeQ ? 6 : 2)
-    .style("opacity", 1);
+  // Info Self-Attention
+  canvas.atom.badge({
+    x: qPos.x, y: qPos.y + (activeQ < 4 ? 65 : -65),
+    text: `Self: ${(weights[activeQ]*100).toFixed(0)}%`,
+    bg: theme.red, color: theme.base3
+  });
 
-
-  nodes.append("text")
-    .attr("dy", 12)
-    .attr("text-anchor", "middle")
-    .style("fill", d => {
-        if (d.id === activeQ) {
-            // Contrast logic: Base3 for hot colors, Base03 for cold colors
-            return weights[d.id] > 0.4 ? theme.base3 : theme.base03;
-        }
-        return theme.base03;
-    })
-    .attr("font-size", d => d.id === activeQ ? "2.2em" : "1.6em")
-    .attr("font-weight", "900")
-    .style("pointer-events", "none")
-    .text(d => d.word);
-
-
-  svg.append("text")
-    .attr("x", qPos.x)
-    .attr("y", qPos.y + (activeQ < 4 ? 85 : -85))
-    .attr("fill", theme.red)
-    .attr("font-size", "1.2em")
-    .attr("font-weight", "bold")
-    .attr("text-anchor", "middle")
-    .style("pointer-events", "none")
-    .text(`Self: ${(weights[activeQ]*100).toFixed(0)}%`);
-
-
-  // 7. Légende Automatique
   canvas.legend([
-    { label: "Attention Faible", color: theme.blue },
-    { label: "Attention Moyenne", color: theme.green },
-    { label: "Attention Forte", color: theme.red }
-  ]);
-
-  return canvas.node;
+    { label: "Faible", color: theme.blue },
+    { label: "Moyenne", color: theme.green },
+    { label: "Forte", color: theme.red }
+  ], { y: 560 });
 }
 ```
 

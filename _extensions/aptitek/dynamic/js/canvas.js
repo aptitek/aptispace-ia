@@ -28,6 +28,15 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = 
   
   const defs = document.createElementNS(svgNS, "defs");
   svg.appendChild(defs);
+
+  // Add a blur filter by default for halos
+  const filter = document.createElementNS(svgNS, "filter");
+  filter.id = id + "_blur";
+  const blur = document.createElementNS(svgNS, "feGaussianBlur");
+  blur.setAttribute("stdDeviation", "25");
+  filter.appendChild(blur);
+  defs.appendChild(filter);
+
   const svgMain = document.createElementNS(svgNS, "g");
   svg.appendChild(svgMain);
   root.appendChild(svg);
@@ -63,16 +72,48 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = 
     getWidth,
     clear,
 
+    legend: (items, { x = 40, y = height - 40, gap = 160 } = {}) => {
+      const container = document.createElement("div");
+      container.style.cssText = `
+        position: absolute;
+        left: ${x}px; top: ${y}px;
+        display: flex;
+        gap: ${gap}px;
+        font-family: var(--font-base, sans-serif);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        pointer-events: none;
+        color: ${window.theme.base01};
+      `;
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.style.display = "flex";
+        div.style.alignItems = "center";
+        div.style.gap = "8px";
+        div.innerHTML = `<div style="width:12px; height:12px; border-radius:3px; background:${item.color}"></div><span>${item.label}</span>`;
+        container.appendChild(div);
+      });
+      htmlLayer.appendChild(container);
+      return container;
+    },
+
     atom: {
-      node: ({ x, y, radius = 25, color = window.theme.blue, label = '', aura = false, auraRadius = 40, auraOpacity = 0.2 }) => {
+      node: ({ x, y, radius = 25, color = window.theme.blue, label = '', labelColor = window.theme.base3, labelSize = "1.2rem", aura = false, auraRadius = 40, auraOpacity = 0.2 }) => {
         if (aura) {
           const isGradient = aura === 'gradient';
+          const isBlur = aura === 'blur';
           const auraEl = document.createElementNS(svgNS, "circle");
           auraEl.setAttribute("cx", x);
           auraEl.setAttribute("cy", y);
           auraEl.setAttribute("r", auraRadius);
           
-          if (isGradient) {
+          if (isBlur) {
+            auraEl.setAttribute("fill", color);
+            auraEl.setAttribute("opacity", auraOpacity);
+            auraEl.setAttribute("filter", `url(#${id}_blur)`);
+          } else if (isGradient) {
             const safeColor = color.replace(/[^a-zA-Z0-9]/g, "");
             const gradId = id + "_grad_" + safeColor;
             let grad = defs.querySelector(`#${gradId}`);
@@ -104,27 +145,28 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = 
           border-radius: 50%;
           background: ${color};
           pointer-events: all;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         `;
-        htmlLayer.appendChild(nodeDiv);
 
         if (label) {
-          const labelDiv = document.createElement("div");
-          labelDiv.style.cssText = `
-            position: absolute;
-            left: ${x}px; top: ${y + radius + 12}px;
-            transform: translateX(-50%);
+          const textSpan = document.createElement("span");
+          textSpan.style.cssText = `
             font-family: var(--font-base, sans-serif);
-            font-size: 1.1rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: ${window.theme.base01};
-            white-space: nowrap;
+            font-size: ${labelSize};
+            font-weight: 900;
+            color: ${labelColor};
+            pointer-events: none;
+            user-select: none;
           `;
-          labelDiv.textContent = label;
-          htmlLayer.appendChild(labelDiv);
+          textSpan.textContent = label;
+          nodeDiv.appendChild(textSpan);
         }
+
+        htmlLayer.appendChild(nodeDiv);
 
         return {
           _el: nodeDiv,
@@ -132,9 +174,24 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = 
         };
       },
 
-      link: ({ source, target, color = window.theme.base01, width = 3, dashed = false }) => {
+      link: ({ source, target, color = window.theme.base01, width = 3, dashed = false, curve = 0 }) => {
         const path = document.createElementNS(svgNS, "path");
-        path.setAttribute("d", `M ${source.x} ${source.y} L ${target.x} ${target.y}`);
+        let d = "";
+        if (curve === 0) {
+          d = `M ${source.x} ${source.y} L ${target.x} ${target.y}`;
+        } else {
+          // Quadratic Bezier with curvature
+          const midX = (source.x + target.x) / 2;
+          const midY = (source.y + target.y) / 2;
+          const dx = target.x - source.x;
+          const dy = target.y - source.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          const controlX = midX - (dy * curve);
+          const controlY = midY + (dx * curve) - (dist * 0.1);
+          d = `M ${source.x} ${source.y} Q ${controlX} ${controlY} ${target.x} ${target.y}`;
+        }
+
+        path.setAttribute("d", d);
         path.setAttribute("stroke", color);
         path.setAttribute("stroke-width", width);
         path.setAttribute("fill", "none");
