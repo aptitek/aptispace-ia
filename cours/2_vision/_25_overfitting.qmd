@@ -7,11 +7,11 @@ Un CNN moderne possède des millions de paramètres. S'il s'entraîne trop longt
 
 Le Dropout désactive aléatoirement un certain pourcentage de neurones à chaque passage pour forcer le réseau à répartir la connaissance [@wikipedia_2026_cnn].
 
-{{< include dynamic/dropout.qmd >}}
+{{< include dynamic/_dropout.qmd >}}
 
 
 ### 🖼️ L'Augmentation de Données (Data Augmentation)
 
 La meilleure façon de combattre le surapprentissage est d'appliquer des transformations aléatoires à vos images d'entraînement à la volée. Le modèle voit une image légèrement différente à chaque fois [@wikipedia_2026_cnn].
 
-{{< include dynamic/data_augmentation.qmd >}}
+{{< include dynamic/_data_augmentation.qmd >}}

@@ -24,4 +24,4 @@ La cybersécurité classique protégeait les bases de données (injections SQL).
 * **LLM05 - Supply Chain Vulnerabilities :** Vulnérabilités introduites par des composants tiers ou des ensembles de données compromis dans la chaîne d'approvisionnement du modèle.
 * **LLM06 - Sensitive Information Disclosure :** Le modèle révèle des données personnelles (PII) ou des secrets industriels qu'il a mémorisés (overfitting) pendant sa phase d'entraînement. La remédiation exige une "sanitisation" stricte des données avant l'entraînement.
 
-{{< include dynamic/prompt_injection.qmd >}}
+{{< include dynamic/_prompt_injection.qmd >}}

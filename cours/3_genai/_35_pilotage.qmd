@@ -21,7 +21,7 @@ Même avec une température bien réglée, il reste toujours une "longue traîne
 * **Top-K :** Le modèle ne conserve que les $K$ meilleurs candidats (ex: le top 40 des mots les plus probables) et ramène la probabilité de tous les autres à zéro.
 * **Top-P (Nucleus Sampling) :** Plus dynamique que le Top-K. Le modèle additionne les probabilités des meilleurs tokens en descendant dans la liste. Dès que la somme atteint le seuil $P$ (ex: 0.95, soit 95% de la masse de probabilité), il coupe la liste. Cela permet de garder beaucoup de mots si le contexte est flou, ou très peu de mots si le contexte est évident [@sorbon_2024_llm].
 
-{{< include dynamic/pilotage_distribution.qmd >}}
+{{< include dynamic/_pilotage_distribution.qmd >}}
 
 ### ✍️ Le Prompt Engineering
 

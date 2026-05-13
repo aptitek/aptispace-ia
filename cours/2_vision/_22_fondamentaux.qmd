@@ -7,7 +7,7 @@ Pourquoi ne pas simplement utiliser un réseau de neurones classique (MLP - Mult
 
 Dans un réseau classique, chaque neurone est connecté à tous les pixels. Imaginons une image de 250x250 pixels en couleur (RGB). L'explosion des paramètres rend l'apprentissage instable, lent et gourmand en mémoire vive 
 
-{{< include dynamic/dimensionalite.qmd >}}
+{{< include dynamic/_dimensionalite.qmd >}}
 
 ### 🏛️ Les trois piliers stratégiques des CNN
 

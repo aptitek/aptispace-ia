@@ -6,7 +6,7 @@ Les fonctions d'activation introduisent la **non-linéarité** indispensable à 
 
 ### 📚 Les Classiques de la Littérature Neuronale
 
-{{< include dynamic/activation_classique.qmd >}}
+{{< include dynamic/_activation_classique.qmd >}}
 
 ::: {.warning header="Alerte Clinique : Le syndrome du Dying ReLU"}
 Le grand point faible de ReLU est sa stricte nullité pour $x \le 0$. Si une entrée est négative, le gradient devient $0$. Pendant la rétropropagation, ce neurone ne mettra plus jamais ses poids à jour : il est "mort". Des variantes comme **Leaky ReLU** ajoutent une micro-pente négative pour maintenir un flux de gradient.
@@ -20,4 +20,4 @@ Avec l'avènement des architectures complexes (Transformers, LLM), les chercheur
 *   **SELU (Scaled Exponential Linear Unit) :** S'auto-normalise pour garantir que la variance des activations reste stable à travers des réseaux très profonds.
 *   **Swish :** Développée par Google, idéale pour les très gros réseaux grâce à sa courbure non-monotone.
 
-{{< include dynamic/activation_moderne.qmd >}}
+{{< include dynamic/_activation_moderne.qmd >}}

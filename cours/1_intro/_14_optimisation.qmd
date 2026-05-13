@@ -23,7 +23,7 @@ Calculer le gradient sur l'ensemble du dataset est irréalisable. On divise donc
 
 ### ⚡ Simulation de Descente avec Inertie
 
-{{< include dynamic/gradient.qmd >}}
+{{< include dynamic/_gradient.qmd >}}
 
 ::: {.warning header="L'importance du Learning Rate"}
 - Si $\eta$ est **trop grand**, l'algorithme diverge et l'erreur explose.

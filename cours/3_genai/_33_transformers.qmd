@@ -30,4 +30,4 @@ Le facteur d'échelle $\sqrt{d_k}$ est crucial. Sans lui, pour des vecteurs de t
 Le calcul de l'attention classique est extrêmement lourd. En 2022, une optimisation nommée **FlashAttention** a révolutionné l'entraînement. Les ingénieurs se sont rendu compte que le goulot d'étranglement n'était pas le calcul en lui-même, mais les allers-retours de données entre la mémoire vive (HBM) et la puce du GPU. FlashAttention calcule l'attention par blocs directement dans la mémoire cache ultra-rapide (SRAM), accélérant l'entraînement de près de 300 % [@meaning_2026_architecture].
 :::
 
-{{< include dynamic/self_attention.qmd >}}
+{{< include dynamic/_self_attention.qmd >}}

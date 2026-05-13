@@ -26,10 +26,10 @@ Pour rendre l'espace latent "génératif", on utilise les **VAE**. Au lieu de pr
 Grâce aux VAE, l'espace latent devient continu. Si vous avez un point "Chat" et un point "Chien", vous pouvez naviguer entre les deux et le décodeur pourrait théoriquement générer une créature hybride cohérente. C'est le premier pas vers la création de contenu par l'IA.
 :::
 
-{{< include dynamic/interpolation_latente.qmd >}}
+{{< include dynamic/_interpolation_latente.qmd >}}
 
 ### 💎 Vers le Discret
 
 Dans les systèmes modernes (comme DALL-E ou certains modèles de compression audio), on utilise des versions "quantifiées" (**VQ-VAE**). Au lieu d'avoir un espace continu infini, on utilise un **Codebook** (un dictionnaire de vecteurs types). L'IA choisit le vecteur le plus proche dans son dictionnaire pour représenter une information, ce qui rend les modèles plus stables et plus performants pour la génération de haute qualité [@bandaru_2025_vae].
 
-{{< include dynamic/codebook.qmd >}}
+{{< include dynamic/_codebook.qmd >}}

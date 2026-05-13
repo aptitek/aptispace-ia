@@ -14,7 +14,7 @@ Contrairement à la simple "Chain-of-Thought" (qui n'est qu'une réflexion inter
 4. **Thought :** "Il pleut à Paris. Je peux maintenant formuler ma réponse à l'utilisateur."
 
 
-{{< include dynamic/agent_react.qmd >}}
+{{< include dynamic/_agent_react.qmd >}}
 
 ### 🔌 Le Défi de l'Intégration et la Révolution MCP
 

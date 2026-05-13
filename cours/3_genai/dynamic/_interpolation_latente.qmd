@@ -26,93 +26,92 @@ viewof modeVAE = ui.toggle({
 
 ```{ojs}
 //| echo: false
-// 1. Initialisation de l'espace 2D (Inspiré du Codebook VQ-VAE)
+// 1. Initialisation du Canvas avec l'architecture atomique
 viewof latentPos = {
-  const width = 10;
-  const height = 10;
-  const svg = d3.create("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .style("background", theme.base03)
-    .style("border-radius", "12px")
-    .style("box-shadow", "inset 0 0 15px rgba(0,0,0,0.5)");
-
-  // Définition des dégradés VAE
-  const defs = svg.append("defs");
-  const gradA = defs.append("radialGradient").attr("id", "gradA2D");
-  gradA.append("stop").attr("offset", "0%").attr("stop-color", theme.blue).attr("stop-opacity", 0.4);
-  gradA.append("stop").attr("offset", "100%").attr("stop-color", theme.blue).attr("stop-opacity", 0);
-  const gradB = defs.append("radialGradient").attr("id", "gradB2D");
-  gradB.append("stop").attr("offset", "0%").attr("stop-color", theme.red).attr("stop-opacity", 0.4);
-  gradB.append("stop").attr("offset", "100%").attr("stop-color", theme.red).attr("stop-opacity", 0);
-
-  const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
-
-  // Calques
-  const layerDist = svg.append("g").attr("class", "layer-dist");
-  const layerPoints = svg.append("g").attr("class", "layer-points");
-  const handle = svg.append("g").attr("class", "handle").style("cursor", "grab");
-
-  // Points d'ancrage fixes
-  layerPoints.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 0.2).attr("fill", theme.blue);
-  layerPoints.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 0.2).attr("fill", theme.red);
-  layerPoints.append("text").attr("x", pA.x).attr("y", pA.y - 0.5).attr("fill", theme.base3).attr("text-anchor", "middle").style("font-size", "0.6px").style("font-weight", "bold").text("Chat");
-  layerPoints.append("text").attr("x", pB.x).attr("y", pB.y + 1).attr("fill", theme.base3).attr("text-anchor", "middle").style("font-size", "0.6px").style("font-weight", "bold").text("Chien");
-
-  // Handle (Curseur 2D)
-  handle.append("circle").attr("r", 0.4).attr("fill", "none").attr("stroke", theme.yellow).attr("stroke-width", 0.08);
-  handle.append("circle").attr("r", 0.15).attr("fill", theme.yellow);
+  window.d3 = window.d3 || d3; 
+  // On utilise 'width' (réactif Observable) pour un rendu 1:1 natif
+  const canvas = ui.canvas({ width: width, height: 400, shadow: true });
+  const svg = d3.select(canvas.node);
 
   // Dragging logic
   svg.call(d3.drag()
-    .on("start", () => handle.style("cursor", "grabbing"))
     .on("drag", (event) => {
-      const [mx, my] = d3.pointer(event, svg.node());
+      const [mx, my] = d3.pointer(event, canvas.node);
       const x = Math.max(0, Math.min(width, mx));
-      const y = Math.max(0, Math.min(height, my));
-      svg.node().value = {x, y};
-      svg.node().dispatchEvent(new CustomEvent("input"));
+      const y = Math.max(0, Math.min(400, my));
+      canvas.node.value = {x, y};
+      canvas.node.dispatchEvent(new CustomEvent("input"));
     })
-    .on("end", () => handle.style("cursor", "grab"))
   );
 
-  svg.node().value = {x: 2, y: 2};
-  return svg.node();
+  canvas.node.__canvas = canvas;
+  canvas.node.value = {x: width / 2, y: 200};
+  return canvas.node;
 }
 
-// 2. Mise à jour réactive précise
+// 2. Mise à jour réactive des composants (Nodes & Auras)
 _updateLatent2D = {
+  window.d3 = window.d3 || d3;
   const pos = latentPos;
   const mode = modeVAE;
-  const svg = d3.select(viewof latentPos);
-  const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
+  const canvasElement = viewof latentPos;
+  if (!canvasElement.__canvas) return;
+  const canvas = canvasElement.__canvas;
 
-  // Update Handle Position
-  svg.select(".handle").attr("transform", `translate(${pos.x}, ${pos.y})`);
+  // Réinitialisation propre de la couche principale
+  d3.select(canvas.mainNode).selectAll("*").remove();
 
-  // Update Visual State (AE vs VAE)
-  const layerDist = svg.select(".layer-dist");
-  layerDist.selectAll("*").remove();
+  // Positions relatives (1/4 et 3/4 de la largeur) pour garder l'aspect ratio visuel
+  const pA = {x: width * 0.25, y: 200}, pB = {x: width * 0.75, y: 200};
+  const isVae = mode === "vae";
+  const auraType = isVae ? "gradient" : "solid";
+  const auraRad = isVae ? 220 : 60;
+  const auraOp = isVae ? 0.35 : 0.15;
 
-  if (mode === "vae") {
-    layerDist.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 5).style("fill", "url(#gradA2D)");
-    layerDist.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 5).style("fill", "url(#gradB2D)");
-  } else {
-    // AE: Zones restreintes
-    layerDist.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 1.2).attr("fill", "rgba(38, 139, 210, 0.2)");
-    layerDist.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 1.2).attr("fill", "rgba(220, 50, 47, 0.2)");
-  }
+  // Liaison
+  canvas.atom.link({ source: pA, target: pB, dashed: true, color: theme.base01, width: 4 });
+
+  // Nœud Chat
+  canvas.atom.node({ 
+    x: pA.x, y: pA.y, 
+    radius: 35,
+    color: theme.blue, 
+    label: "Chat",
+    aura: auraType,
+    auraRadius: auraRad,
+    auraOpacity: auraOp
+  });
+
+  // Nœud Chien
+  canvas.atom.node({ 
+    x: pB.x, y: pB.y, 
+    radius: 35,
+    color: theme.red, 
+    label: "Chien",
+    aura: auraType,
+    auraRadius: auraRad,
+    auraOpacity: auraOp
+  });
+
+  // Nœud Curseur
+  const cursorNode = canvas.atom.node({ 
+    x: pos.x, y: pos.y, 
+    color: theme.yellow, 
+    radius: 15,
+    aura: "solid",
+    auraRadius: 30,
+    auraOpacity: 0.3
+  });
+  cursorNode.style("cursor", "grab");
 }
 
 // 3. Calcul de l'alpha consolidé pour le rendu final
 alphaLatent = {
   const pos = latentPos;
-  const pA = {x: 2, y: 2}, pB = {x: 8, y: 8};
+  const pA = {x: width * 0.25, y: 200}, pB = {x: width * 0.75, y: 200};
   const dA = Math.sqrt(Math.pow(pos.x - pA.x, 2) + Math.pow(pos.y - pA.y, 2));
   const dB = Math.sqrt(Math.pow(pos.x - pB.x, 2) + Math.pow(pos.y - pB.y, 2));
 
-  // Le ratio de distance dA / (dA + dB) est plus intuitif en 2D pour l'alpha
   return dA / (dA + dB);
 }
 ```
@@ -192,18 +191,18 @@ alphaLatent = {
   }
 
   const desc = document.createElement("div");
-  desc.style.cssText = `font-family: monospace; margin-top: 10px; color: ${isGlitch ? theme.red : theme.cyan}; font-weight: bold;`;
+  desc.style.cssText = `font-family: monospace; font-size: 1.5em; margin-top: 15px; color: ${isGlitch ? theme.red : theme.cyan}; font-weight: bold;`;
   desc.innerText = textOut;
 
   // Jauge de cohérence mathématique
   const meterCont = document.createElement("div");
-  meterCont.style.cssText = `width: 100%; background: ${theme.base2}; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;`;
+  meterCont.style.cssText = `width: 100%; background: ${theme.base2}; height: 16px; border-radius: 8px; margin-top: 25px; overflow: hidden;`;
   const fill = document.createElement("div");
   fill.style.cssText = `width: ${confidence * 100}%; height: 100%; background: ${confidence > 0.5 ? theme.green : theme.red}; transition: width 0.3s;`;
   meterCont.appendChild(fill);
 
   const meterLabel = document.createElement("div");
-  meterLabel.style.cssText = `font-size: 0.8em; color: ${theme.base03}; margin-top: 5px;`;
+  meterLabel.style.cssText = `font-size: 1.1em; color: theme.base03; margin-top: 10px; font-weight: 600;`;
   meterLabel.innerText = `Cohérence sémantique : ${(confidence * 100).toFixed(1)}%`;
 
   container.appendChild(displayEmoji);

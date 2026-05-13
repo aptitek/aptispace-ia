@@ -42,4 +42,4 @@ graph TD
     F --> G[LLM génère la réponse finalisée]
 ```
 
-{{< include dynamic/rag_3d.qmd >}}
+{{< include dynamic/_rag_3d.qmd >}}

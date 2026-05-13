@@ -25,4 +25,4 @@ Les premiers retours de l'industrie sur l'intégration de ces systèmes orchestr
 
 La convergence entre l'orchestration cyclique (LangGraph), le RAG haute fidélité et le standard d'intégration universel (MCP) transforme définitivement l'entreprise. Les modèles d'IA ne sont plus de simples gadgets conversationnels, ils deviennent de véritables collaborateurs numériques, capables d'automatiser des flux de travail complets tout en garantissant la souveraineté des données.
 
-{{< include dynamic/agent_guardrails.qmd >}}
+{{< include dynamic/_agent_guardrails.qmd >}}

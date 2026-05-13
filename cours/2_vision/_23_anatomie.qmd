@@ -7,7 +7,7 @@ Un CNN transforme des pixels bruts en prédictions sémantiques.
 
 La **Couche de Convolution** réalise un produit de Frobenius entre un noyau glissant et l'entrée pour extraire des traits. La **Couche de Pooling** (ex: Max Pooling) réduit la résolution spatiale pour contrôler le surapprentissage tout en conservant le signal le plus fort.
 
-{{< include dynamic/max_pooling.qmd >}}
+{{< include dynamic/_max_pooling.qmd >}}
 
 
 ### 📐 Configuration Spatiale
@@ -23,4 +23,4 @@ $$\text{Sortie} = \frac{W - F + 2P}{S} + 1$$
 Si le résultat n'est pas un entier, la configuration est invalide !
 :::
 
-{{< include dynamic/calculateur_sortie.qmd >}}
+{{< include dynamic/_calculateur_sortie.qmd >}}

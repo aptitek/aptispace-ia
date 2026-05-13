@@ -7,6 +7,6 @@ Si les CNN et les ViT excellent pour *comprendre* une image, les **GANs (Generat
 
 L'entraînement est un jeu du chat et de la souris : le générateur s'améliore pour tromper le discriminateur, et le discriminateur s'améliore pour ne plus se faire avoir. 
 
-{{< include dynamic/gan_training.qmd >}}
+{{< include dynamic/_gan_training.qmd >}}
 
 Les GANs ont ouvert la voie aux "DeepFakes" et à la génération d'art avant d'être progressivement remplacés par les Modèles de Diffusion (comme Midjourney ou Stable Diffusion) qui sont plus stables à entraîner.

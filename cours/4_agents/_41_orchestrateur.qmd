@@ -37,4 +37,4 @@ graph TD
     F --> G[Action déterministe ou Réponse]
 ```
 
-{{< include dynamic/flux_langchain.qmd >}}
+{{< include dynamic/_flux_langchain.qmd >}}

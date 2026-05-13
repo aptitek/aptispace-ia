@@ -28,4 +28,4 @@ Plus un mot est fréquent dans un document précis, mais rare dans le reste de l
 
 L'obstacle technique majeur de ces deux méthodes classiques est la dimensionnalité vide. Si vous analysez un corpus avec un vocabulaire de 100 000 mots uniques, un tweet de 10 mots sera représenté par un vecteur contenant 99,9 % de zéros ! Effectuer des calculs matriciels sur d'immenses vecteurs remplis de zéros gaspille la mémoire et rend le calcul de similarité sémantique inefficace.
 
-{{< include dynamic/sparsite.qmd >}}
+{{< include dynamic/_sparsite.qmd >}}

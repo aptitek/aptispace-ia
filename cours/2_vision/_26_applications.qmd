@@ -5,4 +5,4 @@
 
 Contrairement aux CNN qui regardent l'image petit bout par petit bout, les **Vision Transformers (ViT)** découpent l'image en "patchs" et utilisent un mécanisme d'**attention globale**. Ils comparent chaque patch avec tous les autres simultanément [@networkoptix_2024_computervision].
 
-{{< include dynamic/architecture_cmp.qmd >}}
+{{< include dynamic/_architecture_cmp.qmd >}}

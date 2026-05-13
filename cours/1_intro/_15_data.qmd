@@ -16,7 +16,7 @@ Voici les 3 étapes incontournables pour purifier vos données brutes :
 
 *Comment décider à partir de quand un point devient une "anomalie" ? Utilisez le simulateur ci-dessous qui génère un jeu de données "sale".*
 
-{{< include dynamic/nettoyage.qmd >}}
+{{< include dynamic/_nettoyage.qmd >}}
 
 ::: {.warning header="Z-Score vs IQR : Quelle différence sur le terrain ?"} 
 Bien que ces deux méthodes cherchent des anomalies, elles n'utilisent pas la même "boussole" mathématique :
