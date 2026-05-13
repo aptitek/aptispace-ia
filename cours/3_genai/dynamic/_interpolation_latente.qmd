@@ -29,24 +29,31 @@ viewof modeVAE = ui.toggle({
 // 1. Initialisation du Canvas avec l'architecture atomique
 viewof latentPos = {
   window.d3 = window.d3 || d3; 
-  // On utilise 'width' (réactif Observable) pour un rendu 1:1 natif
+  // Le canvas utilise la largeur réactive d'Observable comme base initiale
   const canvas = ui.canvas({ width: width, height: 400, shadow: true });
-  const svg = d3.select(canvas.node);
+  const root = canvas.node;
 
-  // Dragging logic
-  svg.call(d3.drag()
-    .on("drag", (event) => {
-      const [mx, my] = d3.pointer(event, canvas.node);
-      const x = Math.max(0, Math.min(width, mx));
-      const y = Math.max(0, Math.min(400, my));
-      canvas.node.value = {x, y};
-      canvas.node.dispatchEvent(new CustomEvent("input"));
-    })
-  );
+  // Dragging logic (coordonnées HTML natives)
+  root.addEventListener("mousedown", (e) => {
+    const onMove = (ev) => {
+      const rect = root.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width, ev.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, ev.clientY - rect.top));
+      root.value = {x, y};
+      root.dispatchEvent(new CustomEvent("input"));
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  });
+  root.style.cursor = "grab";
 
-  canvas.node.__canvas = canvas;
-  canvas.node.value = {x: width / 2, y: 200};
-  return canvas.node;
+  root.__canvas = canvas;
+  root.value = {x: 300, y: 200}; 
+  return root;
 }
 
 // 2. Mise à jour réactive des composants (Nodes & Auras)
@@ -58,62 +65,56 @@ _updateLatent2D = {
   if (!canvasElement.__canvas) return;
   const canvas = canvasElement.__canvas;
 
-  // Réinitialisation propre de la couche principale
-  d3.select(canvas.mainNode).selectAll("*").remove();
+  // Réinitialisation via la nouvelle méthode API
+  canvas.clear();
 
-  // Positions relatives (1/4 et 3/4 de la largeur) pour garder l'aspect ratio visuel
-  const pA = {x: width * 0.25, y: 200}, pB = {x: width * 0.75, y: 200};
+  // Positions en pixels absolus
+  const w = canvas.getWidth();
+  const pA = {x: w * 0.15, y: 200}, pB = {x: w * 0.85, y: 200};
+  // AE (solid) est serré, VAE (gradient) est très diffus
   const isVae = mode === "vae";
   const auraType = isVae ? "gradient" : "solid";
-  const auraRad = isVae ? 220 : 60;
-  const auraOp = isVae ? 0.35 : 0.15;
+  const auraRad = isVae ? w * 0.35 : 40;
+  const auraOp = isVae ? 0.3 : 0.12;
 
   // Liaison
   canvas.atom.link({ source: pA, target: pB, dashed: true, color: theme.base01, width: 4 });
 
   // Nœud Chat
   canvas.atom.node({ 
-    x: pA.x, y: pA.y, 
-    radius: 35,
-    color: theme.blue, 
-    label: "Chat",
-    aura: auraType,
-    auraRadius: auraRad,
-    auraOpacity: auraOp
+    x: pA.x, y: pA.y, radius: 18, color: theme.blue, label: "Chat",
+    aura: auraType, auraRadius: auraRad, auraOpacity: auraOp
   });
 
   // Nœud Chien
   canvas.atom.node({ 
-    x: pB.x, y: pB.y, 
-    radius: 35,
-    color: theme.red, 
-    label: "Chien",
-    aura: auraType,
-    auraRadius: auraRad,
-    auraOpacity: auraOp
+    x: pB.x, y: pB.y, radius: 18, color: theme.red, label: "Chien",
+    aura: auraType, auraRadius: auraRad, auraOpacity: auraOp
   });
 
   // Nœud Curseur
-  const cursorNode = canvas.atom.node({ 
-    x: pos.x, y: pos.y, 
-    color: theme.yellow, 
-    radius: 15,
-    aura: "solid",
-    auraRadius: 30,
-    auraOpacity: 0.3
+  const cursor = canvas.atom.node({ 
+    x: pos.x, y: pos.y, radius: 8, color: theme.yellow, 
+    aura: false 
   });
-  cursorNode.style("cursor", "grab");
+  if (cursor._el) cursor._el.style.cursor = "grab";
 }
 
 // 3. Calcul de l'alpha consolidé pour le rendu final
 alphaLatent = {
   const pos = latentPos;
-  const pA = {x: width * 0.25, y: 200}, pB = {x: width * 0.75, y: 200};
+  const canvasElement = viewof latentPos;
+  if (!canvasElement.__canvas) return 0.5;
+  const w = canvasElement.__canvas.getWidth();
+  
+  const pA = {x: w * 0.15, y: 200}, pB = {x: w * 0.85, y: 200};
   const dA = Math.sqrt(Math.pow(pos.x - pA.x, 2) + Math.pow(pos.y - pA.y, 2));
   const dB = Math.sqrt(Math.pow(pos.x - pB.x, 2) + Math.pow(pos.y - pB.y, 2));
 
   return dA / (dA + dB);
 }
+
+
 ```
 
 :::
