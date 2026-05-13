@@ -1,0 +1,319 @@
+::: {.dynamic header="🕹️ Simulation Interactive : Le Mécanisme de Self-Attention"}
+
+
+```{ojs}
+//| echo: false
+// 1. Définition des données et de l'état (Partagé)
+sentence = [
+  { id: 0, word: "Le", type: "det" },
+  { id: 1, word: "féroce", type: "adj" },
+  { id: 2, word: "chien", type: "nom" },
+  { id: 3, word: "a", type: "aux" },
+  { id: 4, word: "mordu", type: "verbe" },
+  { id: 5, word: "l'", type: "det" },
+  { id: 6, word: "homme", type: "nom" }
+]
+
+attentionMatrix = [
+  [0.80, 0.15, 0.05, 0.00, 0.00, 0.00, 0.00], 
+  [0.10, 0.60, 0.30, 0.00, 0.00, 0.00, 0.00], 
+  [0.05, 0.25, 0.50, 0.05, 0.15, 0.00, 0.00], 
+  [0.00, 0.00, 0.10, 0.40, 0.50, 0.00, 0.00], 
+  [0.00, 0.00, 0.35, 0.05, 0.20, 0.05, 0.35], 
+  [0.00, 0.00, 0.00, 0.00, 0.00, 0.70, 0.30], 
+  [0.00, 0.00, 0.05, 0.00, 0.25, 0.10, 0.60]  
+]
+
+mutable activeQ = 4;
+```
+
+::: {.render .transparent header="Cliquer sur un mot pour analyser son Attention"}
+
+```{ojs}
+//| echo: false
+{
+  const svgWidth = 1000;
+  const svgHeight = 600;
+  const svg = d3.create("svg")
+    .attr("width", "100%")
+    .attr("height", svgHeight)
+    .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+    .style("border-radius", "20px")
+    .style("overflow", "hidden") // Empêche le débordement des halos
+    .style("font-size", "18px"); // Slightly bigger base for em
+
+  const defs = svg.append("defs");
+
+  // Masque de découpe pour respecter les bords arrondis (rx=20)
+  defs.append("clipPath")
+    .attr("id", "cardClip")
+    .append("rect")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .attr("rx", 20);
+
+  // Appliquer le clipPath aux calques de contenu
+  const mainContent = svg.append("g").attr("clip-path", "url(#cardClip)");
+
+  // Fond explicite
+  mainContent.append("rect")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .attr("rx", 20)
+    .attr("fill", theme.base3);
+
+  const weights = attentionMatrix[activeQ];
+
+  // Layout Multi-ligne (Wrapped) avec marges de sécurité pour les halos
+  const getPos = (i) => {
+    const isRow1 = i < 4;
+    const items = isRow1 ? 4 : 3;
+    const idx = isRow1 ? i : i - 4;
+    // Utiliser 80% de la largeur/hauteur centrale pour laisser 10% de marge
+    const marginX = svgWidth * 0.15;
+    const marginY = svgHeight * 0.2;
+    const innerWidth = svgWidth - (2 * marginX);
+    const innerHeight = svgHeight - (2 * marginY);
+    
+    return {
+      x: marginX + (innerWidth / (items - 1 + 2)) * (idx + 1),
+      y: marginY + (isRow1 ? 0 : innerHeight)
+    };
+  };
+
+  const qPos = getPos(activeQ);
+
+  // Couches (Layers) groupées dans le conteneur de découpe (mainContent)
+  const haloLayer = mainContent.append("g").attr("class", "halo-layer").style("pointer-events", "none");
+  const linkLayer = mainContent.append("g").attr("class", "link-layer").style("pointer-events", "none");
+  const tokenLayer = mainContent.append("g").attr("class", "token-layer");
+  const labelLayer = mainContent.append("g").attr("class", "label-layer").style("pointer-events", "none");
+
+  // Filtre de flou pour le heatmap (utilisant la déclaration defs du haut)
+  defs.append("filter")
+    .attr("id", "blurHalo")
+    .attr("x", "-50%")
+    .attr("y", "-50%")
+    .attr("width", "200%")
+    .attr("height", "200%")
+    .append("feGaussianBlur")
+    .attr("stdDeviation", 35);
+
+  // Ombre pour les étiquettes
+  defs.append("filter")
+    .attr("id", "labelShadow")
+    .append("feDropShadow")
+    .attr("dx", 0).attr("dy", 2).attr("stdDeviation", 3).attr("flood-opacity", 0.3);
+
+  const heatmapScale = d3.scaleLinear()
+    .domain([0, 0.2, 0.5, 0.9])
+    .range([theme.blue, theme.green, theme.yellow, theme.red])
+    .clamp(true);
+
+  // 1. Dessin des Halos (Couche inférieure)
+  sentence.forEach((token, i) => {
+    const p = getPos(i);
+    const weight = weights[i];
+    if (weight > 0.05) {
+      haloLayer.append("circle")
+        .attr("cx", p.x)
+        .attr("cy", p.y)
+        .attr("r", 140)
+        .style("fill", heatmapScale(weight))
+        .style("opacity", weight * 0.7)
+        .style("filter", "url(#blurHalo)")
+        .style("pointer-events", "none");
+    }
+  });
+
+  // 2. Dessin des liens d'attention
+  sentence.forEach((token, i) => {
+    if (i !== activeQ) {
+      const tPos = getPos(i);
+      const weight = weights[i];
+      if (weight > 0.01) {
+        const midX = (qPos.x + tPos.x) / 2;
+        const midY = (qPos.y + tPos.y) / 2;
+        const dx = tPos.x - qPos.x;
+        const dy = tPos.y - qPos.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        // Courbure plus prononcée pour éviter les nœuds centraux
+        const bendFactor = 0.5;
+        const controlX = midX - (dy * bendFactor * weight);
+        const controlY = midY + (dx * bendFactor * weight) - (dist * 0.15);
+
+        const path = d3.path();
+        path.moveTo(qPos.x, qPos.y);
+        path.quadraticCurveTo(controlX, controlY, tPos.x, tPos.y);
+
+        const linkColor = heatmapScale(weight);
+
+        linkLayer.append("path")
+          .attr("d", path)
+          .attr("fill", "none")
+          .attr("stroke", linkColor)
+          .attr("stroke-width", weight * 50)
+          .attr("opacity", weight + 0.25) // Légèrement plus opaque pour la visibilité
+          .style("pointer-events", "none");
+          
+        // Bulles de Score (Couche supérieure)
+        const bubblePos = { x: controlX, y: controlY };
+        const bubble = labelLayer.append("g")
+          .attr("transform", `translate(${bubblePos.x}, ${bubblePos.y})`)
+          .style("filter", "url(#labelShadow)");
+
+        bubble.append("rect")
+          .attr("x", -30)
+          .attr("y", -15)
+          .attr("width", 60)
+          .attr("height", 30)
+          .attr("fill", theme.base3)
+          .attr("stroke", linkColor) // Bordure de la bulle à la couleur du score
+          .attr("stroke-width", 2)
+          .attr("rx", 10)
+          .style("pointer-events", "none");
+
+          
+        bubble.append("text")
+          .attr("dy", 6)
+          .attr("fill", theme.base01)
+          .attr("font-size", "1.1em")
+          .attr("font-weight", "900")
+          .attr("text-anchor", "middle")
+          .style("font-family", "monospace")
+          .style("pointer-events", "none")
+          .text((weight * 100).toFixed(0) + "%");
+      }
+    }
+  });
+
+  // 3. Dessin des Tokens (Couche supérieure)
+  const nodes = tokenLayer.selectAll("g.viz-token")
+    .data(sentence)
+    .join("g")
+    .attr("class", "viz-token")
+    .attr("transform", d => {
+        const p = getPos(d.id);
+        return `translate(${p.x}, ${p.y})`;
+    })
+    .style("cursor", "pointer")
+    .on("click", (event, d) => {
+      mutable activeQ = d.id;
+    })
+    .on("mouseenter", function() {
+      d3.select(this).select("circle.main-node").transition().duration(200).attr("r", 58);
+    })
+    .on("mouseleave", function() {
+      d3.select(this).select("circle.main-node").transition().duration(200).attr("r", 50);
+    });
+
+  // Zone de clic étendue (Invisible) pour pallier la petitesse de certains tokens (l')
+  nodes.append("circle")
+    .attr("r", 75)
+    .attr("fill", "transparent")
+    .style("pointer-events", "all");
+
+  nodes.append("circle")
+    .attr("class", "main-node")
+    .attr("r", 50)
+    .style("fill", d => {
+        if (d.id === activeQ) return heatmapScale(weights[d.id]);
+        return theme.base2;
+    })
+    .style("stroke", d => {
+        if (d.id === activeQ) return heatmapScale(weights[d.id]);
+        return theme.base1;
+    })
+    .style("stroke-width", d => d.id === activeQ ? 6 : 2)
+    .style("opacity", 1);
+
+
+  nodes.append("text")
+    .attr("dy", 12)
+    .attr("text-anchor", "middle")
+    .style("fill", d => {
+        if (d.id === activeQ) {
+            // Contrast logic: Base3 for hot colors, Base03 for cold colors
+            return weights[d.id] > 0.4 ? theme.base3 : theme.base03;
+        }
+        return theme.base03;
+    })
+    .attr("font-size", d => d.id === activeQ ? "2.2em" : "1.6em")
+    .attr("font-weight", "900")
+    .style("pointer-events", "none")
+    .text(d => d.word);
+
+    
+  svg.append("text")
+    .attr("x", qPos.x)
+    .attr("y", qPos.y - (activeQ < 4 ? 85 : -110))
+    .attr("fill", theme.red)
+    .attr("font-size", "1.2em")
+    .attr("font-weight", "bold")
+    .attr("text-anchor", "middle")
+    .style("pointer-events", "none")
+    .text(`Self: ${(weights[activeQ]*100).toFixed(0)}%`);
+
+
+  return svg.node();
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+
+::: {.results header="Décomposition Mathématique : Q × K = Softmax"}
+
+```{ojs}
+//| echo: false
+{
+  const qToken = sentence[activeQ].word;
+  const weights = attentionMatrix[activeQ];
+  
+  // Identifier les mots ayant reçu le plus d'attention (hors "Self" si possible)
+  const sortedAttentions = weights
+    .map((w, i) => ({ word: sentence[i].word, w: w, id: i }))
+    .sort((a, b) => b.w - a.w)
+    .filter(a => a.w > 0.05);
+
+  const heatmapScale = d3.scaleLinear()
+    .domain([0, 0.2, 0.5, 0.9])
+    .range([theme.blue, theme.green, theme.yellow, theme.red])
+    .clamp(true);
+
+  const container = html`<div style="font-family: var(--font-code); font-size: 0.85em; display: flex; flex-direction: column; gap: 12px; color: ${theme.base1};"></div>`;
+
+  const step1 = html`<div><span style="color: ${theme.magenta}; font-weight: bold;">[1. REQUÊTE]</span> "${qToken}" cherche son contexte.</div>`;
+
+  let kMatchHtml = sortedAttentions.map(item => {
+    const bgColor = heatmapScale(item.w);
+    const textColor = item.w > 0.4 ? theme.base3 : theme.base03;
+    return `<span style="background: ${bgColor}; color: ${textColor}; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.95em; border: 1px solid rgba(255,255,255,0.1); margin-right: 4px; display: inline-block;">${item.word} (${(item.w * 100).toFixed(0)}%)</span>`;
+  }).join("");
+  
+  const step2 = html`<div>
+    <span style="color: ${theme.cyan}; font-weight: bold;">[2. ATTENTION]</span> Calcul du score de pertinence :<br/>
+    <div style="margin-top: 8px; padding: 12px; background: ${theme.base02}; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); line-height: 2.2;">
+      ${html`${kMatchHtml}`}
+    </div>
+  </div>`;
+
+
+  const step3 = html`<div style="background: ${theme.base02}; border-left: 3px solid ${theme.magenta}; padding: 8px 12px; border-radius: 4px; color: ${theme.base2};">
+    <span style="color: ${theme.green}; font-weight: bold;">[3. RÉSULTAT]</span> Le vecteur de "${qToken}" est enrichi par ces informations.
+  </div>`;
+
+  container.appendChild(step1);
+  container.appendChild(step2);
+  container.appendChild(step3);
+
+  return ui.card(container, { status: "success" });
+}
+```
+
+:::
+:::

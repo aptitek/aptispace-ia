@@ -1,0 +1,87 @@
+::: {.dynamic header="Le Fléau de la Dimensionnalité"}
+
+::: {.controls header="Configuration"}
+
+```{ojs}
+//| echo: false
+resolutions = [28, 250, 1080, 3840];
+labels = ["28x28 (MNIST)", "250x250 (Standard)", "1920x1080 (Full HD)", "3840x2160 (4K UHD)"];
+
+viewof res_idx = ui.slider({
+  label: "Résolution d'Entrée",
+  labels: labels,
+  value: 1,
+  min: 0,
+  max: 3
+})
+
+res_choice = resolutions[res_idx];
+mlp_weights_per_neuron = res_choice * res_choice * 3;
+mlp_total_weights = mlp_weights_per_neuron * 100;
+cnn_total_weights = 3 * 3 * 3 * 100;
+```
+
+::: 
+
+::: {.render header="Visualisation des Poids"}
+
+```{ojs}
+//| echo: false
+{
+  const fixed_cnn_size = 20; 
+  const weight_ratio = mlp_total_weights / cnn_total_weights;
+  const size_ratio = Math.pow(weight_ratio, 1/6); 
+  
+  const s_cnn = fixed_cnn_size;
+  const s_mlp = Math.min(200, s_cnn * size_ratio);
+  
+  const mlp_color = mlp_total_weights > 5000000 ? theme.red : theme.orange;
+  const cnn_color = theme.green;
+
+  const cube_html = (size, color, label) => {
+    const offset = size * 0.35;
+    const darken = (c, amt) => `color-mix(in srgb, ${c}, black ${amt}%)`;
+    return html`
+      <div class="flex-centered-col" style="gap: 8px;">
+        <div style="position: relative; width: ${size + offset}px; height: ${size + offset}px; transition: all 0.5s ease;">
+          <div style="position: absolute; left: 0; top: 0; width: ${size}px; height: ${offset}px; background: ${darken(color, 15)}; border: 1px solid rgba(0,0,0,0.1); transform: skewX(-45deg); transform-origin: bottom;"></div>
+          <div style="position: absolute; left: ${size}px; top: ${offset}px; width: ${offset}px; height: ${size}px; background: ${darken(color, 30)}; border: 1px solid rgba(0,0,0,0.1); transform: skewY(-45deg); transform-origin: left;"></div>
+          <div style="position: absolute; left: 0; top: ${offset}px; width: ${size}px; height: ${size}px; background: ${color}; border: 1px solid rgba(0,0,0,0.1); box-shadow: 2px 2px 10px rgba(0,0,0,0.1);"></div>
+        </div>
+        <span style="font-size: 0.8em; font-weight: bold; color: var(--sol-base01);">${label}</span>
+      </div>
+    `;
+  };
+
+  return html`
+    <div style="display: flex; gap: 40px; justify-content: center; align-items: flex-end; min-height: 250px; width: 100%;">
+      ${cube_html(s_cnn, cnn_color, "CNN")}
+      ${cube_html(s_mlp, mlp_color, "MLP")}
+    </div>
+  `;
+}
+```
+
+:::
+
+::: {.results}
+
+```{ojs}
+//| echo: false
+{
+  const status = mlp_total_weights > 10000000 ? "danger" : mlp_total_weights > 1000000 ? "warning" : "debug";
+  const analysis = mlp_total_weights > 10000000 ? "🚨 Incalculable sur un PC standard. Le MLP sature la mémoire." : mlp_total_weights > 1000000 ? "⚠️ Très lourd. L'entraînement sera lent et inefficace." : "Stable et léger.";
+
+  return ui.card(md`
+| Architecture | Paramètres par Unité | Total (couche de 100) |
+|:---|:---|:---|
+| ❌ Classique (MLP) | ${mlp_weights_per_neuron.toLocaleString()} | **${mlp_total_weights.toLocaleString()}** poids |
+| ✅ Convolutif (CNN) | 27 | **${cnn_total_weights.toLocaleString()}** poids |
+
+**Analyse :** ${analysis}
+`, { title: "Impact sur l'Architecture", status: status });
+}
+```
+
+:::
+:::

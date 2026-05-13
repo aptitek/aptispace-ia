@@ -1,0 +1,35 @@
+::: {.dynamic .horizontal header="Calculateur de Sortie"}
+
+::: {.controls}
+
+```{ojs}
+//| echo: false
+viewof hyper_W = ui.slider({label: "Entrée (W)", value: 227, min: 10, max: 227, step: 1, state: 0})
+viewof hyper_F = ui.slider({label: "Filtre (F)", value: 11, min: 1, max: 11, step: 1, state: 1})
+viewof hyper_P = ui.slider({label: "Padding (P)", value: 0, min: 0, max: 5, step: 1, state: 2})
+viewof hyper_S = ui.slider({label: "Stride (S)", value: 4, min: 1, max: 5, step: 1, state: 3})
+
+output_size = (hyper_W - hyper_F + 2 * hyper_P) / hyper_S + 1
+is_valid_arch = Number.isInteger(output_size)
+```
+
+:::
+
+::: {.results}
+
+```{ojs}
+//| echo: false
+{
+  const status = is_valid_arch ? "success" : "danger";
+  return ui.card(md`
+Taille de la carte d'activation en sortie : **${output_size} x ${output_size} pixels**
+
+${is_valid_arch 
+  ? "✅ **Configuration Valide.** Les neurones se répartissent parfaitement." 
+  : "🔴 **ERREUR GÉOMÉTRIQUE :** Résultat décimal ! Le filtre va déborder de l'image. *Astuce : Essayez d'ajuster le Padding.*"}
+`, { title: "Calculateur d'Architecture (En Temps Réel)", status: status });
+}
+```
+
+:::
+:::

@@ -1,0 +1,830 @@
+
+// ==========================================
+// 7. WIDGET "FAKE IDE" (File Explorer)
+// ==========================================
+
+.ide-container {
+    @extend %card-base;
+    display: flex;
+    min-height: 100px;
+    transition: all 0.3s ease;
+}
+
+.ide-sidebar {
+    width: 100%;
+    background-color: $sol-base2;
+    padding: 10px;
+    border-right: none;
+    transition: width 0.3s ease;
+}
+
+.ide-main {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+}
+
+.ide-container.is-active {
+    height: 600px;
+
+    .ide-sidebar {
+        width: 250px;
+        border-right: 1px solid $sol-base1;
+        overflow-y: auto;
+    }
+    .ide-main {
+        display: flex;
+        opacity: 1;
+    }
+}
+
+.ide-header-row {
+    @extend %card-header;
+    background: transparent; // Override
+    margin-bottom: 10px;
+    padding: 0 0 8px 0;
+}
+
+.ide-title {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.75em;
+}
+
+.ide-download-btn {
+    font-size: 0.75em;
+    background-color: $sol-base3;
+    color: $sol-blue !important;
+    border: 1px solid $sol-base1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-decoration: none !important;
+    font-weight: bold;
+
+    &:hover {
+        background-color: $sol-blue;
+        color: white !important;
+    }
+}
+
+ul.file-tree-list, ul.file-tree-list ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.file-tree-list .folder ul {
+    padding-left: 24px;
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+    margin-left: 4px;
+}
+
+.file a, .folder summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    text-decoration: none;
+    color: $sol-base00;
+    cursor: pointer;
+    list-style: none;
+    
+    &::-webkit-details-marker { display: none; }
+}
+
+.folder-arrow {
+    margin-right: 5px;
+    font-size: 0.8em;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+details[open] > summary > .folder-arrow { transform: rotate(90deg); }
+.file a:hover { color: $sol-orange !important; background: rgba(255, 255, 255, 0.4); }
+.bi { opacity: 0.8; }
+
+// ==========================================
+// 8. JUPYTERLITE CARD (Shortcode)
+// ==========================================
+
+.jupyterlite-container {
+    @extend %card-base;
+
+    iframe {
+        width: 100%;
+        height: 600px;
+        border: none;
+        display: block;
+    }
+}
+
+.jupyterlite-header {
+    @extend %card-header;
+
+    i.bi-journal-code {
+        margin-right: 6px;
+        color: $sol-orange;
+    }
+}
+
+.jupyterlite-fullscreen {
+    color: $sol-base00;
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover { color: $sol-blue; }
+}
+
+// ==========================================
+// 9. SEMANTIC CARDS (Alerts & Results)
+// ==========================================
+
+// Base semantic structure
+.bg-debug, .bg-info, .bg-success, .bg-warning, .bg-danger, .bg-primary {
+    @extend %card-base;
+    background-color: $sol-base2 !important;
+    color: $sol-base01 !important;
+    font-size: 0.9em;
+    margin-bottom: 1.5rem;
+    overflow: hidden !important;
+    position: relative;
+    border-left: none !important; // Explicitly remove to fix square overflow
+
+    // Use pseudo-element for the color strip to respect parent border-radius
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 6px;
+        z-index: 5;
+        border-radius: inherit; // Matches the 8px of the card
+    }
+
+    .card-header {
+        @extend %card-header;
+        color: $sol-base3 !important;
+        font-family: $font-family-code;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        padding-left: 1.2rem; // Give space for the bar
+    }
+
+    .card-body { 
+        padding: 0.75rem 1rem 0.75rem 1.2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    table {
+        margin-bottom: 0;
+        background-color: transparent !important;
+        
+        th, td {
+            border-color: rgba(0,0,0,0.05) !important;
+            padding: 4px 8px;
+        }
+        th {
+            font-size: 0.85em;
+            color: $sol-base01;
+            text-transform: none;
+        }
+    }
+}
+
+.bg-debug { 
+    &::before { background-color: $sol-base1 !important; }
+    .card-header { background-color: $sol-base1 !important; }
+}
+
+.bg-info, .bg-primary { 
+    &::before { background-color: $sol-blue !important; }
+    .card-header { background-color: $sol-blue !important; }
+}
+
+.bg-success { 
+    &::before { background-color: $sol-green !important; }
+    .card-header { background-color: $sol-green !important; }
+}
+
+.bg-warning { 
+    &::before { background-color: $sol-yellow !important; }
+    .card-header { background-color: $sol-yellow !important; }
+}
+
+.bg-danger { 
+    &::before { background-color: $sol-red !important; }
+    .card-header { background-color: $sol-red !important; }
+}
+
+// ==========================================
+// 10. TIMELINE TABLES & CUSTOM STYLING
+// ==========================================
+
+.timeline.vertical, .timeline.horizontal, .timeline {
+    --tl-color-line: #{$sol-magenta} !important;
+    --tl-color-dot: #{$sol-magenta} !important;
+    --tl-color-label: #{$sol-base01} !important;
+    --tl-line-width: 4px !important;
+    
+    // Rainbow gradient line
+    &::before {
+        background: linear-gradient(to bottom, 
+            #{$sol-magenta}, #{$sol-red}, #{$sol-orange}, 
+            #{$sol-yellow}, #{$sol-green}, #{$sol-cyan}, 
+            #{$sol-blue}, #{$sol-violet}
+        ) !important;
+    }
+
+    // Center dots on the line by accounting for line width
+    .event::after {
+        left: calc(-30px - var(--tl-dot-size) / 2 + var(--tl-line-width) / 2) !important;
+        transition: all 0.3s ease;
+    }
+
+    // Chronological dot colors
+    .event:nth-child(1)::after { border-color: #{$sol-magenta} !important; }
+    .event:nth-child(2)::after { border-color: #{$sol-red} !important; }
+    .event:nth-child(3)::after { border-color: #{$sol-orange} !important; }
+    .event:nth-child(4)::after { border-color: #{$sol-yellow} !important; }
+    .event:nth-child(5)::after { border-color: #{$sol-green} !important; }
+    .event:nth-child(6)::after { border-color: #{$sol-cyan} !important; }
+    .event:nth-child(7)::after { border-color: #{$sol-blue} !important; }
+    .event:nth-child(8)::after { border-color: #{$sol-violet} !important; }
+    
+    // Matching labels if needed
+    .event:nth-child(1)::before { color: #{$sol-magenta} !important; }
+    .event:nth-child(2)::before { color: #{$sol-red} !important; }
+    .event:nth-child(3)::before { color: #{$sol-orange} !important; }
+    .event:nth-child(4)::before { color: #{$sol-yellow} !important; }
+    .event:nth-child(5)::before { color: #{$sol-green} !important; }
+    .event:nth-child(6)::before { color: #{$sol-cyan} !important; }
+    .event:nth-child(7)::before { color: #{$sol-blue} !important; }
+    .event:nth-child(8)::before { color: #{$sol-violet} !important; }
+}
+
+.event table {
+    table-layout: fixed;
+    width: 100%;
+    colgroup col:first-child { width: 128px !important; }
+    colgroup col:last-child { width: auto !important; }
+    th, td { word-wrap: break-word; vertical-align: middle; }
+}
+
+// ==========================================
+// 12. ATOMS (Basic UI Elements)
+// ==========================================
+
+.atom-btn {
+    background: transparent;
+    border: 2px solid $sol-red;
+    color: $sol-red;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    span {
+        transition: transform 0.2s ease;
+    }
+
+    &:hover {
+        background: $sol-red;
+        color: $sol-base3;
+        box-shadow: 0 4px 15px rgba($sol-red, 0.3);
+        transform: translateY(-2px);
+        
+        span {
+            transform: scale(1.2);
+        }
+    }
+
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba($sol-red, 0.2);
+    }
+
+    &.is-secondary {
+        border-color: $sol-blue;
+        color: $sol-blue;
+        
+        &:hover {
+            background: $sol-blue;
+            box-shadow: 0 4px 15px rgba($sol-blue, 0.3);
+            color: $sol-base3;
+        }
+
+        &:active {
+            box-shadow: 0 2px 8px rgba($sol-blue, 0.2);
+        }
+    }
+}
+
+.atom-label {
+    font-weight: 800;
+    font-size: 0.75rem;
+    color: $sol-base01;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+}
+
+.atom-badge {
+    color: var(--current-color, $sol-blue);
+    background: $sol-base2;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.85em;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.atom-input, .atom-select, .atom-textarea {
+    width: 100%;
+    background: $sol-base3;
+    border: 2px solid $sol-base2;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: $sol-base00;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: $sol-blue;
+        box-shadow: 0 0 0 3px rgba($sol-blue, 0.1);
+        background: $white;
+    }
+
+    &::placeholder {
+        color: $sol-base1;
+        opacity: 0.6;
+    }
+}
+
+.atom-textarea {
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: $font-family-code;
+    font-size: 0.95rem;
+    resize: vertical;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+}
+
+// ==========================================
+// 13. MOLECULES (Combinations of Atoms)
+// ==========================================
+
+.mol-slider {
+    width: 100%;
+    font-family: $font-family-base;
+    color: $sol-base01;
+
+    // Dynamic coloring based on data-state
+    &[data-state="0"] { --current-color: #{$sol-blue}; }
+    &[data-state="1"] { --current-color: #{$sol-green}; }
+    &[data-state="2"] { --current-color: #{$sol-yellow}; }
+    &[data-state="3"] { --current-color: #{$sol-red}; }
+
+    .slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .premium-slider {
+        width: 100%;
+        height: 6px;
+        border-radius: 5px;
+        cursor: pointer;
+        accent-color: var(--current-color);
+        transition: accent-color 0.3s ease;
+    }
+
+    .slider-ticks {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 0.65em;
+        font-weight: bold;
+        color: $sol-base1;
+        text-transform: uppercase;
+    }
+}
+
+.mol-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+
+    &.is-horizontal {
+        flex-direction: row;
+        align-items: center;
+        .toggle-group { width: auto; }
+        .toggle-label { margin-bottom: 0; margin-right: 12px; }
+    }
+
+    .toggle-group {
+        display: flex;
+        background: $sol-base2;
+        padding: 4px;
+        border-radius: 12px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        gap: 4px;
+        width: 100%;
+
+        .toggle-option {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: $sol-base01;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+
+            &:hover {
+                background: rgba(0,0,0,0.03);
+            }
+
+            &.active {
+                background: $white;
+                color: $sol-blue;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transform: translateY(-1px);
+            }
+        }
+    }
+}
+
+.mol-checkbox {
+    margin-bottom: 0.5rem;
+
+    .checkbox-toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background: $sol-base3;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 100%;
+        text-align: left;
+
+        .checkbox-icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: $sol-base2;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .checkbox-text {
+            font-weight: 600;
+            color: $sol-base01;
+            font-size: 0.9rem;
+        }
+
+        &:hover {
+            background: $sol-base2;
+        }
+
+        &.is-active {
+            background: rgba($sol-blue, 0.08);
+            
+            .checkbox-icon {
+                background: $sol-blue;
+            }
+            
+            .checkbox-text {
+                color: $sol-blue;
+            }
+        }
+    }
+}
+
+.mol-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+// ==========================================
+// 14. ORGANISMS (Functional Units)
+// ==========================================
+
+.org-card {
+    @extend %card-base;
+    background-color: $sol-base2 !important;
+    color: $sol-base01 !important;
+    font-size: 0.9em;
+    margin-bottom: 1.5rem;
+    overflow: hidden !important;
+    position: relative;
+    border-left: none !important;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 6px;
+        z-index: 5;
+        border-radius: inherit;
+    }
+
+    .card-header {
+        @extend %card-header;
+        color: $sol-base3 !important;
+        font-family: $font-family-code;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        padding-left: 1.2rem;
+    }
+
+    .card-body { 
+        padding: 0.75rem 1rem 0.75rem 1.2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    &.is-debug { 
+        &::before { background-color: $sol-base1 !important; }
+        .card-header { background-color: $sol-base1 !important; }
+    }
+
+    &.is-info, &.is-primary { 
+        &::before { background-color: $sol-blue !important; }
+        .card-header { background-color: $sol-blue !important; }
+    }
+
+    &.is-success { 
+        &::before { background-color: $sol-green !important; }
+        .card-header { background-color: $sol-green !important; }
+    }
+
+    &.is-warning { 
+        &::before { background-color: $sol-yellow !important; }
+        .card-header { background-color: $sol-yellow !important; }
+    }
+
+    &.is-danger { 
+        &::before { background-color: $sol-red !important; }
+        .card-header { background-color: $sol-red !important; }
+    }
+}
+
+.org-terminal {
+    font-family: $font-family-code;
+    background: $sol-base03;
+    border: 1px solid $sol-base02;
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 13px;
+    color: $sol-base0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+
+    .terminal-header {
+        background: $sol-base02;
+        padding: 5px 15px;
+        border-bottom: 1px solid $sol-base01;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .terminal-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        &.is-red { background: $sol-red; }
+        &.is-yellow { background: $sol-yellow; }
+        &.is-green { background: $sol-green; }
+    }
+
+    .terminal-body {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 250px;
+    }
+}
+
+// ==========================================
+// 14. TWEET EMBED
+// ==========================================
+
+.tweet-embed {
+    background: $sol-base3;
+    border: 1px solid rgba($sol-blue, 0.15);
+    border-radius: 15px;
+    padding: 18px;
+    margin: 20px 0;
+    max-width: 500px;
+    font-family: $font-family-base;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border-left: 5px solid $sol-blue;
+
+    .tweet-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        color: $sol-blue;
+        font-weight: 800;
+        font-size: 0.95em;
+
+        .twitter-icon {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) saturate(100%) invert(48%) sepia(94%) saturate(417%) hue-rotate(168deg) brightness(91%) contrast(101%); // Solarized Blue
+        }
+    }
+
+    .tweet-content {
+        font-size: 1.15em;
+        line-height: 1.45;
+        color: $sol-base00;
+        font-weight: 500;
+        margin-bottom: 10px;
+        display: block;
+
+        span {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            
+            &.highlight {
+                color: $sol-red !important;
+                font-weight: 800 !important;
+                text-shadow: 0 0 8px rgba($sol-red, 0.3);
+            }
+        }
+    }
+
+    .tweet-footer {
+        font-size: 0.8em;
+        color: $sol-base01;
+        opacity: 0.7;
+        font-weight: 500;
+    }
+}
+
+// ==========================================
+// 15. LED METER (VU STYLE)
+// ==========================================
+
+.led-meter-container {
+    background: $sol-base03;
+    border: 1px solid $sol-base02;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+    font-family: $font-family-code;
+
+    .led-meter-label {
+        color: $sol-base1;
+        font-size: 0.75em;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        justify-content: space-between;
+        
+        .status-danger { color: $sol-red; font-weight: bold; }
+    }
+
+    .led-bar {
+        display: flex;
+        gap: 3px;
+        height: 18px;
+        width: 100%;
+        align-items: stretch;
+
+        .led-segment {
+            flex: 1;
+            background: rgba($sol-base02, 0.8);
+            border-radius: 1px;
+            
+            &.active-green { 
+                background: $sol-green; 
+                box-shadow: 0 0 8px rgba($sol-green, 0.5); 
+            }
+            &.active-yellow { 
+                background: $sol-yellow; 
+                box-shadow: 0 0 8px rgba($sol-yellow, 0.5); 
+            }
+            &.active-red { 
+                background: $sol-red; 
+                box-shadow: 0 0 8px rgba($sol-red, 0.5); 
+            }
+        }
+    }
+
+    .led-stats {
+        margin-top: 10px;
+        font-size: 0.8em;
+        color: $sol-base01;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 15px;
+    width: 100%;
+    margin-top: 15px;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-item {
+        background: $sol-base3;
+        border: 1px solid $sol-base2;
+        border-radius: 10px;
+        padding: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        
+        h5 {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            color: $sol-base01;
+            margin-bottom: 10px;
+            border-bottom: 1px solid $sol-base2;
+            padding-bottom: 5px;
+        }
+    }
+}
+
+// ==========================================
+// 16. CV DOCUMENT COMPONENTS
+// ==========================================
+.cv-title {
+    margin: 0;
+    color: $sol-base01;
+    font-size: 1.5em;
+    font-family: $font-family-base;
+}
+
+.cv-subtitle {
+    color: $sol-base1;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.cv-divider {
+    border: none;
+    border-bottom: 2px solid $sol-base2;
+    margin-bottom: 15px;
+}

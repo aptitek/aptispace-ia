@@ -1,0 +1,172 @@
+::: {.dynamic .controls-top header="🕹️ Simulation Interactive : Le Tokenizer BPE (Byte-Pair Encoding)"}
+
+::: {.controls header="Saisie du Texte Brut"}
+Tapez une phrase ci-dessous. Observez comment le modèle découpe les mots fréquents, les mots rares et la ponctuation avant de les transformer en vecteurs.
+
+```{ojs}
+//| echo: false
+viewof rawTextInput = ui.text_area({
+  value: "L'IA comprend-elle le mot anticonstitutionnellement ? 🤔", 
+  rows: 3, 
+  label: "Texte à tokeniser :"
+})
+
+// 1. Logique de Tokenisation (Simulée)
+// On centralise le calcul pour éviter les effets de bord 'mutable'
+tokenizerResults = {
+  const text = rawTextInput || "";
+  if (text.trim() === "") return { tokens: [], chars: 0 };
+
+  // Découpage primaire (Regex BPE-like)
+  const baseTokens = text.match(/ ?[a-zA-ZÀ-ÿ0-9]+| ?[^\s\w\p{Emoji_Presentation}]+| ?\p{Emoji_Presentation}/gu) || [];
+  
+  let finalTokens = [];
+  baseTokens.forEach(t => {
+    let cleanT = t;
+    let hasSpace = false;
+    if (t.startsWith(" ")) {
+      hasSpace = true;
+      cleanT = t.substring(1);
+    }
+
+    // Simulation BPE pour mots longs ou spécifiques
+    if (cleanT.toLowerCase() === "anticonstitutionnellement") {
+      finalTokens.push({ text: "anti", isFragment: true, hasSpace: hasSpace });
+      finalTokens.push({ text: "constitution", isFragment: true, hasSpace: false });
+      finalTokens.push({ text: "nelle", isFragment: true, hasSpace: false });
+      finalTokens.push({ text: "ment", isFragment: false, hasSpace: false });
+    } else if (cleanT.length > 9) {
+      const mid = Math.floor(cleanT.length / 2);
+      finalTokens.push({ text: cleanT.substring(0, mid), isFragment: true, hasSpace: hasSpace });
+      finalTokens.push({ text: cleanT.substring(mid), isFragment: false, hasSpace: false });
+    } else {
+      finalTokens.push({ text: cleanT, isFragment: false, hasSpace: hasSpace });
+    }
+  });
+
+  return {
+    tokens: finalTokens,
+    chars: text.length,
+    count: finalTokens.length
+  };
+}
+```
+
+:::
+
+::: {.render .transparent header="Flux de Tokens (Visualisation Vectorielle)"}
+
+```{ojs}
+//| echo: false
+{
+  const { tokens } = tokenizerResults;
+  
+  if (tokens.length === 0) {
+    return html`<div class="text-muted p-4 italic">Saisissez du texte pour démarrer la simulation...</div>`;
+  }
+
+  const container = html`<div class="org-token-stream"></div>`;
+  const colors = [theme.blue, theme.red, theme.green, theme.yellow, theme.magenta, theme.cyan];
+
+  tokens.forEach((tok, index) => {
+    const color = colors[index % colors.length];
+    const id = Math.floor(Math.random() * 50000);
+    
+    const tokenEl = html`<div class="mol-token">
+      <div class="token-node ${tok.isFragment ? 'is-fragment' : ''}" 
+           style="background: ${color}22; color: ${color}; border-color: ${color}44;"
+           title="Token ID: ${id}\nFragment: ${tok.isFragment ? 'Oui' : 'Non'}">
+        ${tok.hasSpace ? html`<span class="space-marker">Ġ</span>` : ''}
+        <span>${tok.text}</span>
+      </div>
+      <div class="token-id" style="color: ${color}; opacity: 0.6;">${id}</div>
+    </div>`;
+
+    const node = tokenEl.querySelector('.token-node');
+    node.onmouseover = () => {
+      node.style.background = `${color}44`;
+      node.style.transform = "translateY(-2px)";
+      node.style.boxShadow = `0 4px 12px ${color}33`;
+    };
+    node.onmouseout = () => {
+      node.style.background = `${color}22`;
+      node.style.transform = "translateY(0)";
+      node.style.boxShadow = "none";
+    };
+
+    container.appendChild(tokenEl);
+  });
+
+  return container;
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.results header="Analyse Statistique du BPE"}
+
+```{ojs}
+//| echo: false
+{
+  const stats = tokenizerResults;
+  if (!stats.tokens || stats.tokens.length === 0) return html`<div class="text-muted">En attente de texte...</div>`;
+
+  const ratio = (stats.chars / stats.count).toFixed(2);
+  
+  return html`<div class="org-matrix-grid">
+    <div class="mol-stat-card" style="border-color: ${theme.blue}">
+      <div class="stat-label">Caractères</div>
+      <div class="stat-value" style="color: ${theme.blue}">${stats.chars}</div>
+    </div>
+    <div class="mol-stat-card" style="border-color: ${theme.red}">
+      <div class="stat-label">Tokens</div>
+      <div class="stat-value" style="color: ${theme.red}">${stats.count}</div>
+    </div>
+    <div class="mol-stat-card" style="border-color: ${theme.green}">
+      <div class="stat-label">Ratio (Char/Tok)</div>
+      <div class="stat-value" style="color: ${theme.green}">${ratio}</div>
+    </div>
+  </div>`;
+}
+```
+
+::: {.org-card is-debug .debug}
+
+```{ojs}
+//| echo: false
+{
+  const stats = tokenizerResults;
+  if (!stats.tokens || stats.tokens.length === 0) return html`<span></span>`;
+
+  let hasG = stats.tokens.some(t => t.hasSpace);
+  let hasFragment = stats.tokens.some(t => t.isFragment);
+  
+  return html`<div class="d-flex flex-column gap-2">
+    ${hasG ? html`<div class="d-flex gap-3">
+        <div style="color: ${theme.orange}; font-weight: bold; min-width: 80px;">Espaces :</div>
+        <div>Le symbole <b style="color: ${theme.orange};">Ġ</b> fusionne l'espace avec le mot suivant. Pour un LLM, " chat" et "chat" sont deux concepts différents.</div>
+      </div>` : ''}
+    ${hasFragment ? html`<div class="d-flex gap-3">
+        <div style="color: ${theme.cyan}; font-weight: bold; min-width: 80px;">Découpe :</div>
+        <div>Les mots complexes sont fragmentés. Cela permet au modèle de comprendre des mots qu'il n'a jamais vus en assemblant des racines connues.</div>
+      </div>` : ''}
+    <div class="d-flex flex-column gap-1 mt-2 pt-2 border-top border-secondary opacity-75 small">
+      <div class="d-flex gap-3">
+        <div style="color: ${theme.magenta}; font-weight: bold; min-width: 80px;">Contexte :</div>
+        <div>Cette séquence occupe <b>${stats.count} / 8192</b> slots de la fenêtre d'attention.</div>
+      </div>
+      <div style="width: 100%; height: 6px; background: ${theme.base02}44; border-radius: 10px; overflow: hidden; margin-top: 4px; border: 1px solid ${theme.base02}22;">
+        <div style="width: ${Math.min(100, (stats.count / 8192 * 100)).toFixed(1)}%; height: 100%; background: ${theme.magenta}; border-radius: 10px; transition: width 0.4s ease-out;"></div>
+      </div>
+    </div>
+  </div>`;
+}
+```
+
+:::
+
+:::
+:::

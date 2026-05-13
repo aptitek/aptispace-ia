@@ -1,0 +1,98 @@
+::: {.dynamic .horizontal header="Max-Pooling : Distiller l'Essentiel"}
+
+```{ojs}
+//| echo: false
+mutable poolGroup = -1;
+```
+
+::: {.render header="Image d'Entrée (4x4)"}
+
+```{ojs}
+//| echo: false
+{
+  const gridInValues = [12, 20, 30, 0, 8, 12, 2, 0, 34, 70, 37, 4, 112, 100, 25, 12];
+  const colors = [theme.red, theme.blue, theme.green, theme.yellow];
+  const getGroup = (i) => {
+    if ([0,1,4,5].includes(i)) return 0;
+    if ([2,3,6,7].includes(i)) return 1;
+    if ([8,9,12,13].includes(i)) return 2;
+    return 3;
+  };
+
+  const container = html`<div class="matrix-grid-in" style="margin: 10px auto;">
+    ${gridInValues.map((val, i) => {
+      const group = getGroup(i);
+      const isSelected = poolGroup === group;
+      const values = gridInValues.filter((_, idx) => getGroup(idx) === group);
+      const isMax = val === Math.max(...values);
+      const cell = html`<div class="cell-in matrix-cell ${isSelected ? 'active is-group' : ''} ${isSelected && isMax ? 'is-max' : ''}" 
+                        style="background: ${colors[group]}; color: ${theme.base3};">${val}</div>`;
+      cell.onclick = () => mutable poolGroup = group;
+      return cell;
+    })}
+  </div>`;
+  return container;
+}
+```
+
+:::
+
+::: {.separator}
+➡️
+:::
+
+::: {.render header="Sortie Pooled (2x2)"}
+
+```{ojs}
+//| echo: false
+{
+  const colors = [theme.red, theme.blue, theme.green, theme.yellow];
+  const pooledValues = [20, 30, 112, 37];
+  
+  const container = html`<div class="matrix-grid-out" style="margin: 10px auto;">
+    ${pooledValues.map((val, i) => {
+      const isSelected = poolGroup === i;
+      const cell = html`<div class="cell-out matrix-cell-out ${isSelected ? 'active' : ''}" 
+                        style="background: ${colors[i]}; color: ${theme.base3};">${val}</div>`;
+      cell.onclick = () => mutable poolGroup = i;
+      return cell;
+    })}
+  </div>`;
+  return container;
+}
+```
+
+:::
+
+::: {.results}
+
+```{ojs}
+//| echo: false
+{
+  const gridInValues = [12, 20, 30, 0, 8, 12, 2, 0, 34, 70, 37, 4, 112, 100, 25, 12];
+  const groupNames = ["Rouge", "Bleue", "Verte", "Jaune"];
+  const getGroup = (i) => {
+    if ([0,1,4,5].includes(i)) return 0;
+    if ([2,3,6,7].includes(i)) return 1;
+    if ([8,9,12,13].includes(i)) return 2;
+    return 3;
+  };
+
+  if (poolGroup === -1) {
+    return ui.card(md`💡 **Astuce :** Cliquez sur une zone colorée pour comprendre comment le chiffre est extrait.`, { title: "Fonctionnement", status: "debug" });
+  }
+
+  const values = gridInValues.filter((_, i) => getGroup(i) === poolGroup);
+  const maxVal = Math.max(...values);
+  const status = ["danger", "info", "success", "warning"][poolGroup];
+  
+  return ui.card(md`
+Dans la zone **${groupNames[poolGroup]}**, on compare {${values.join(", ")}}.
+
+Le plus grand est **${maxVal}**, c'est lui qui survit au Pooling !
+  `, { title: "Détail du Calcul", status: status });
+}
+```
+
+:::
+:::

@@ -1,0 +1,212 @@
+::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : Interpolation dans l'Espace Latent (AE vs VAE)"} 
+
+::: {.controls header="Paramètres Latents"}
+Sélectionnez l'architecture et naviguez dans l'espace mathématique entre deux concepts (Chat et Chien).
+
+```{ojs}
+//| echo: false
+// 1. Toggle pour choisir entre AE et VAE
+viewof modeVAE = ui.toggle({
+  label: "Architecture",
+  options: {
+    "ae": "🔴 AE Classique",
+    "vae": "🟢 AE Variationnel"
+  },
+  value: "ae"
+})
+
+// 2. Curseur pour naviguer dans l'espace latent (Interpolation)
+viewof alphaLatent = ui.slider({
+  label: "Position Latente (α)",
+  value: 0,
+  min: 0,
+  max: 1,
+  step: 0.01
+})
+
+```
+
+:::
+
+::: {.render .transparent header="Représentation de l'Espace Latent"}
+
+```{ojs}
+//| echo: false
+// Rendu visuel de l'Espace Latent 2D
+{
+  const width = 450;
+  const height = 200;
+  const svg = d3.create("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .style("background", "#1e1e1e")
+    .style("border-radius", "8px")
+    .style("box-shadow", "inset 0 0 10px #000");
+
+  // Définition des dégradés pour simuler les distributions gaussiennes du VAE
+  const defs = svg.append("defs");
+  const gradA = defs.append("radialGradient").attr("id", "gradA");
+  gradA.append("stop").attr("offset", "0%").attr("stop-color", "#268bd2").attr("stop-opacity", 0.6);
+  gradA.append("stop").attr("offset", "100%").attr("stop-color", "#268bd2").attr("stop-opacity", 0);
+  
+  const gradB = defs.append("radialGradient").attr("id", "gradB");
+  gradB.append("stop").attr("offset", "0%").attr("stop-color", "#dc322f").attr("stop-opacity", 0.6);
+  gradB.append("stop").attr("offset", "100%").attr("stop-color", "#dc322f").attr("stop-opacity", 0);
+
+  // Positions des deux concepts
+  const pA = {x: 100, y: 100, label: "Concept A: Chat"};
+  const pB = {x: 350, y: 100, label: "Concept B: Chien"};
+  
+  // Ligne de navigation
+  svg.append("line")
+    .attr("x1", pA.x)
+    .attr("y1", pA.y)
+    .attr("x2", pB.x)
+    .attr("y2", pB.y)
+    .attr("stroke", "#586e75")
+    .attr("stroke-dasharray", "5,5")
+    .attr("stroke-width", 2);
+
+  if (modeVAE === "vae") {
+    // Mode VAE : Affichage des distributions (Moyenne et Variance)
+    svg.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 90).style("fill", "url(#gradA)");
+    svg.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 90).style("fill", "url(#gradB)");
+    
+    // Annotation Loi Normale
+    svg.append("text").attr("x", width/2).attr("y", 30).attr("fill", "#859900").attr("text-anchor", "middle").style("font-family", "monospace").text("Distribution Continue : N(μ, σ²)");
+  } else {
+    // Mode AE : Points stricts, le reste est vide
+    svg.append("text").attr("x", width/2).attr("y", 30).attr("fill", "#cb4b16").attr("text-anchor", "middle").style("font-family", "monospace").text("Espace Discret : Risque de 'Trous'");
+  }
+
+  // Les points d'ancrage
+  svg.append("circle").attr("cx", pA.x).attr("cy", pA.y).attr("r", 6).attr("fill", "#268bd2");
+  svg.append("circle").attr("cx", pB.x).attr("cy", pB.y).attr("r", 6).attr("fill", "#dc322f");
+  
+  // Labels
+  svg.append("text").attr("x", pA.x).attr("y", pA.y + 25).attr("fill", "#eee").attr("text-anchor", "middle").style("font-family", "sans-serif").text(pA.label);
+  svg.append("text").attr("x", pB.x).attr("y", pB.y + 25).attr("fill", "#eee").attr("text-anchor", "middle").style("font-family", "sans-serif").text(pB.label);
+
+  // Curseur actuel
+  const currentX = pA.x + alphaLatent * (pB.x - pA.x);
+  
+  // Halo du curseur
+  svg.append("circle")
+    .attr("cx", currentX)
+    .attr("cy", 100)
+    .attr("r", 15)
+    .attr("fill", "none")
+    .attr("stroke", "#b58900")
+    .attr("stroke-width", 2);
+    
+  svg.append("circle")
+    .attr("cx", currentX)
+    .attr("cy", 100)
+    .attr("r", 5)
+    .attr("fill", "#b58900");
+
+  return svg.node();
+}
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.render header="Sortie"}
+
+```{ojs}
+//| echo: false
+
+// Générateur du résultat en fonction de la position et de l'architecture
+{
+  const container = document.createElement("div");
+  container.style.cssText = "display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 10px;";
+  
+  let emoji = "";
+  let confidence = 0;
+  let textOut = "";
+  let isGlitch = false;
+
+  if (modeVAE === "vae") {
+    // Logique VAE : Interpolation douce (Confidence & Labels)
+    confidence = 0.85 + (Math.abs(alphaLatent - 0.5) * 0.3);
+    if (alphaLatent < 0.2) textOut = "Concept : Chat";
+    else if (alphaLatent > 0.8) textOut = "Concept : Chien";
+    else textOut = "Espace Latent : Transition Cohérente";
+  } else {
+    // Logique AE classique : Chute brutale de cohérence au milieu
+    if (alphaLatent < 0.15) {
+      emoji = "🐱"; textOut = "Chat"; confidence = 0.98;
+    } else if (alphaLatent > 0.85) {
+      emoji = "🐶"; textOut = "Chien"; confidence = 0.98;
+    } else {
+      isGlitch = true;
+      confidence = Math.max(0, 1 - (Math.abs(alphaLatent - 0.5) * 5)); // Chute drastique vers 0
+      textOut = "ERREUR: Point mort dans l'espace";
+    }
+  }
+
+  // Effet "Glitch" (Bruit latent) pour l'AE au milieu
+  if (isGlitch) {
+    const glitches = ["🤡", "🤖", "👽", "👻", "👹", "👺", "🌚", "🌝", "👾", "💩", "🦄", "🧟", "🧠", "🐷", "🐸", "🐵", "🐔", "🐨", "🐯", "🐮", "🐧", "🤪", "😵", "🧐"];
+    emoji = glitches[Math.floor(Math.random() * glitches.length)];
+  }
+
+  // Rendu UI
+  const displayEmoji = document.createElement("div");
+  displayEmoji.style.cssText = `font-size: 4em; height: 1.2em; display: flex; align-items: center; justify-content: center; position: relative; filter: ${isGlitch ? 'hue-rotate(90deg) blur(2px)' : 'none'}`;
+
+  if (modeVAE === "vae") {
+    // Cross-fade triple pour une transition fluide (Chat -> Fox -> Chien)
+    const createLayer = (txt, op) => {
+      const span = document.createElement("span");
+      span.innerText = txt;
+      span.style.cssText = `position: absolute; opacity: ${op}; transition: opacity 0.1s;`;
+      return span;
+    };
+    
+    let opCat = 0, opFox = 0, opDog = 0;
+    if (alphaLatent <= 0.5) {
+      opCat = 1 - (alphaLatent * 2);
+      opFox = alphaLatent * 2;
+    } else {
+      opFox = 1 - ((alphaLatent - 0.5) * 2);
+      opDog = (alphaLatent - 0.5) * 2;
+    }
+    
+    displayEmoji.appendChild(createLayer("🐱", opCat));
+    displayEmoji.appendChild(createLayer("🦊", opFox));
+    displayEmoji.appendChild(createLayer("🐶", opDog));
+  } else {
+    displayEmoji.innerText = emoji;
+  }
+
+  const desc = document.createElement("div");
+  desc.style.cssText = `font-family: monospace; margin-top: 10px; color: ${isGlitch ? '#dc322f' : '#2aa198'}; font-weight: bold;`;
+  desc.innerText = textOut;
+
+  // Jauge de cohérence mathématique
+  const meterCont = document.createElement("div");
+  meterCont.style.cssText = "width: 100%; background: #333; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;";
+  const fill = document.createElement("div");
+  fill.style.cssText = `width: ${confidence * 100}%; height: 100%; background: ${confidence > 0.5 ? '#859900' : '#dc322f'}; transition: width 0.3s;`;
+  meterCont.appendChild(fill);
+  
+  const meterLabel = document.createElement("div");
+  meterLabel.style.cssText = "font-size: 0.8em; color: #839496; margin-top: 5px;";
+  meterLabel.innerText = `Cohérence sémantique : ${(confidence * 100).toFixed(1)}%`;
+
+  container.appendChild(displayEmoji);
+  container.appendChild(desc);
+  container.appendChild(meterCont);
+  container.appendChild(meterLabel);
+
+  return container;
+}
+```
+
+:::
+:::

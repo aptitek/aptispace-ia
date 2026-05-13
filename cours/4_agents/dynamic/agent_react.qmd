@@ -1,0 +1,316 @@
+::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : L'Agent Autonome (Boucle ReAct)"}
+
+::: {.controls header="Centre de Commande (Missions)"}
+Confiez une mission complexe à l'Agent. Observez comment il décompose le problème et utilise ses outils (Recherche, Calculatrice) de manière autonome.
+
+```{ojs}
+//| echo: false
+viewof missionSelect = window.ui.select({
+  label: "Mission de l'Agent :",
+  options: [
+    "Mission 1 (Maths) : Racine carrée de 841 * 12",
+    "Mission 2 (Multi-Outils) : Turing + LeCun"
+  ],
+  value: "Mission 2 (Multi-Outils) : Turing + LeCun"
+})
+
+viewof startAgentBtn = {
+  const btn = Inputs.button("🧠 Lancer l'Agent ReAct");
+  btn.querySelector("button").className = "atom-btn";
+  return btn;
+}
+
+
+// État partagé pour synchroniser l'animation SVG et le Terminal
+viewof agentPhase = {
+  const div = html`<div></div>`;
+  div.value = { type: "idle", step: 0 };
+  return div;
+}
+
+
+```
+
+:::
+
+::: {.render header="Le Cerveau de l'Agent (Framework ReAct)"}
+
+
+```{ojs}
+//| echo: false
+{
+  agentPhase; // Dépendance réactive
+
+  const width = 600;
+  const height = 500;
+  
+  const svg = d3.create("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .style("background", "#002b36") // base03
+    .style("border-radius", "8px");
+
+
+  const cx = width / 2;
+  const cy = height / 2 - 40;
+  const radius = 150;
+
+  // Définition des 3 nœuds de la boucle ReAct
+  const nodes = [
+    { id: "thought", label: "THOUGHT (Raisonner)", angle: -Math.PI / 2, color: "#2aa198", icon: "🧠" },
+    { id: "action", label: "ACTION (Outils)", angle: Math.PI / 6, color: "#b58900", icon: "🛠️" },
+    { id: "obs", label: "OBSERVATION (Lire)", angle: 5 * Math.PI / 6, color: "#859900", icon: "👁️" }
+  ];
+
+  nodes.forEach(n => {
+    n.x = cx + radius * Math.cos(n.angle);
+    n.y = cy + radius * Math.sin(n.angle);
+  });
+
+  // Filtres Glow et Chalk
+  svg.innerHTML = `
+    <defs>
+      <filter id="glow-agent" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="4" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+      <filter id="chalk-filter" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" />
+      </filter>
+    </defs>
+  `;
+
+  // Tracer les flèches du cycle
+  const defs = svg.select("defs");
+  defs.append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 35)
+    .attr("refY", 0)
+    .attr("orient", "auto")
+    .attr("markerWidth", 8)
+    .attr("markerHeight", 8)
+    .append("path")
+    .attr("d", "M 0,-5 L 10,0 L 0,5")
+    .attr("fill", "#93a1a1"); // base1
+
+  for (let i = 0; i < 3; i++) {
+    const source = nodes[i];
+    const target = nodes[(i + 1) % 3];
+    
+    // Courbe de Bézier pour faire un cercle
+    const controlX = cx + (radius * 1.6) * Math.cos((source.angle + target.angle) / 2);
+    const controlY = cy + (radius * 1.6) * Math.sin((source.angle + target.angle) / 2);
+
+    const path = d3.path();
+    path.moveTo(source.x, source.y);
+    path.quadraticCurveTo(controlX, controlY, target.x, target.y);
+
+    svg.append("path")
+      .attr("d", path)
+      .attr("fill", "none")
+      .attr("stroke", "#93a1a1") // base1
+      .attr("stroke-width", 3)
+      .attr("stroke-dasharray", "5,5")
+      .attr("filter", "url(#chalk-filter)")
+      .attr("marker-end", "url(#arrowhead)");
+  }
+
+  // Nœud de Sortie (Réponse Finale)
+  const finalNode = { id: "final", x: cx, y: cy + 240, color: "#d33682", icon: "✅", label: "RÉPONSE FINALE" };
+
+  svg.append("line")
+    .attr("x1", nodes[2].x).attr("y1", nodes[2].y) // De Obs
+    .attr("x2", finalNode.x).attr("y2", finalNode.y)
+    .attr("stroke", "#93a1a1").attr("stroke-width", 3).attr("stroke-dasharray", "5,5")
+    .attr("filter", "url(#chalk-filter)")
+    .attr("marker-end", "url(#arrowhead)");
+    
+  svg.append("line")
+    .attr("x1", nodes[0].x).attr("y1", nodes[0].y) // De Thought (si pas besoin d'outil)
+    .attr("x2", finalNode.x).attr("y2", finalNode.y)
+    .attr("stroke", "#93a1a1").attr("stroke-width", 3).attr("stroke-dasharray", "5,5")
+    .attr("filter", "url(#chalk-filter)")
+    .attr("marker-end", "url(#arrowhead)");
+
+  // Dessin des nœuds (cercles)
+  [...nodes, finalNode].forEach(n => {
+    const isActive = agentPhase.type === n.id;
+    
+    const g = svg.append("g")
+      .attr("transform", `translate(${n.x}, ${n.y})`);
+
+    g.append("circle")
+      .attr("r", isActive ? 42 : 35)
+      .attr("fill", isActive ? n.color : "#073642") // base02 for inactive
+      .attr("stroke", isActive ? "#fdf6e3" : n.color) // base3 for active border
+      .attr("stroke-width", isActive ? 5 : 3)
+      .attr("filter", isActive ? "url(#glow-agent)" : "url(#chalk-filter)")
+      .style("transition", "all 0.3s");
+
+    g.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", 10)
+      .attr("font-size", isActive ? "34px" : "28px")
+      .style("transition", "all 0.3s")
+      .text(n.icon);
+
+    g.append("rect")
+      .attr("x", -70)
+      .attr("y", isActive ? 55 : 50)
+      .attr("width", 140)
+      .attr("height", 24)
+      .attr("fill", "#073642")
+      .attr("rx", 6)
+      .attr("filter", "url(#chalk-filter)");
+
+    g.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", isActive ? 72 : 67)
+      .attr("fill", isActive ? "#fdf6e3" : "#93a1a1") // base3 or base1
+      .attr("font-size", "13px")
+      .attr("font-family", "monospace")
+      .attr("font-weight", "bold")
+      .attr("filter", "url(#chalk-filter)")
+      .text(n.label || "FINAL");
+      
+    // Animation de pulsation si actif
+    if (isActive && agentPhase.type !== "final") {
+      g.append("circle")
+        .attr("r", 42)
+        .attr("fill", "none")
+        .attr("stroke", n.color)
+        .attr("stroke-width", 3)
+        .append("animate")
+        .attr("attributeName", "r").attr("from", 42).attr("to", 70).attr("dur", "1.5s").attr("repeatCount", "indefinite");
+      g.select("circle:last-child")
+        .append("animate")
+        .attr("attributeName", "opacity").attr("from", 1).attr("to", 0).attr("dur", "1.5s").attr("repeatCount", "indefinite");
+    }
+  });
+
+  return svg.node();
+}
+
+
+```
+
+:::
+
+::: {.separator}
+:::
+
+::: {.results header="Terminal LLM : Trace d'Exécution (Logs)"}
+
+```{ojs}
+//| echo: false
+{
+  if (startAgentBtn === 0) {
+    const div = document.createElement("div");
+    div.style.cssText = "font-family: 'Courier New', monospace; background: #002b36; padding: 20px; color: #586e75; border-radius: 6px; min-height: 250px;";
+
+    div.innerHTML = `> Agent Initialisé avec 2 outils : [Recherche_Web, Calculatrice]<br>> En attente d'une mission...`;
+    yield div;
+    return;
+  }
+
+
+  // --- MOTEUR DE SCÉNARIO ---
+  const isMission1 = missionSelect.includes("Mission 1");
+
+  
+  const script = isMission1 ? [
+    { type: "thought", text: "Je dois d'abord calculer la racine carrée de 841.", delay: 1500 },
+    { type: "action", tool: "Calculatrice", input: "sqrt(841)", delay: 1000 },
+    { type: "obs", text: "29", delay: 1000 },
+    { type: "thought", text: "Maintenant, je dois multiplier le résultat (29) par 12.", delay: 1500 },
+    { type: "action", tool: "Calculatrice", input: "29 * 12", delay: 1000 },
+    { type: "obs", text: "348", delay: 1000 },
+    { type: "thought", text: "J'ai la réponse finale.", delay: 1000 },
+    { type: "final", text: "La racine carrée de 841 multipliée par 12 est 348.", delay: 500 }
+  ] : [
+    { type: "thought", text: "Je dois trouver l'année de naissance d'Alan Turing.", delay: 1500 },
+    { type: "action", tool: "Recherche_Web", input: "Alan Turing année naissance", delay: 1200 },
+    { type: "obs", text: "Alan Mathison Turing est né le 23 juin 1912 à Londres.", delay: 1200 },
+    { type: "thought", text: "Turing est né en 1912. Je dois maintenant trouver l'année de naissance de Yann LeCun.", delay: 2000 },
+    { type: "action", tool: "Recherche_Web", input: "Yann LeCun année naissance", delay: 1200 },
+    { type: "obs", text: "Yann LeCun est un chercheur né le 8 juillet 1960 en France.", delay: 1200 },
+    { type: "thought", text: "LeCun est né en 1960. Je dois additionner 1912 et 1960.", delay: 1500 },
+    { type: "action", tool: "Calculatrice", input: "1912 + 1960", delay: 1000 },
+    { type: "obs", text: "3872", delay: 1000 },
+    { type: "thought", text: "Le calcul est terminé, j'ai la réponse finale.", delay: 1000 },
+    { type: "final", text: "Le résultat de l'addition de leurs années de naissance (1912 + 1960) est 3872.", delay: 500 }
+  ];
+
+  // --- CONTENEUR DU TERMINAL ---
+  const container = document.createElement("div");
+  container.style.cssText = "font-family: 'Courier New', monospace; background: #002b36; border: 1px solid #073642; border-radius: 6px; overflow-y: auto; height: 350px; font-size: 13px; color: #839496; display: flex; flex-direction: column;";
+
+
+  const termHeader = document.createElement("div");
+  termHeader.style.cssText = "background: #073642; padding: 5px 15px; border-bottom: 1px solid #586e75; position: sticky; top: 0; z-index: 10;";
+  termHeader.innerHTML = `<span class="text-sol-cyan fw-bold">[ReAct_Agent_Trace.log]</span> - Exécution en cours...`;
+  container.appendChild(termHeader);
+
+  const termBody = document.createElement("div");
+  termBody.style.cssText = "padding: 15px; display: flex; flex-direction: column; gap: 8px;";
+  container.appendChild(termBody);
+
+  // Fonction utilitaire pour écrire avec un effet "machine à écrire" très rapide
+  async function typeWriter(element, text, speed = 5) {
+    for (let i = 0; i <= text.length; i += 2) {
+      element.innerHTML = text.substring(0, i) + '<span class="opacity-50">█</span>';
+      await Promises.delay(speed);
+    }
+    element.innerHTML = text;
+  }
+
+  // Boucle principale d'animation asynchrone
+  (async function() {
+    for (let i = 0; i < script.length; i++) {
+      const step = script[i];
+      viewof agentPhase.value = { type: step.type, step: i }; // Met à jour le graph SVG
+      viewof agentPhase.dispatchEvent(new CustomEvent("input"));
+
+      
+      const line = document.createElement("div");
+      
+      if (step.type === "thought") {
+        line.innerHTML = `<span class="text-sol-cyan fw-bold">> THOUGHT:</span> <span class="text-content text-sol-base3"></span>`;
+        termBody.appendChild(line);
+        await typeWriter(line.querySelector(".text-content"), step.text);
+        
+      } else if (step.type === "action") {
+        line.style.cssText = "margin-left: 15px; border-left: 2px solid #b58900; padding-left: 10px;";
+        line.innerHTML = `<span class="text-sol-yellow fw-bold">> ACTION:</span> Utilisation de l'outil [<b class="text-sol-base3">${step.tool}</b>]<br/><span class="text-sol-base01">  Input:</span> <code class="text-sol-orange bg-sol-base02 px-1 rounded">${step.input}</code>`;
+        termBody.appendChild(line);
+        
+      } else if (step.type === "obs") {
+        line.style.cssText = "margin-left: 15px; border-left: 2px solid #859900; padding-left: 10px; background: rgba(133,153,0,0.05); padding-top: 4px; padding-bottom: 4px;";
+        line.innerHTML = `<span class="text-sol-green fw-bold">> OBSERVATION:</span> <span class="text-content text-sol-base3"></span>`;
+        termBody.appendChild(line);
+        await typeWriter(line.querySelector(".text-content"), step.text, 2); // Plus rapide car c'est une lecture
+        
+      } else if (step.type === "final") {
+        line.style.cssText = "margin-top: 15px; background: #073642; padding: 15px; border-left: 4px solid #d33682; border-radius: 4px;";
+        line.innerHTML = `<span class="text-sol-magenta fw-bold fs-6">✅ RÉPONSE FINALE :</span><br/><span class="text-content text-sol-base3 font-sans mt-2 d-inline-block"></span>`;
+        termBody.appendChild(line);
+        await typeWriter(line.querySelector(".text-content"), step.text, 10);
+      }
+
+      // Auto-scroll du terminal vers le bas
+      container.scrollTop = container.scrollHeight;
+      
+      // Pause avant la prochaine étape
+      await Promises.delay(step.delay);
+    }
+  })();
+
+  yield container;
+}
+```
+
+:::
+:::

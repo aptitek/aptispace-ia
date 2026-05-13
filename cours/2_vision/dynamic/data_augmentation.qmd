@@ -1,0 +1,45 @@
+::: {.dynamic .horizontal header="Augmentation de Données"}
+
+::: {.controls}
+
+```{ojs}
+//| echo: false
+viewof do_rot = ui.checkbox({label: "🔄 Rotation"})
+viewof do_flip = ui.checkbox({label: "↔️ Effet Miroir"})
+viewof do_zoom = ui.checkbox({label: "🔍 Zoom"})
+```
+
+:::
+
+::: {.separator}
+➡️
+:::
+
+::: {.render header="Vue Machine"}
+
+```{ojs}
+//| echo: false
+html`
+<div class="augmentation-display-side">
+  <div class="viz-viewport viz-augmentation-viewport">
+    <div class="viz-emoji" style="
+      transform: 
+        rotate(${do_rot ? '25deg' : '0deg'}) 
+        scaleX(${do_flip ? '-1' : '1'}) 
+        scale(${do_zoom ? '2.5' : '1'});">
+      🐶
+    </div>
+    <div class="viz-overlay"></div>
+  </div>
+</div>
+`
+```
+
+:::
+
+::: {.results}
+::: {.warning}
+Pour la machine, l'information matricielle de ces variantes est **totalement différente** !
+:::
+:::
+:::

@@ -1,0 +1,75 @@
+::: {.dynamic header="Visualisation des Activations Classiques"}
+
+*   **Sigmoïde :** $f(x) = \frac{1}{1 + e^{-x}}$. Écrase l'entrée entre 0 et 1 (idéal pour les probabilités).
+*   **Tanh :** $f(x) = \text{tanh}(x)$. Centrée sur zéro, entre -1 et 1.
+*   **ReLU :** $f(x) = \max(0, x)$. La norme standard pour sa simplicité et sa rapidité.
+*   **Softmax :** Utilisée en sortie pour transformer des scores en distribution de probabilités (somme = 1).
+
+::: {.controls}
+
+```{ojs}
+//| echo: false
+viewof x_val = ui.slider({
+  label: "Valeur de x",
+  value: 0,
+  min: -5,
+  max: 5,
+  step: 0.1
+})
+
+sigmoid = (x) => 1 / (1 + Math.exp(-x))
+tanh = (x) => Math.tanh(x)
+relu = (x) => Math.max(0, x)
+softmax = (x) => Math.exp(x) / (Math.exp(x) + Math.exp(0) + Math.exp(1)) // Cas 3-classes (x vs 0 vs 1)
+
+data = {
+  const points = [];
+  for (let x = -5; x <= 5; x += 0.2) {
+    points.push({x: x, y: sigmoid(x), type: "Sigmoïde"});
+    points.push({x: x, y: tanh(x), type: "Tanh"});
+    points.push({x: x, y: relu(x), type: "ReLU"});
+    points.push({x: x, y: softmax(x), type: "Softmax"});
+  }
+  return points;
+}
+```
+
+:::
+
+::: {.render}
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  height: 400,
+  background: "transparent",
+  grid: true,
+  y: {domain: [-1.1, 1.1], label: "Activation"},
+  color: {legend: true, domain: ["Sigmoïde", "Tanh", "ReLU", "Softmax"], range: [theme.red, theme.green, theme.blue, theme.magenta]},
+  marks: [
+    Plot.ruleY([0]),
+    Plot.ruleX([0]),
+    Plot.line(data, {x: "x", y: "y", stroke: "type", strokeWidth: 2}),
+    Plot.dot([{x: x_val, y: sigmoid(x_val)}], {x: "x", y: "y", fill: theme.red}),
+    Plot.dot([{x: x_val, y: tanh(x_val)}], {x: "x", y: "y", fill: theme.green}),
+    Plot.dot([{x: x_val, y: relu(x_val)}], {x: "x", y: "y", fill: theme.blue}),
+    Plot.dot([{x: x_val, y: softmax(x_val)}], {x: "x", y: "y", fill: theme.magenta})
+  ]
+})
+```
+
+:::
+
+::: {.results}
+
+```{ojs}
+//| echo: false
+ui.card(md`| Sigmoïde(x) | Tanh(x) | ReLU(x) | Softmax(x) |
+|:---:|:---:|:---:|:---:|
+| **${sigmoid(x_val).toFixed(3)}** | **${tanh(x_val).toFixed(3)}** | **${relu(x_val).toFixed(3)}** | **${softmax(x_val).toFixed(3)}** |`, {
+  title: "Valeurs d'Activation"
+})
+```
+
+:::
+:::

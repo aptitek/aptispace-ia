@@ -1,0 +1,168 @@
+::: {.dynamic header="Nettoyage Vectoriel"}
+
+::: {.controls}
+
+```{ojs}
+//| echo: false
+// 1. Contrôles de l'interface utilisateur
+viewof method = ui.toggle({label: "Méthode :", options: ["Z-Score", "IQR"], value: "Z-Score"})
+
+// Le curseur s'adapte automatiquement selon la méthode choisie
+viewof threshold = method === "Z-Score" 
+  ? ui.slider({label: "Seuil (Écarts-types Z)", value: 2.5, min: 0.5, max: 4, step: 0.1})
+  : ui.slider({label: "Seuil (Mul IQR)", value: 1.5, min: 0.5, max: 4, step: 0.1})
+
+// 2. Génération unique du jeu de données (Cluster central + Anomalies)
+raw_data = {
+  const pts = [];
+  // 100 points normaux (cluster autour de 50,50)
+  for(let i=0; i<100; i++) {
+    let u = 1 - Math.random(); let v = Math.random();
+    let zx = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    let zy = Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v);
+    pts.push({id: i, x: 50 + zx * 7, y: 50 + zy * 7});
+  }
+  // 15 anomalies réparties aléatoirement sur les bords
+  for(let i=0; i<15; i++) {
+    pts.push({
+      id: 100+i, 
+      x: Math.random() > 0.5 ? Math.random()*15 : 85 + Math.random()*15, 
+      y: Math.random() > 0.5 ? Math.random()*15 : 85 + Math.random()*15
+    });
+  }
+  return pts;
+}
+
+// 3. Calcul des frontières (La Boîte de Sécurité)
+bounds = {
+  const xs = raw_data.map(d => d.x).sort((a,b) => a-b);
+  const ys = raw_data.map(d => d.y).sort((a,b) => a-b);
+  let metrics = {};
+
+  if (method === "Z-Score") {
+    const meanX = xs.reduce((a,b)=>a+b)/xs.length;
+    const meanY = ys.reduce((a,b)=>a+b)/ys.length;
+    const stdX = Math.sqrt(xs.reduce((sq, n) => sq + Math.pow(n - meanX, 2), 0) / xs.length);
+    const stdY = Math.sqrt(ys.reduce((sq, n) => sq + Math.pow(n - meanY, 2), 0) / ys.length);
+    metrics = {
+      type: "Z-Score",
+      cx: meanX, cy: meanY,
+      rx: threshold * stdX, ry: threshold * stdY,
+      xMin: meanX - threshold * stdX, xMax: meanX + threshold * stdX,
+      yMin: meanY - threshold * stdY, yMax: meanY + threshold * stdY
+    };
+  } else { // IQR
+    const q1X = xs[Math.floor(xs.length * 0.25)];
+    const q3X = xs[Math.floor(xs.length * 0.75)];
+    const iqrX = q3X - q1X;
+    const q1Y = ys[Math.floor(ys.length * 0.25)];
+    const q3Y = ys[Math.floor(ys.length * 0.75)];
+    const iqrY = q3Y - q1Y;
+    metrics = {
+      type: "IQR",
+      xMin: q1X - threshold * iqrX, xMax: q3X + threshold * iqrX,
+      yMin: q1Y - threshold * iqrY, yMax: q3Y + threshold * iqrY,
+      innerX1: q1X, innerX2: q3X,
+      innerY1: q1Y, innerY2: q3Y
+    };
+  }
+  return metrics;
+}
+
+// 4. Application du filtre basé sur la frontière
+processed_data = raw_data.map(d => {
+  const isOutlier = d.x < bounds.xMin || d.x > bounds.xMax || d.y < bounds.yMin || d.y > bounds.yMax;
+  
+  // Nouveau : Détection du "Cœur" (Boîte verte IQR)
+  let status = isOutlier ? "Anomalie" : "Conservé";
+  if (method === "IQR" && !isOutlier) {
+    const isCore = d.x >= bounds.innerX1 && d.x <= bounds.innerX2 && d.y >= bounds.innerY1 && d.y <= bounds.innerY2;
+    if (isCore) status = "Cœur";
+  }
+  
+  return {...d, status: status};
+});
+
+// 5. Statistiques dynamiques
+stats = {
+  const total = processed_data.length;
+  const anomalies = processed_data.filter(d => d.status === "Anomalie").length;
+  const kept = total - anomalies;
+  return {total, kept, anomalies};
+}
+```
+
+:::
+
+::: {.render}
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  height: 450,
+  background: "transparent",
+  grid: true,
+  x: {domain: [0, 100], label: "Caractéristique 1 (Feature X)"},
+  y: {domain: [0, 100], label: "Caractéristique 2 (Feature Y)"},
+  color: {
+    domain: ["Conservé", "Cœur", "Anomalie"], 
+    range: [theme.blue, theme.green, theme.red], 
+    legend: true
+  },
+  marks: [
+    // 1. Zone de Sécurité (Frontière)
+    Plot.rect([{x1: bounds.xMin, y1: bounds.yMin, x2: bounds.xMax, y2: bounds.yMax}], {
+      x1: "x1", y1: "y1", x2: "x2", y2: "y2",
+      fill: theme.blue, 
+      fillOpacity: 0.05,
+      stroke: theme.blue, 
+      strokeWidth: 2, 
+      strokeDasharray: "6,4"
+    }),
+
+    // 2. Marqueurs Spécifiques (Pédagogie)
+    method === "IQR" ? [
+      // Boîte Interquartile (Le cœur des données)
+      Plot.rect([{x1: bounds.innerX1, y1: bounds.innerY1, x2: bounds.innerX2, y2: bounds.innerY2}], {
+        x1: "x1", y1: "y1", x2: "x2", y2: "y2",
+        fill: theme.green, fillOpacity: 0.2, stroke: theme.green, strokeWidth: 1
+      }),
+      Plot.text([{x: bounds.innerX1, y: bounds.innerY1, text: "Q1 / Q3 (Le Cœur)"}], {x: "x", y: "y", dy: -10, dx: 10, fontSize: 10, fill: theme.green})
+    ] : [
+      // Lignes de Moyenne (Le centre statistique)
+      Plot.ruleX([bounds.cx], {stroke: theme.green, strokeOpacity: 0.6, strokeWidth: 2, strokeDasharray: "4,2"}),
+      Plot.ruleY([bounds.cy], {stroke: theme.green, strokeOpacity: 0.6, strokeWidth: 2, strokeDasharray: "4,2"}),
+      Plot.text([{x: bounds.cx, y: bounds.cy, text: "Moyenne (μ)"}], {x: "x", y: "y", dy: -10, dx: 10, fontSize: 10, fontWeight: "bold", fill: theme.green})
+    ],
+    
+    // 3. Les points de données
+    Plot.dot(processed_data, {
+      x: "x", 
+      y: "y", 
+      fill: "status", 
+      r: 5.5, 
+      stroke: theme.base3, 
+      strokeWidth: 0.5,
+      title: (d) => `X: ${d.x.toFixed(1)}, Y: ${d.y.toFixed(1)}\nStatut: ${d.status}`
+    })
+  ]
+})
+```
+
+:::
+
+::: {.results}
+
+```{ojs}
+//| echo: false
+ui.card(md`| Statut | Quantité |
+|:---|:---|
+| 🔵 Données propres | **${stats.kept}** |
+| 🔴 Anomalies détectées | **${stats.anomalies}** |
+| **Total** | **${stats.total}** |`, {
+  title: "Résumé du filtrage"
+})
+```
+
+:::
+:::

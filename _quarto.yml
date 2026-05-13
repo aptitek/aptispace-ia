@@ -15,7 +15,7 @@ project:
 bibliography: bibliography.bib
 
 filters:
-  - aptitek/graph
+  - aptitek/dynamic
   - filetree
   - card
   - timeline
