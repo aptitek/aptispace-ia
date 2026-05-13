@@ -1,4 +1,4 @@
-::: {.dynamic header="🕹️ Simulation Interactive : Le Mécanisme de Self-Attention"}
+::: {.dynamic .horizontal .side-results header="🕹️ Simulation Interactive : Le Mécanisme de Self-Attention"}
 
 
 ```{ojs}
@@ -33,14 +33,13 @@ mutable activeQ = 4;
 //| echo: false
 {
   const svgWidth = 1000;
-  const svgHeight = 600;
+  const svgHeight = 550;
   const svg = d3.create("svg")
-    .attr("width", "100%")
-    .attr("height", svgHeight)
     .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
     .style("border-radius", "20px")
-    .style("overflow", "hidden") // Empêche le débordement des halos
-    .style("font-size", "18px"); // Slightly bigger base for em
+    .style("overflow", "hidden")
+    .style("font-size", "18px");
 
   const defs = svg.append("defs");
 
@@ -69,9 +68,8 @@ mutable activeQ = 4;
     const isRow1 = i < 4;
     const items = isRow1 ? 4 : 3;
     const idx = isRow1 ? i : i - 4;
-    // Utiliser 80% de la largeur/hauteur centrale pour laisser 10% de marge
     const marginX = svgWidth * 0.15;
-    const marginY = svgHeight * 0.2;
+    const marginY = 100; // Expanded to avoid halo clipping
     const innerWidth = svgWidth - (2 * marginX);
     const innerHeight = svgHeight - (2 * marginY);
     
@@ -118,7 +116,7 @@ mutable activeQ = 4;
       haloLayer.append("circle")
         .attr("cx", p.x)
         .attr("cy", p.y)
-        .attr("r", 140)
+        .attr("r", 120) // Slightly smaller to fit expanded rect
         .style("fill", heatmapScale(weight))
         .style("opacity", weight * 0.7)
         .style("filter", "url(#blurHalo)")
@@ -247,7 +245,7 @@ mutable activeQ = 4;
     
   svg.append("text")
     .attr("x", qPos.x)
-    .attr("y", qPos.y - (activeQ < 4 ? 85 : -110))
+    .attr("y", qPos.y + (activeQ < 4 ? 85 : -85))
     .attr("fill", theme.red)
     .attr("font-size", "1.2em")
     .attr("font-weight", "bold")
@@ -262,8 +260,7 @@ mutable activeQ = 4;
 
 :::
 
-::: {.separator}
-:::
+
 
 
 ::: {.results header="Décomposition Mathématique : Q × K = Softmax"}
@@ -285,33 +282,40 @@ mutable activeQ = 4;
     .range([theme.blue, theme.green, theme.yellow, theme.red])
     .clamp(true);
 
-  const container = html`<div style="font-family: var(--font-code); font-size: 0.85em; display: flex; flex-direction: column; gap: 12px; color: ${theme.base1};"></div>`;
+  const term = ui.org.terminal({header: "Transformer_Attention_Engine.log"});
+  const termBody = term.body;
+  termBody.style.cssText = "font-family: var(--font-code); line-height: 1.4;";
 
-  const step1 = html`<div><span style="color: ${theme.magenta}; font-weight: bold;">[1. REQUÊTE]</span> "${qToken}" cherche son contexte.</div>`;
+  const step1 = document.createElement("div");
+  step1.innerHTML = `<div style="color: ${theme.magenta}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 1] QUERY_PROJECTION</div>
+    <div style="margin-left: 8px; border-left: 1px solid ${theme.base01}; padding-left: 8px; margin-bottom: 6px;">
+      <span style="color: ${theme.base0};">Token source :</span> <span style="background: rgba(${theme.magenta_rgb}, 0.2); color: ${theme.magenta}; padding: 0 4px; border-radius: 2px;">"${qToken}"</span><br/>
+    </div>`;
 
   let kMatchHtml = sortedAttentions.map(item => {
     const bgColor = heatmapScale(item.w);
     const textColor = item.w > 0.4 ? theme.base3 : theme.base03;
-    return `<span style="background: ${bgColor}; color: ${textColor}; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.95em; border: 1px solid rgba(255,255,255,0.1); margin-right: 4px; display: inline-block;">${item.word} (${(item.w * 100).toFixed(0)}%)</span>`;
+    return `<span style="background: ${bgColor}; color: ${textColor}; padding: 1px 6px; border-radius: 4px; font-weight: bold; font-size: 0.85em; border: 1px solid rgba(${theme.base3_rgb}, 0.1); margin-right: 3px; display: inline-block; margin-bottom: 3px;">${item.word} (${(item.w * 100).toFixed(0)}%)</span>`;
   }).join("");
   
-  const step2 = html`<div>
-    <span style="color: ${theme.cyan}; font-weight: bold;">[2. ATTENTION]</span> Calcul du score de pertinence :<br/>
-    <div style="margin-top: 8px; padding: 12px; background: ${theme.base02}; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); line-height: 2.2;">
-      ${html`${kMatchHtml}`}
-    </div>
-  </div>`;
+  const step2 = document.createElement("div");
+  step2.innerHTML = `<div style="color: ${theme.cyan}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 2] SOFTMAX_DIST</div>
+    <div style="margin-left: 8px; border-left: 1px solid ${theme.base01}; padding-left: 8px; margin-bottom: 6px;">
+      <div style="margin-top: 4px;">${kMatchHtml}</div>
+    </div>`;
 
+  const step3 = document.createElement("div");
+  step3.style.cssText = `background: rgba(${theme.magenta_rgb}, 0.05); padding: 6px; border-radius: 4px; border-left: 3px solid ${theme.magenta};`;
+  step3.innerHTML = `<div style="color: ${theme.magenta}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 3] AUGMENTATION</div>
+    <div style="margin-left: 4px;">
+      <span style="color: ${theme.base2}; font-size: 0.9em;">Vecteur de "${qToken}" enrichi.</span>
+    </div>`;
 
-  const step3 = html`<div style="background: ${theme.base02}; border-left: 3px solid ${theme.magenta}; padding: 8px 12px; border-radius: 4px; color: ${theme.base2};">
-    <span style="color: ${theme.green}; font-weight: bold;">[3. RÉSULTAT]</span> Le vecteur de "${qToken}" est enrichi par ces informations.
-  </div>`;
+  termBody.appendChild(step1);
+  termBody.appendChild(step2);
+  termBody.appendChild(step3);
 
-  container.appendChild(step1);
-  container.appendChild(step2);
-  container.appendChild(step3);
-
-  return ui.card(container, { status: "success" });
+  return term;
 }
 ```
 

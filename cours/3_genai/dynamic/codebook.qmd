@@ -157,30 +157,38 @@ _update = {
     }
   });
 
-  const container = document.createElement("div");
-  container.style.cssText = "font-family: var(--font-code); display: flex; flex-direction: row; flex-wrap: wrap; gap: 15px; align-items: stretch;";
+  const term = ui.org.terminal({header: "VQ-VAE_Quantizer_Core.log"});
+  const termBody = term.body;
+  termBody.style.cssText = "font-family: var(--font-code); line-height: 1.4;";
 
-  const itemStyle = "flex: 1 1 140px; min-width: 140px;";
+  const step1 = document.createElement("div");
+  step1.innerHTML = `<div style="color: ${theme.blue}; font-weight: bold;">> [ÉTAPE 1] INPUT_EMBEDDING_FLOAT</div>
+    <div style="margin-left: 12px; border-left: 1px solid ${theme.base01}; padding-left: 10px; margin-bottom: 10px;">
+      <span style="color: ${theme.base0};">Vecteur continu :</span> [ ${vecX.toFixed(3)}, ${vecY.toFixed(3)} ]<br/>
+      <span style="color: ${theme.base01}; font-size: 0.85em;">Statut: Instable / Précision infinie</span>
+    </div>`;
 
-  const inputDiv = document.createElement("div");
-  inputDiv.style.cssText = itemStyle;
-  inputDiv.innerHTML = `<div style="color: ${theme.blue}; font-weight: bold; font-size: 0.85em; margin-bottom: 4px;">[1] CONTINU</div><div style="font-size: 1.1em; letter-spacing: -0.5px;">[ ${vecX.toFixed(2)}, ${vecY.toFixed(2)} ]</div><div style="font-size: 0.75em; color: ${theme.base1}; margin-top: 4px;">Mémoire instable</div>`;
+  const step2 = document.createElement("div");
+  step2.innerHTML = `<div style="color: ${theme.yellow}; font-weight: bold;">> [ÉTAPE 2] NEAREST_NEIGHBOR_LOOKUP</div>
+    <div style="margin-left: 12px; border-left: 1px solid ${theme.base01}; padding-left: 10px; margin-bottom: 10px;">
+      <span style="color: ${theme.base0};">Distance Euclidienne :</span> ${minDist.toFixed(4)}<br/>
+      <span style="color: ${theme.base01}; font-size: 0.85em;">Opération: Scan du Codebook (${codebook.length} vecteurs)</span>
+    </div>`;
 
-  const processDiv = document.createElement("div");
-  processDiv.style.cssText = itemStyle;
-  processDiv.innerHTML = `<div style="color: ${theme.red}; font-weight: bold; font-size: 0.85em; margin-bottom: 4px;">[2] DISTANCE</div><div style="font-size: 1.1em;">${minDist.toFixed(3)}</div><div style="font-size: 0.75em; color: ${theme.base1}; margin-top: 4px;">Recherche Codebook</div>`;
+  const step3 = document.createElement("div");
+  step3.style.cssText = `background: rgba(${theme.green_rgb}, 0.05); padding: 8px; border-radius: 4px; border-left: 3px solid ${theme.green};`;
+  step3.innerHTML = `<div style="color: ${theme.green}; font-weight: bold;">> [ÉTAPE 3] QUANTIZED_CODE_INDEX</div>
+    <div style="margin-left: 4px;">
+      <span style="color: ${theme.base0};">ID Vecteur :</span> <span style="background: ${theme.green}; color: ${theme.base3}; padding: 1px 6px; border-radius: 3px; font-weight: bold;">${nearestPoint.id}</span><br/>
+      <span style="color: ${theme.base0};">Position discrète :</span> [ ${nearestPoint.x.toFixed(1)}, ${nearestPoint.y.toFixed(1)} ]<br/>
+      <span style="color: ${theme.green}; font-weight: bold; font-size: 0.85em; margin-top: 4px;">[SUCCESS] Information compressée avec succès.</span>
+    </div>`;
 
-  const outputDiv = document.createElement("div");
-  outputDiv.style.cssText = `${itemStyle} background: ${theme.base02}; padding: 8px 12px; border-radius: 8px; border-left: 4px solid ${theme.green};`;
-  outputDiv.innerHTML = `<div style="color: ${theme.green}; font-weight: bold; font-size: 0.85em; margin-bottom: 4px;">[3] DISCRET</div>
-  <div style="font-size: 0.9em; margin-bottom: 4px;">Pos: ${nearestPoint.x.toFixed(1)}, ${nearestPoint.y.toFixed(1)}</div>
-  <span style="background: ${theme.green}; color: ${theme.base3}; padding: 1px 6px; border-radius: 4px; font-weight: bold; font-size: 0.85em;">${nearestPoint.id}</span>`;
+  termBody.appendChild(step1);
+  termBody.appendChild(step2);
+  termBody.appendChild(step3);
 
-  container.appendChild(inputDiv);
-  container.appendChild(processDiv);
-  container.appendChild(outputDiv);
-
-  return ui.card(container, {title: "Log de l'Espace Latent", status: "success"});
+  return term;
 }
 ```
 
