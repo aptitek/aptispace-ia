@@ -72,12 +72,13 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = 
     getWidth,
     clear,
 
-    legend: (items, { x = 40, y = height - 40, gap = 160 } = {}) => {
+    legend: (items, { x = 40, y = height - 40, gap = 160, type = "discrete", width = 120 } = {}) => {
       const container = document.createElement("div");
       container.style.cssText = `
         position: absolute;
         left: ${x}px; top: ${y}px;
         display: flex;
+        align-items: center;
         gap: ${gap}px;
         font-family: var(--font-base, sans-serif);
         font-size: 11px;
@@ -87,14 +88,24 @@ window.ui.org.canvas = ({width: initialWidth, height = 400, shadow = true, bg = 
         pointer-events: none;
         color: ${window.theme.base01};
       `;
-      items.forEach(item => {
-        const div = document.createElement("div");
-        div.style.display = "flex";
-        div.style.alignItems = "center";
-        div.style.gap = "8px";
-        div.innerHTML = `<div style="width:12px; height:12px; border-radius:3px; background:${item.color}"></div><span>${item.label}</span>`;
-        container.appendChild(div);
-      });
+
+      if (type === "gradient") {
+        const colors = items.map(i => i.color).join(", ");
+        container.innerHTML = `
+          <span style="opacity:0.7">${items[0].label}</span>
+          <div style="width: ${width}px; height: 6px; border-radius: 3px; background: linear-gradient(to right, ${colors}); margin: 0 10px;"></div>
+          <span style="opacity:0.7">${items[items.length-1].label}</span>
+        `;
+      } else {
+        items.forEach(item => {
+          const div = document.createElement("div");
+          div.style.display = "flex";
+          div.style.alignItems = "center";
+          div.style.gap = "8px";
+          div.innerHTML = `<div style="width:12px; height:12px; border-radius:3px; background:${item.color}"></div><span>${item.label}</span>`;
+          container.appendChild(div);
+        });
+      }
       htmlLayer.appendChild(container);
       return container;
     },

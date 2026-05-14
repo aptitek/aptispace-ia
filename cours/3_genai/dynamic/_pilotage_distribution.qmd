@@ -2,169 +2,42 @@
 
 ::: {.controls header="Paramètres d'Échantillonnage" style="flex: 0 0 450px;"}
 
-:::: {.d-flex .flex-wrap .gap-3 .align-items-center .justify-content-center .py-4}
+:::: {.d-flex .flex-wrap .gap-4 .align-items-start .justify-content-center .py-4}
 
-::: {.d-flex .flex-column}
 ```{ojs}
 //| echo: false
-viewof temp = {
-  const container = html`
-  <div class="sampler-widget">
-    <div class="widget-icon">🌡️</div>
-    <div class="widget-label" style="z-index: 5;">TEMP</div>
-    <div class="vertical-track" style="z-index: 2;">
-      <div class="emoji-hot">💧</div>
-      <div class="emoji-cold">❄️</div>
-      <div class="frost"></div>
-      <div class="thermometer-ticks">
-        ${[...Array(6)].map(() => html`<div style="height: 1.5px; width: 4px; background: ${theme.base01};"></div>`)}
-      </div>
-      <div class="fill thermometer-fill" style="height: 35%; background: linear-gradient(to top, ${theme.blue}, ${theme.red}); z-index: 3;"></div>
-      <div class="bulb thermometer-bulb" style="background: ${theme.blue}; z-index: 2;"></div>
-      <input type="range" class="vertical-range" min="0.01" max="2" step="0.01" value="0.7" orient="vertical">
-    </div>
-    <div class="val widget-value-box" style="z-index: 5;">0.70</div>
-  </div>`;
-  const input = container.querySelector("input");
-  const fill = container.querySelector(".fill");
-  const bulb = container.querySelector(".bulb");
-  const val = container.querySelector(".val");
-  const frost = container.querySelector(".frost");
-  const hotEmoji = container.querySelector(".emoji-hot");
-  const coldEmoji = container.querySelector(".emoji-cold");
-  const update = () => {
-    const sliderVal = parseFloat(input.value);
-    const v = 2.01 - sliderVal;
-    const pct = (v / 2) * 100;
-    fill.style.height = Math.max(5, pct) + "%";
-    hotEmoji.style.opacity = Math.max(0, (v - 1.2) / 0.8);
-    hotEmoji.style.top = Math.max(0, (v - 1.2) * 60) + "px";
-    coldEmoji.style.opacity = Math.max(0, (0.8 - v) / 0.8);
-    if (v < 0.4) {
-      fill.style.background = "linear-gradient(to top, " + theme.base3 + ", " + theme.blue + ")";
-      bulb.style.background = theme.blue;
-      frost.style.background = "rgba(var(--sol-base3-rgb), 0.4)";
-      frost.style.backdropFilter = "blur(2px)";
-      container.style.boxShadow = "0 0 15px " + theme.base3 + ", 0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
-      container.classList.remove("hot-pulse");
-      fill.style.boxShadow = "0 0 10px " + theme.base3;
-      bulb.style.boxShadow = "0 0 10px " + theme.base3;
-    } else if (v > 1.4) {
-      fill.style.background = "linear-gradient(to top, " + theme.red + ", " + theme.orange + ")";
-      bulb.style.background = theme.red;
-      frost.style.background = "transparent";
-      frost.style.backdropFilter = "blur(0px)";
-      container.classList.add("hot-pulse");
-      fill.style.boxShadow = "0 0 15px " + theme.red;
-      bulb.style.boxShadow = "0 0 15px " + theme.red;
-    } else {
-      fill.style.background = "linear-gradient(to top, " + theme.green + ", " + theme.yellow + ")";
-      bulb.style.background = theme.green;
-      frost.style.background = "transparent";
-      frost.style.backdropFilter = "blur(0px)";
-      container.style.boxShadow = "0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
-      container.classList.remove("hot-pulse");
-      fill.style.boxShadow = "none";
-      bulb.style.boxShadow = "none";
-    }
-    val.innerText = v.toFixed(2);
-    container.value = v;
-    container.dispatchEvent(new CustomEvent("input"));
-  };
-  input.oninput = (e) => { e.stopPropagation(); update(); };
-  setTimeout(update, 0);
-  return container;
-}
-```
-:::
+// 1. Temperature (Thermometer Widget)
+viewof temp = ui.mol.thermometer({
+  label: "Température",
+  value: 0.7,
+  min: 0.01,
+  max: 2,
+  step: 0.05,
+  height: "240px"
+})
 
-::: {.d-flex .flex-column}
-```{ojs}
-//| echo: false
-viewof topK = {
-  const container = html`
-  <div class="sampler-widget">
-    <div class="aggro-grad" style="background: linear-gradient(to bottom, ${theme.red}66, transparent);"></div>
-    <div class="aggro-emoji">💢</div>
-    <div class="widget-icon">🪓</div>
-    <div class="widget-label" style="z-index: 2;">TOP-K</div>
-    <div class="blade-track" style="z-index: 2;">
-      <div id="tokens" class="tokens-track">
-        ${[1,2,3,4,5,6,7,8].map(i => html`<div class="tok" style="height: 5px; margin: 0 5px; background: ${theme.cyan}; border-radius: 2px; transition: opacity 0.2s, background 0.2s;"></div>`)}
-      </div>
-      <div class="blade blade-line">
-         <div class="blade-icon">🔪</div>
-      </div>
-      <input type="range" class="vertical-range" min="1" max="8" step="1" value="8" orient="vertical">
-    </div>
-    <div class="val widget-value-box" style="z-index: 2;">8</div>
-  </div>`;
-  const input = container.querySelector("input");
-  const blade = container.querySelector(".blade");
-  const val = container.querySelector(".val");
-  const toks = container.querySelectorAll(".tok");
-  const aggroGrad = container.querySelector(".aggro-grad");
-  const aggroEmoji = container.querySelector(".aggro-emoji");
-  const update = () => {
-    const v = parseInt(input.value);
-    const pct = (v / 8.2) * 100;
-    blade.style.top = pct + "%";
-    const intensity = Math.max(0, (4 - v) / 3);
-    aggroGrad.style.opacity = intensity;
-    aggroEmoji.style.opacity = intensity;
-    if (intensity > 0) {
-      container.style.boxShadow = "0 0 " + (15 * intensity) + "px " + theme.red + "88, 0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
-    } else {
-      container.style.boxShadow = "0 4px 6px rgba(var(--sol-base03-rgb), 0.4)";
-    }
-    toks.forEach((tok, idx) => {
-      tok.style.opacity = (idx >= v) ? "0.2" : "1";
-      tok.style.background = (idx >= v) ? theme.base01 : theme.cyan;
-    });
-    val.innerText = v;
-    container.value = v;
-    container.dispatchEvent(new CustomEvent("input"));
-  };
-  input.oninput = (e) => { e.stopPropagation(); update(); };
-  setTimeout(update, 0);
-  return container;
-}
-```
-:::
+// 2. Top-K (Vertical Slider)
+viewof topK = ui.mol.slider_vertical({
+  label: "Top-K",
+  value: 8,
+  min: 1,
+  max: 8,
+  step: 1,
+  color: theme.cyan,
+  height: "220px"
+})
 
-::: {.d-flex .flex-column}
-```{ojs}
-//| echo: false
-viewof topP = {
-  const container = html`
-  <div class="sampler-widget" style="width: 110px;">
-    <div class="widget-icon">🎯</div>
-    <div class="widget-label">TOP-P (Nucleus)</div>
-    <div class="nucleus-orbit">
-      <div class="core nucleus-core" style="background: radial-gradient(circle, ${theme.yellow} 0%, ${theme.orange} 100%); opacity: 0.8;"></div>
-      <div class="nucleus-grid" style="background-image: radial-gradient(${theme.base3}22 1px, transparent 1px);"></div>
-      <input type="range" class="overlay-range" min="0.1" max="1" step="0.05" value="1">
-    </div>
-    <div class="val widget-value-box">1.00</div>
-  </div>`;
-  const input = container.querySelector("input");
-  const core = container.querySelector(".core");
-  const val = container.querySelector(".val");
-  const update = () => {
-    const v = parseFloat(input.value);
-    const scale = Math.max(0.2, v);
-    core.style.transform = "scale(" + scale + ")";
-    core.style.opacity = v < 0.3 ? 0.4 : 0.8;
-    val.innerText = v.toFixed(2);
-    container.value = v;
-    container.dispatchEvent(new CustomEvent("input"));
-  };
-  input.oninput = (e) => { e.stopPropagation(); update(); };
-  setTimeout(update, 0);
-  return container;
-}
+// 3. Top-P (Radial Slider)
+viewof topP = ui.mol.slider_radial({
+  label: "Top-P (Nucleus)",
+  value: 1,
+  min: 0.1,
+  max: 1,
+  step: 0.05,
+  color: theme.yellow,
+  size: 110
+})
 ```
-:::
 
 ::::
 

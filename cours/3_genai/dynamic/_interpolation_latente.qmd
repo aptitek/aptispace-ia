@@ -81,23 +81,32 @@ _updateLatent2D = {
   canvas.atom.link({ source: pA, target: pB, dashed: true, color: theme.base01, width: 4 });
 
   // Nœud Chat
-  canvas.atom.node({ 
-    x: pA.x, y: pA.y, radius: 18, color: theme.blue, label: "Chat",
+  const nA = canvas.atom.node({ 
+    x: pA.x, y: pA.y, radius: 35, color: theme.blue, label: "Chat",
+    labelColor: theme.base3, labelSize: "1rem",
     aura: auraType, auraRadius: auraRad, auraOpacity: auraOp
   });
+  nA._el.onmouseenter = () => { nA._el.style.transform = "scale(1.1)"; };
+  nA._el.onmouseleave = () => { nA._el.style.transform = "scale(1)"; };
 
   // Nœud Chien
-  canvas.atom.node({ 
-    x: pB.x, y: pB.y, radius: 18, color: theme.red, label: "Chien",
+  const nB = canvas.atom.node({ 
+    x: pB.x, y: pB.y, radius: 35, color: theme.red, label: "Chien",
+    labelColor: theme.base3, labelSize: "1rem",
     aura: auraType, auraRadius: auraRad, auraOpacity: auraOp
   });
+  nB._el.onmouseenter = () => { nB._el.style.transform = "scale(1.1)"; };
+  nB._el.onmouseleave = () => { nB._el.style.transform = "scale(1)"; };
 
   // Nœud Curseur
   const cursor = canvas.atom.node({ 
-    x: pos.x, y: pos.y, radius: 8, color: theme.yellow, 
-    aura: false 
+    x: pos.x, y: pos.y, radius: 10, color: theme.yellow, 
+    aura: "gradient", auraRadius: 20, auraOpacity: 0.3
   });
-  if (cursor._el) cursor._el.style.cursor = "grab";
+  if (cursor._el) {
+    cursor._el.style.cursor = "grab";
+    cursor._el.style.boxShadow = `0 0 15px ${theme.yellow}`;
+  }
 }
 
 // 3. Calcul de l'alpha consolidé pour le rendu final

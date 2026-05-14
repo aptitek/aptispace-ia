@@ -32,7 +32,7 @@ mutable activeQ = 4;
 ```{ojs}
 //| echo: false
 {
-  const canvas = ui.canvas({ height: 600, shadow: true });
+  const canvas = ui.canvas({ height: 380, shadow: true });
   yield canvas.node;
 
   // À ce stade, le nœud est dans le DOM, getWidth() sera précis
@@ -48,10 +48,10 @@ mutable activeQ = 4;
     const isRow1 = i < 4;
     const items = isRow1 ? 4 : 3;
     const idx = isRow1 ? i : i - 4;
-    const marginX = w * 0.25; // Closer together horizontally
-    const marginY = 160;      // Closer together vertically
+    const marginX = w * 0.25; 
+    const marginY = 60;       // Higher
     const innerWidth = w - (2 * marginX);
-    const innerHeight = 600 - (2 * marginY);
+    const innerHeight = 140;  // Closer together
 
     const x = items > 1 
       ? marginX + (innerWidth / (items - 1)) * idx 
@@ -120,7 +120,7 @@ mutable activeQ = 4;
       color: nodeColor,
       label: token.word,
       labelColor: labelColor,
-      labelSize: isSelected ? "1.6rem" : "1.2rem"
+      labelSize: isSelected ? "1.3rem" : "1rem"
     });
 
     n._el.onclick = () => { mutable activeQ = i; };
@@ -139,7 +139,7 @@ mutable activeQ = 4;
     { label: "Faible", color: theme.blue },
     { label: "Moyenne", color: theme.green },
     { label: "Forte", color: theme.red }
-  ], { y: 560 });
+  ], { y: 340, type: "gradient", width: 250, gap: 0 });
 }
 ```
 

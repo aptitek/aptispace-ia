@@ -1,16 +1,29 @@
-```{css}
+```{ojs}
+//| echo: false
+html`<style>
 /* Suppression des marges excessives pour cette simulation */
 .tpl-dynamic { margin-bottom: 1.5rem !important; }
-.org-controls { padding: 15px !important; flex: 0 0 220px !important; }
-.org-render { padding: 5px !important; }
-.org-render::before { margin-bottom: 5px !important; }
-.org-results { padding: 15px !important; }
+.org-controls { padding: 15px !important; flex: 0 0 380px !important; } /* Larger left panel */
+.org-render { padding: 0 !important; min-height: 0 !important; align-self: center !important; } /* Vertical centering */
+.org-render::before { margin-bottom: 0 !important; display: none; }
+.org-render .cell { margin: 0 !important; padding: 0 !important; }
+.org-render .cell-output { margin: 0 !important; padding: 0 !important; }
+.org-render .cell-output-display { margin: 0 !important; padding: 0 !important; }
+.org-results { padding: 0 !important; }
+
+/* Token stream optimizations */
+.org-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+</style>`
 ```
 
 ::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
 
 ::: {.controls header="Saisie et Sélection Textuelle"}
-Saisissez une phrase pour générer les ancres de position, puis sélectionnez deux mots pour comparer leur encodage rotatif.
 
 ```{ojs}
 //| echo: false
@@ -24,14 +37,14 @@ viewof sentenceInput = ui.text_area({
 // 2. Sélecteur de mots interactif (Remplace les listes déroulantes)
 viewof ropeSelection = {
   const words = sentenceInput.trim().split(/\s+/);
-  const container = html`<div class="org-token-stream mb-3" style="min-height: auto; padding: 10px; border-style: dashed; border-color: ${theme.base01}44;"></div>`;
+  const container = html`<div class="org-token-stream mb-3" style="min-height: auto; padding: 15px; border-style: dashed; border-color: ${theme.base01}44; border-radius: 8px;"></div>`;
 
   // État local pour la sélection (indices)
   let selection = [0, 1]; // Défaut : les deux premiers mots
 
   function render() {
     container.innerHTML = "";
-    const label = html`<div class="small text-muted mb-2 italic w-100">2. Cliquez sur deux mots pour les comparer :</div>`;
+    const label = html`<div class="small text-muted mb-3 italic w-100" style="font-weight: 500;">2. Cliquez sur deux mots pour les comparer :</div>`;
     container.appendChild(label);
 
     words.forEach((word, i) => {
@@ -41,14 +54,21 @@ viewof ropeSelection = {
 
       const btn = html`<span class="token-node" style="
         cursor: pointer;
-        background: ${isA || isB ? color + '22' : 'transparent'};
+        background: ${isA || isB ? color + '22' : theme.base2 + '22'};
         color: ${color};
-        border: 1px solid ${isA || isB ? color + '88' : theme.base02};
-        padding: 4px 10px;
-        margin: 2px;
-        transition: all 0.2s;
-        font-weight: ${isA || isB ? 'bold' : 'normal'};
+        border: 1px solid ${isA || isB ? color + '88' : theme.base02 + '44'};
+        padding: 6px 14px;
+        margin: 0;
+        border-radius: 6px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: ${isA || isB ? '800' : '500'};
+        font-family: var(--font-base);
+        font-size: 13px;
+        user-select: none;
       ">${word}</span>`;
+
+      btn.onmouseenter = () => { if (!isA && !isB) btn.style.borderColor = theme.base01; btn.style.transform = "translateY(-1px)"; };
+      btn.onmouseleave = () => { if (!isA && !isB) btn.style.borderColor = theme.base02 + '44'; btn.style.transform = "translateY(0)"; };
 
       btn.onclick = () => {
         if (selection.includes(i)) return;
@@ -98,28 +118,31 @@ viewof thetaBase = ui.slider({
 ```{ojs}
 //| echo: false
 {
-  const width = 400;
-  const height = 400;
-  const cx = width / 2;
-  const cy = height / 2;
+  // Use a tightened viewBox to eliminate internal padding
+  const VW = 400, VH = 400;
+  const cx = VW / 2, cy = VH / 2;
   const radius = 140;
 
   const svg = d3.create("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("viewBox", `20 20 360 360`) // Relaxed to give room for labels
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("width", "100%")
+    .style("height", "auto") // Allow height to follow width
+    .style("max-height", "400px")
+    .style("display", "block")
+    .style("margin", "0")
     .style("background", theme.base03)
-    .style("border-radius", "12px")
-    .style("box-shadow", `inset 0 4px 15px ${theme.base02}88`);
+    .style("border-radius", "16px")
+    .style("box-shadow", "inset 0 2px 15px rgba(0,0,0,0.1)");
 
-  // Fond : Cadran gradué (Simplifié)
+  // Cadran gradué
   svg.append("circle")
     .attr("cx", cx).attr("cy", cy).attr("r", radius)
     .attr("fill", "none")
     .attr("stroke", theme.base02)
     .attr("stroke-width", 1);
 
-  // Dessin de TOUS les tokens de la phrase
+  // Tous les tokens de la phrase
   tokens.forEach(t => {
     const angle = t.id * thetaBase * (Math.PI / 180);
     svg.append("circle")
@@ -133,7 +156,6 @@ viewof thetaBase = ui.slider({
   // Calculs pour les deux mots sélectionnés
   const radA = (idxA * thetaBase) * (Math.PI / 180);
   const radB = (idxB * thetaBase) * (Math.PI / 180);
-  
   const getPos = (rad, r) => ({ x: cx + r * Math.sin(rad), y: cy - r * Math.cos(rad) });
   const pA = getPos(radA, radius);
   const pB = getPos(radB, radius);
@@ -151,54 +173,26 @@ viewof thetaBase = ui.slider({
     .attr("opacity", 0.3);
 
   // Vecteurs (Aiguilles)
-  const drawVector = (p, color) => {
-    svg.append("line")
-      .attr("x1", cx).attr("y1", cy).attr("x2", p.x).attr("y2", p.y)
-      .attr("stroke", color)
-      .attr("stroke-width", 4)
-      .attr("stroke-linecap", "round")
-      .attr("stroke-dasharray", "none");
-  };
+  const drawVector = (p, color) => svg.append("line")
+    .attr("x1", cx).attr("y1", cy).attr("x2", p.x).attr("y2", p.y)
+    .attr("stroke", color).attr("stroke-width", 4)
+    .attr("stroke-linecap", "round");
 
   drawVector(pA, theme.blue);
   drawVector(pB, theme.red);
 
-  // Labels textuels
+  // Labels textuels via SVG foreignObject pour rester dans le viewBox
   const drawLabel = (p, text, color) => {
-    const labelGroup = svg.append("g").attr("transform", `translate(${p.x}, ${p.y - 25})`);
-    const textEl = labelGroup.append("text")
-      .attr("text-anchor", "middle")
+    const g = svg.append("g").attr("transform", `translate(${p.x}, ${p.y - 25})`);
+    g.append("rect")
+      .attr("x", -text.length * 4 - 8).attr("y", -10)
+      .attr("width", text.length * 8 + 16).attr("height", 20)
+      .attr("rx", 4).attr("fill", color);
+    g.append("text")
+      .attr("text-anchor", "middle").attr("dy", "0.35em")
       .attr("fill", theme.base3)
-      .attr("font-size", "12px")
-      .attr("font-weight", "900")
-      .style("font-family", "var(--font-base)")
-      .text(text);
-      
-    // Fallback measurement if getBBox fails (common in OJS)
-    let bbox = textEl.node().getBBox();
-    let w = bbox.width > 0 ? bbox.width : text.length * 8;
-    let h = bbox.height > 0 ? bbox.height : 14;
-    
-    const px = 15; 
-    const py = 8; 
-    
-    textEl.remove();
-    
-    labelGroup.append("rect")
-      .attr("x", - (w/2 + px)).attr("y", - (h/2 + py))
-      .attr("width", w + px * 2).attr("height", h + py * 2)
-      .attr("fill", color)
-      .attr("stroke", theme.base3)
-      .attr("stroke-width", 1.5)
-      .attr("rx", 8); 
-      
-    labelGroup.append("text")
-      .attr("text-anchor", "middle")
-      .attr("dy", "0.35em")
-      .attr("fill", theme.base3)
-      .attr("font-size", "13px")
-      .attr("font-weight", "900")
-      .style("font-family", "var(--font-base)")
+      .attr("font-size", "11px").attr("font-weight", "700")
+      .style("font-family", "var(--font-code, monospace)")
       .text(text);
   };
 
@@ -253,7 +247,7 @@ viewof thetaBase = ui.slider({
   const totalAngle = dist * thetaBase;
   const wordA = tokens[idxA].word;
 
-  return html`<div class="d-flex flex-column gap-2">
+  return html`<div class="flex-column gap-2">
     <div class="d-flex gap-3">
       <div style="color: ${theme.yellow}; font-weight: bold; min-width: 100px;">Secret du RoPE :</div>
       <div>Pour le Transformer, l'important n'est pas la position absolue de <b style="color: ${theme.blue};">"${wordA}"</b>, mais l'angle relatif qui le sépare des autres mots.</div>
