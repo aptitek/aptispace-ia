@@ -57,11 +57,13 @@ Plot.plot({
 
 ```{ojs}
 //| echo: false
-ui.card(md`| Swish(x) | GELU(x) | SELU(x) |
-|:---:|:---:|:---:|
-| **${swish(x_modern).toFixed(3)}** | **${gelu(x_modern).toFixed(3)}** | **${selu(x_modern).toFixed(3)}** |`, {
-  title: "Valeurs d'Activation (Modernes)"
-})
+{
+  const m = ui.org.monitor({ header: "Valeurs d'Activation (Modernes)" });
+  m.addValue("Swish", swish(x_modern).toFixed(3), { color: theme.orange });
+  m.addValue("GELU", gelu(x_modern).toFixed(3), { color: theme.magenta });
+  m.addValue("SELU", selu(x_modern).toFixed(3), { color: theme.red });
+  return m;
+}
 ```
 
 :::
