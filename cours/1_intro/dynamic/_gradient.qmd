@@ -17,9 +17,9 @@ viewof controls = {
   
   const btn = html`<button class="atom-btn"><span>🔴</span> Lâcher la Balle</button>`;
   
-  const container = html`<div style="display: flex; align-items: flex-end; gap: 40px; width: 100%; margin-bottom: 10px;">
+  const container = html`<div style="display: flex; align-items: flex-start; gap: 40px; width: 100%; margin-bottom: 10px;">
     <div style="flex: 1;">${momentumInput}</div>
-    <div style="flex: 0 0 auto; margin-bottom: 15px;">${btn}</div>
+    <div style="flex: 0 0 auto;">${btn}</div>
   </div>`;
   
   container.value = { 

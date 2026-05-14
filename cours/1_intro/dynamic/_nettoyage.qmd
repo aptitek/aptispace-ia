@@ -1,24 +1,52 @@
-::: {.dynamic header="Nettoyage Vectoriel"}
+::: {.dynamic .horizontal .side-results header="Nettoyage Vectoriel"}
 
 ::: {.controls}
 
 ```{ojs}
 //| echo: false
-// 1. Contrôles de l'interface utilisateur
-viewof method = ui.toggle({
-  label: "Méthode :", 
-  options: ["Z-Score", "IQR"], 
-  value: "Z-Score",
-  states: {
-    "Z-Score": "info",
-    "IQR": "success"
-  }
-})
+viewof clean_controls = {
+  const methodInput = ui.toggle({
+    label: "Méthode", 
+    options: ["Z-Score", "IQR"], 
+    value: "Z-Score",
+    layout: "vertical",
+    states: { "Z-Score": "info", "IQR": "success" }
+  });
+  
+  const getSlider = (m) => m === "Z-Score" 
+    ? ui.slider({label: "Seuil (Écarts-types Z)", value: 2.5, min: 0.5, max: 4, step: 0.1})
+    : ui.slider({label: "Seuil (Mul IQR)", value: 1.5, min: 0.5, max: 4, step: 0.1});
 
-// Le curseur s'adapte automatiquement selon la méthode choisie
-viewof threshold = method === "Z-Score" 
-  ? ui.slider({label: "Seuil (Écarts-types Z)", value: 2.5, min: 0.5, max: 4, step: 0.1})
-  : ui.slider({label: "Seuil (Mul IQR)", value: 1.5, min: 0.5, max: 4, step: 0.1})
+  const sliderCont = html`<div style="flex: 1;"></div>`;
+  let currentSlider = getSlider("Z-Score");
+  sliderCont.appendChild(currentSlider);
+
+  const container = html`<div style="display: flex; align-items: flex-start; gap: 40px; width: 100%; margin-bottom: 10px;">
+    <div style="flex: 0 0 auto;">${methodInput}</div>
+    ${sliderCont}
+  </div>`;
+
+  container.value = { method: "Z-Score", threshold: 2.5 };
+
+  const sync = () => {
+    container.value = { method: methodInput.value, threshold: currentSlider.value };
+    container.dispatchEvent(new CustomEvent("input"));
+  };
+
+  methodInput.addEventListener("input", () => {
+    sliderCont.innerHTML = "";
+    currentSlider = getSlider(methodInput.value);
+    sliderCont.appendChild(currentSlider);
+    currentSlider.addEventListener("input", sync);
+    sync();
+  });
+
+  currentSlider.addEventListener("input", sync);
+  return container;
+}
+
+method = clean_controls.method
+threshold = clean_controls.threshold
 
 // 2. Génération unique du jeu de données (Cluster central + Anomalies)
 raw_data = {
@@ -156,20 +184,29 @@ Plot.plot({
   ]
 })
 ```
+:::
 
+::: {.separator}
 :::
 
 ::: {.results}
 
 ```{ojs}
 //| echo: false
-ui.card(md`| Statut | Quantité |
-|:---|:---|
-| 🔵 Données propres | **${stats.kept}** |
-| 🔴 Anomalies détectées | **${stats.anomalies}** |
-| **Total** | **${stats.total}** |`, {
-  title: "Résumé du filtrage"
-})
+viewof monitor_clean = {
+  const m = ui.org.monitor({ header: "Résumé du Filtrage" });
+  m.kept = m.addValue("Données propres", stats.kept, { color: theme.blue });
+  m.anomalies = m.addValue("Anomalies", stats.anomalies, { color: theme.red });
+  m.total = m.addValue("Total", stats.total, { color: theme.base1 });
+  return m;
+}
+
+// Update loop for real-time changes
+{
+  monitor_clean.kept.update(stats.kept);
+  monitor_clean.anomalies.update(stats.anomalies);
+  monitor_clean.total.update(stats.total);
+}
 ```
 
 :::
