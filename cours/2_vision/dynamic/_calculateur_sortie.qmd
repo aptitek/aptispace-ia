@@ -1,6 +1,6 @@
-::: {.dynamic .horizontal header="Calculateur de Sortie"}
+::: {.dynamic .horizontal .side-results header="Calculateur de Sortie"}
 
-::: {.controls}
+::: {.render}
 
 ```{ojs}
 //| echo: false
@@ -15,19 +15,42 @@ is_valid_arch = Number.isInteger(output_size)
 
 :::
 
+::: {.separator}
+:::
+
 ::: {.results}
 
 ```{ojs}
 //| echo: false
+viewof monitor_arch = {
+  const m = ui.org.monitor({ header: "Diagnostic Géométrique" });
+  
+  m.status = m.addStatus("Validation", "Calcul en cours...", "info");
+  
+  m.output = m.addValue("Dimension de Sortie", "0 x 0", { 
+    comment: "Taille de la carte d'activation",
+    color: theme.blue 
+  });
+  
+  return m;
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Logic for real-time updates
 {
   const status = is_valid_arch ? "success" : "danger";
-  return ui.card(md`
-Taille de la carte d'activation en sortie : **${output_size} x ${output_size} pixels**
-
-${is_valid_arch 
-  ? "✅ **Configuration Valide.** Les neurones se répartissent parfaitement." 
-  : "🔴 **ERREUR GÉOMÉTRIQUE :** Résultat décimal ! Le filtre va déborder de l'image. *Astuce : Essayez d'ajuster le Padding.*"}
-`, { title: "Calculateur d'Architecture (En Temps Réel)", status: status });
+  const message = is_valid_arch 
+    ? "Configuration Valide. Les neurones se répartissent parfaitement." 
+    : "ERREUR : Le filtre va déborder ! Ajustez le Padding ou le Stride.";
+  
+  const monitor = viewof monitor_arch;
+  if (monitor && monitor.status && monitor.output) {
+    monitor.status.update(message, status);
+    monitor.output.update(`${output_size} x ${output_size} px`);
+  }
 }
 ```
 
