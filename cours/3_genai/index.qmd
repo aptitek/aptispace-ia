@@ -33,8 +33,6 @@ _stabilize = true
 
 
 
-the 
-
 ## 🌉 Conclusion et Transition
 
 Le langage est une interface puissante, mais elle reste passive. Pour que l'IA devienne véritablement utile, elle doit pouvoir **agir** : utiliser des outils, naviguer sur le web, et prendre des décisions autonomes.

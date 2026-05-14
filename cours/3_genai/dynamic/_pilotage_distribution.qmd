@@ -16,15 +16,13 @@ viewof temp = ui.mol.thermometer({
   height: "240px"
 })
 
-// 2. Top-K (Vertical Slider)
-viewof topK = ui.mol.slider_vertical({
+// 2. Top-K (Guillotine / Blade Slider)
+viewof topK = ui.mol.blade_slider({
   label: "Top-K",
   value: 8,
   min: 1,
   max: 8,
-  step: 1,
-  color: theme.cyan,
-  height: "220px"
+  height: "240px"
 })
 
 // 3. Top-P (Radial Slider)

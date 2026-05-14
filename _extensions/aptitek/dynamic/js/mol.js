@@ -253,6 +253,66 @@ window.ui.mol = {
 
     return container;
   },
+  blade_slider: ({label, value = 8, min = 1, max = 8, height = '220px'}) => {
+    const container = document.createElement('div');
+    container.className = 'mol-blade-slider';
+    container.style.minHeight = height;
+
+    const header = document.createElement('div');
+    header.className = 'slider-header';
+    header.appendChild(window.ui.atom.label(label));
+    const valueDisplay = document.createElement('div');
+    valueDisplay.className = 'slider-value';
+    header.appendChild(valueDisplay);
+    container.appendChild(header);
+
+    const trackContainer = document.createElement('div');
+    trackContainer.className = 'slider-track-container';
+
+    const segmentsContainer = document.createElement('div');
+    segmentsContainer.className = 'blade-segments';
+    const segments = [];
+    for (let i = 0; i < max; i++) {
+      const seg = document.createElement('div');
+      seg.className = 'segment';
+      segmentsContainer.appendChild(seg);
+      segments.push(seg);
+    }
+    trackContainer.appendChild(segmentsContainer);
+
+    const blade = document.createElement('div');
+    blade.className = 'blade-handle';
+    trackContainer.appendChild(blade);
+
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.className = 'slider-input';
+    input.min = min;
+    input.max = max;
+    input.step = 1;
+    input.value = value;
+    trackContainer.appendChild(input);
+    container.appendChild(trackContainer);
+
+    const update = (v) => {
+      const pct = (v / max) * 100;
+      blade.style.top = pct + '%';
+      
+      segments.forEach((seg, i) => {
+        // Active segments are now counted from the bottom
+        seg.classList.toggle('is-active', i < v);
+      });
+      
+      valueDisplay.innerText = v;
+      container.value = v;
+      container.dispatchEvent(new CustomEvent("input"));
+    };
+
+    input.oninput = () => update(parseInt(input.value));
+    update(value);
+
+    return container;
+  },
   slider_radial: ({label, value = 0, min = 0, max = 100, step = 1, color = window.theme.yellow, unit = '', size = 100}) => {
     const container = document.createElement('div');
     container.className = 'mol-slider-radial';
@@ -290,7 +350,7 @@ window.ui.mol = {
       const pct = (v - min) / (max - min);
       progress.style.strokeDashoffset = circ * (1 - pct);
     };
-    updateProgress(value);
+    
     svg.appendChild(progress);
     radialContainer.appendChild(svg);
 
@@ -298,29 +358,52 @@ window.ui.mol = {
     center.className = 'radial-center';
     const valueDisplay = document.createElement('div');
     valueDisplay.className = 'radial-value';
-    valueDisplay.innerText = value + unit;
     center.appendChild(valueDisplay);
     radialContainer.appendChild(center);
-
-    const input = document.createElement('input');
-    input.type = 'range';
-    input.className = 'radial-input';
-    input.min = min;
-    input.max = max;
-    input.step = step;
-    input.value = value;
-    radialContainer.appendChild(input);
     container.appendChild(radialContainer);
 
-    input.oninput = () => {
-      const v = step % 1 === 0 ? parseInt(input.value) : parseFloat(input.value);
+    const update = (v) => {
+      v = Math.max(min, Math.min(max, v));
+      if (step) v = Math.round(v / step) * step;
+      
       updateProgress(v);
       valueDisplay.innerText = (step % 1 === 0 ? v : v.toFixed(2)) + unit;
       container.value = v;
       container.dispatchEvent(new CustomEvent("input"));
     };
 
-    container.value = value;
+    let isDragging = false;
+    const handleMove = (e) => {
+      if (!isDragging) return;
+      const rect = radialContainer.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      
+      // Calculate angle (0 at top, clockwise)
+      let angle = Math.atan2(dy, dx) + Math.PI / 2;
+      if (angle < 0) angle += 2 * Math.PI;
+      
+      const pct = angle / (2 * Math.PI);
+      const v = min + pct * (max - min);
+      update(v);
+    };
+
+    radialContainer.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      radialContainer.setPointerCapture(e.pointerId);
+      handleMove(e);
+    });
+
+    radialContainer.addEventListener('pointermove', handleMove);
+    
+    radialContainer.addEventListener('pointerup', (e) => {
+      isDragging = false;
+      radialContainer.releasePointerCapture(e.pointerId);
+    });
+
+    update(value);
     return container;
   },
   field: ({label, element}) => {
