@@ -30,7 +30,7 @@
     // Controls Area
     .org-controls {
         background: $sol-base3;
-        padding: 12px 25px;
+        padding: 10px 20px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         
         .org-controls-group {
@@ -70,7 +70,7 @@
 
     // Render Area
     .org-render {
-        padding: 20px;
+        padding: 10px;
         background: transparent;
         position: relative;
         min-height: 200px;
@@ -95,7 +95,7 @@
     // Results Area
     .org-results {
         background: $sol-base3;
-        padding: 15px;
+        padding: 10px;
         border-top: 1px solid rgba(0, 0, 0, 0.05);
 
     }

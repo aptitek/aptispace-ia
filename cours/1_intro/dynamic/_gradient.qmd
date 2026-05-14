@@ -6,21 +6,32 @@ Les optimiseurs modernes comme **Adam** ou le **Momentum** simulent l'inertie ph
 
 ```{ojs}
 //| echo: false
-viewof momentum = ui.slider({
-  label: "Inertie (Momentum)",
-  value: 0.771,
-  min: 0.5,
-  max: 1,
-  step: 0.001
-})
-
-viewof btnDrop = {
+viewof controls = {
+  const momentumInput = ui.slider({
+    label: "Inertie (Momentum)",
+    value: 0.771,
+    min: 0.5,
+    max: 1,
+    step: 0.001
+  });
+  
   const btn = html`<button class="atom-btn"><span>🔴</span> Lâcher la Balle</button>`;
-  btn.onclick = () => {
-    btn.value = (btn.value || 0) + 1;
-    btn.dispatchEvent(new CustomEvent("input"));
+  
+  const container = html`<div style="display: flex; align-items: flex-end; gap: 40px; width: 100%; margin-bottom: 10px;">
+    <div style="flex: 1;">${momentumInput}</div>
+    <div style="flex: 0 0 auto; margin-bottom: 15px;">${btn}</div>
+  </div>`;
+  
+  container.value = { 
+    momentum: 0.771,
+    btn: btn 
   };
-  return btn;
+  
+  momentumInput.addEventListener("input", (e) => {
+    container.value.momentum = momentumInput.value;
+  });
+  
+  return container;
 }
 ```
 
@@ -36,7 +47,7 @@ Plotly = require("plotly.js-dist@2.24.1")
 
 {
   const container = document.createElement("div");
-  container.style.height = "480px";
+  container.style.height = "320px";
   container.style.width = "100%";
   
   const x = []; const y = []; const z = [];
@@ -71,10 +82,10 @@ Plotly = require("plotly.js-dist@2.24.1")
   };
 
   const layout = {
-    height: 480,
+    height: 350,
     autosize: true,
     showlegend: false,
-    margin: { l: 30, r: 30, b: 30, t: 30 },
+    margin: { l: 30, r: 30, b: 30, t: 10 },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
     scene: {
@@ -91,8 +102,8 @@ Plotly = require("plotly.js-dist@2.24.1")
   // Nettoyage du timer précédent si la cellule re-run
   if (this && this.animationTimer) clearInterval(this.animationTimer);
 
-  // Réaction au bouton (Approche non-réactive pour éviter le drop automatique)
-  const button = viewof btnDrop;
+  // Use viewof to access the DOM without triggering OJS reactivity on every slider change
+  const button = (viewof controls).querySelector(".atom-btn");
   let animationTimer = null;
 
   button.onclick = () => {
@@ -101,7 +112,7 @@ Plotly = require("plotly.js-dist@2.24.1")
     let cx = 2.2; let cy = 1.5;
     let vx = 0; let vy = 0;
     const lr = 0.03;
-    const mom = viewof momentum.value;
+    const mom = (viewof controls).value.momentum;
 
     let pathX = [cx]; let pathY = [cy]; let pathV = [0];
     let pathZ = [Math.pow(cx, 4) - 4 * Math.pow(cx, 2) + Math.pow(cy, 2) + 0.5 * cx + 0.5];
