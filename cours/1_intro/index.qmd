@@ -28,7 +28,6 @@ _stabilize = true
 
 
 
-
 {{< include _15_data.qmd >}}
 
 

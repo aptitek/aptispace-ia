@@ -1,4 +1,4 @@
-::: {.dynamic header="Le Fléau de la Dimensionnalité"}
+::: {.dynamic .horizontal .side-results header="Le Fléau de la Dimensionnalité"}
 
 ::: {.controls header="Configuration"}
 
@@ -61,25 +61,47 @@ cnn_total_weights = 3 * 3 * 3 * 100;
   `;
 }
 ```
+:::
 
+::: {.separator}
 :::
 
 ::: {.results}
 
 ```{ojs}
 //| echo: false
+viewof monitor_dim = {
+  const m = ui.org.monitor({ header: "Comparatif d'Architecture" });
+  
+  m.params = m.addVersus("Poids du Réseau", mlp_total_weights, cnn_total_weights, {
+    labelA: "MLP (Full)",
+    labelB: "CNN (Filtres)",
+    colorA: theme.red,
+    colorB: theme.green
+  });
+  
+  m.status = m.addStatus("État de la Mémoire", "Calcul...", "info");
+  
+  return m;
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Real-time updates for the monitor
 {
-  const status = mlp_total_weights > 10000000 ? "danger" : mlp_total_weights > 1000000 ? "warning" : "debug";
-  const analysis = mlp_total_weights > 10000000 ? "🚨 Incalculable sur un PC standard. Le MLP sature la mémoire." : mlp_total_weights > 1000000 ? "⚠️ Très lourd. L'entraînement sera lent et inefficace." : "Stable et léger.";
-
-  return ui.card(md`
-| Architecture | Paramètres par Unité | Total (couche de 100) |
-|:---|:---|:---|
-| ❌ Classique (MLP) | ${mlp_weights_per_neuron.toLocaleString()} | **${mlp_total_weights.toLocaleString()}** poids |
-| ✅ Convolutif (CNN) | 27 | **${cnn_total_weights.toLocaleString()}** poids |
-
-**Analyse :** ${analysis}
-`, { title: "Impact sur l'Architecture", status: status });
+  // Explicitly depend on weights and the monitor's DOM element
+  const weights = mlp_total_weights; 
+  const monitor = viewof monitor_dim;
+  
+  const analysis = weights > 100000000 ? "Incalculable sur PC (Saturation)" : weights > 1000000 ? "Lent et Inefficace" : "Stable et Léger";
+  const state = weights > 100000000 ? "danger" : weights > 1000000 ? "warning" : "success";
+  
+  if (monitor && monitor.params && monitor.status) {
+    monitor.params.update(weights, cnn_total_weights);
+    monitor.status.update(analysis, state);
+  }
 }
 ```
 
