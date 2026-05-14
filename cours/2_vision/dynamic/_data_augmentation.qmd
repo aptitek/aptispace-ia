@@ -1,27 +1,29 @@
-::: {.dynamic .horizontal header="Augmentation de Données"}
+::: {.dynamic .horizontal .side-results header="Augmentation de Données"}
 
-::: {.controls}
 
-```{ojs}
-//| echo: false
-viewof do_rot = ui.checkbox({label: "🔄 Rotation"})
-viewof do_flip = ui.checkbox({label: "↔️ Effet Miroir"})
-viewof do_zoom = ui.checkbox({label: "🔍 Zoom"})
-```
-
-:::
-
-::: {.separator}
-➡️
-:::
 
 ::: {.render header="Vue Machine"}
 
 ```{ojs}
 //| echo: false
-html`
-<div class="augmentation-display-side">
-  <div class="viz-viewport viz-augmentation-viewport">
+//| output: false
+viewof do_rot = ui.checkbox({label: "🔄 Rotation"})
+viewof do_flip = ui.checkbox({label: "↔️ Effet Miroir"})
+viewof do_zoom = ui.checkbox({label: "🔍 Zoom"})
+```
+
+```{ojs}
+//| echo: false
+html`<div style="display: flex; gap: 30px; align-items: center; justify-content: center; width: 100%; height: 100%;">
+  <div style="display: flex; flex-direction: column; gap: 15px; min-width: 180px;">
+    ${viewof do_rot}
+    ${viewof do_flip}
+    ${viewof do_zoom}
+  </div>
+
+  <div class="separator"></div>
+  
+  <div class="viz-viewport" style="flex: 0 0 auto;">
     <div class="viz-emoji" style="
       transform: 
         rotate(${do_rot ? '25deg' : '0deg'}) 
@@ -31,15 +33,21 @@ html`
     </div>
     <div class="viz-overlay"></div>
   </div>
-</div>
-`
+</div>`
 ```
 
 :::
 
 ::: {.results}
-::: {.warning}
-Pour la machine, l'information matricielle de ces variantes est **totalement différente** !
-:::
+
+```{ojs}
+//| echo: false
+{
+  const m = ui.org.monitor({ header: "Analyse Machine" });
+  m.addStatus("Interprétation", "Pour la machine, l'information matricielle de ces variantes est totalement différente !", "warning");
+  return m;
+}
+```
+
 :::
 :::

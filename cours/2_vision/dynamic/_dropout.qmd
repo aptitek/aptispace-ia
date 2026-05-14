@@ -40,59 +40,85 @@ data_dropout_curve = {
 
 :::
 
-::: {.render header="Évolution Temporelle"}
+::: {.render}
 
 ```{ojs}
 //| echo: false
-Plot.plot({
-  height: 300,
-  background: "transparent",
-  grid: true,
-  y: {domain: [1.5, 7], label: "Erreur (Loss)"},
-  x: {label: "Époques d'entraînement"},
-  color: {legend: true, domain: ["Train Loss", "Validation Loss (Réalité)"], range: [theme.blue, theme.red]},
-  marks: [
-    Plot.line(data_loss, {x: "epoch", y: "loss", stroke: "type", strokeWidth: 3})
-  ]
-})
+html`<div style="display: flex; gap: 20px; width: 100%; align-items: stretch;">
+  <div style="flex: 1; min-width: 0;">
+    <div class="render-sub-header">📉 Évolution Temporelle</div>
+    ${Plot.plot({
+      height: 250,
+      background: "transparent",
+      grid: true,
+      y: {domain: [1.5, 7], label: "Erreur (Loss)"},
+      x: {label: "Époques"},
+      color: {legend: false, domain: ["Train Loss", "Validation Loss (Réalité)"], range: [theme.blue, theme.red]},
+      marks: [
+        Plot.line(data_loss, {x: "epoch", y: "loss", stroke: "type", strokeWidth: 2})
+      ]
+    })}
+  </div>
+  <div style="flex: 1; min-width: 0;">
+    <div class="render-sub-header">🎯 Impact du Taux</div>
+    ${Plot.plot({
+      height: 250,
+      background: "transparent",
+      grid: true,
+      x: {label: "Taux de Dropout", domain: [0, 0.9]},
+      y: {domain: [1.5, 7], axis: null},
+      marks: [
+        Plot.rectX([0], {x1: 0, x2: 0.2, fill: theme.red, fillOpacity: 0.1}),
+        Plot.rectX([0], {x1: 0.68, x2: 0.9, fill: theme.yellow, fillOpacity: 0.1}),
+        Plot.ruleX([0.28], {stroke: theme.green, strokeWidth: 2, strokeDasharray: "5,5"}),
+        Plot.line(data_dropout_curve, {x: "dr", y: "loss", stroke: theme.red, strokeWidth: 2, strokeDasharray: "4,4", strokeOpacity: 0.5}),
+        Plot.dot([{dr: drp_rate, loss: calc_val_loss(drp_rate, 50)}], {x: "dr", y: "loss", fill: theme.red, r: 7, stroke: "white", strokeWidth: 2})
+      ]
+    })}
+  </div>
+</div>`
 ```
 
 :::
 
-::: {.render header="Impact du Taux"}
-
-```{ojs}
-//| echo: false
-Plot.plot({
-  height: 300,
-  background: "transparent",
-  grid: true,
-  x: {label: "Taux de Dropout", domain: [0, 0.9]},
-  y: {domain: [1.5, 7], label: "Erreur de Validation (Époque 50)"},
-  marks: [
-    Plot.rectX([0], {x1: 0, x2: 0.2, fill: theme.red, fillOpacity: 0.1}),
-    Plot.rectX([0], {x1: 0.68, x2: 0.9, fill: theme.yellow, fillOpacity: 0.1}),
-    Plot.ruleX([0.28], {stroke: theme.green, strokeWidth: 2, strokeDasharray: "5,5"}),
-    Plot.line(data_dropout_curve, {x: "dr", y: "loss", stroke: theme.red, strokeWidth: 2, strokeDasharray: "4,4", strokeOpacity: 0.5}),
-    Plot.text([{dr: 0.1, loss: 6.5, label: "SURAPPRENTISSAGE"}], {x: "dr", y: "loss", text: "label", fontWeight: "bold", fill: theme.red, fontSize: 10}),
-    Plot.text([{dr: 0.8, loss: 6.5, label: "SOUS-APPRENTISSAGE"}], {x: "dr", y: "loss", text: "label", fontWeight: "bold", fill: theme.yellow, fontSize: 10}),
-    Plot.text([{dr: 0.3, loss: 1.8, label: "CIBLE OPTIMALE"}], {x: "dr", y: "loss", text: "label", fontWeight: "bold", fill: theme.green, fontSize: 10}),
-    Plot.dot([{dr: drp_rate, loss: calc_val_loss(drp_rate, 50)}], {x: "dr", y: "loss", fill: theme.red, r: 7, stroke: "white", strokeWidth: 2})
-  ]
-})
-```
-
+::: {.separator}
 :::
 
 ::: {.results}
 
 ```{ojs}
 //| echo: false
+viewof monitor_dropout = {
+  const m = ui.org.monitor({ header: "Diagnostic d'Apprentissage" });
+  m.status = m.addStatus("Régime", "Analyse en cours...", "info");
+  m.error = m.addValue("Erreur Finale", "0.00", { 
+    comment: "Validation Loss à l'époque 50",
+    color: theme.red 
+  });
+  return m;
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Logic for real-time updates
 {
-  const status = drp_rate < 0.2 ? "danger" : drp_rate === 0.28 ? "success" : drp_rate >= 0.71 ? "warning" : "debug";
-  return ui.card(md`
-**${drp_rate < 0.2 ? "🚨 OVERFITTING (Surapprentissage grave) ! Les courbes divergent." : drp_rate === 0.28 ? "✅ OPTIMAL. Les courbes descendent ensemble." : drp_rate >= 0.71 ? "⚠️ UNDERFITTING (Sous-apprentissage). Trop de neurones désactivés, le réseau n'apprend plus." : "Stable, l'apprentissage continue normalement."}**
-`, { title: "Statut de l'entraînement", status: status });
+  const status = drp_rate < 0.2 ? "danger" : drp_rate >= 0.25 && drp_rate <= 0.35 ? "success" : drp_rate >= 0.7 ? "warning" : "info";
+  
+  const message = drp_rate < 0.2 
+    ? "SURAPPRENTISSAGE (Overfitting) : Le réseau mémorise trop, les courbes divergent." 
+    : drp_rate >= 0.25 && drp_rate <= 0.35 
+      ? "RÉGIME OPTIMAL : Généralisation maximale, les erreurs stagnent au plus bas." 
+      : drp_rate >= 0.7 
+        ? "SOUS-APPRENTISSAGE (Underfitting) : Trop de neurones coupés, le réseau stagne." 
+        : "Apprentissage stable, mais l'optimisation peut être affinée.";
+  
+  const monitor = viewof monitor_dropout;
+  if (monitor && monitor.status && monitor.error) {
+    monitor.status.update(message, status);
+    monitor.error.update(calc_val_loss(drp_rate, 50).toFixed(2));
+  }
 }
 ```
 

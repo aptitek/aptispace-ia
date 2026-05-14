@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal header="Simulation : L'entraînement d'un GAN"}
+::: {.dynamic .horizontal .side-results header="Simulation : L'entraînement d'un GAN"}
 
 ::: {.controls}
 
@@ -9,53 +9,67 @@ viewof gan_epoch = ui.slider({label: "Époques d'entraînement", value: 0, min: 
 
 :::
 
-::: {.separator}
-⚙️
-:::
 
-::: {.render header="Le Générateur"}
+::: {.render}
 
 ```{ojs}
 //| echo: false
-html`
-<div class="viz-container-sm" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-  <div style="font-size: 48px; filter: blur(${Math.max(0, 10 - gan_epoch/10)}px); opacity: ${0.2 + gan_epoch/125}; transform: scale(${0.8 + gan_epoch/500}); transition: all 0.3s;">🐶</div>
-  <div style="font-size: 12px; color: ${theme.fg};">Génère une fausse image</div>
-</div>
-`
-```
-
-:::
-
-::: {.separator}
-⚔️
-:::
-
-::: {.render header="Le Discriminateur"}
-
-```{ojs}
-//| echo: false
-html`
-<div class="viz-container-sm" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-  <div style="padding: 10px 15px; border-radius: 6px; background: ${gan_epoch > 80 ? theme.green : theme.red}; color: ${theme.bg}; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    ${gan_epoch > 80 ? "VRAI ?" : "FAUX !"}
+html`<div style="display: flex; gap: 30px; align-items: center; justify-content: center; width: 100%; padding: 20px;">
+  <!-- Générateur -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+    <div class="render-sub-header" style="color: ${theme.blue}">Faussaire</div>
+    <div style="font-size: 64px; filter: blur(${Math.max(0, 10 - gan_epoch/10)}px); opacity: ${0.2 + gan_epoch/125}; transform: scale(${0.8 + gan_epoch/500}); transition: all 0.3s; height: 80px; display: flex; align-items: center;">🐶</div>
+    <div style="font-size: 11px; opacity: 0.6; text-align: center;">Tente de créer du réalisme</div>
   </div>
-  <div style="font-size: 12px; color: ${theme.fg};">Tente de démasquer le faux</div>
-</div>
-`
+
+  <div class="separator" style="font-size: 24px; opacity: 0.3;">⚔️</div>
+
+  <!-- Discriminateur -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+    <div class="render-sub-header" style="color: ${theme.red}">Policier</div>
+    <div style="height: 80px; display: flex; align-items: center;">
+      <div style="padding: 10px 20px; border-radius: 8px; background: ${gan_epoch > 80 ? theme.green : theme.red}; color: white; font-weight: 800; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-transform: uppercase; letter-spacing: 1px;">
+        ${gan_epoch > 80 ? "Vrai ?" : "Faux !"}
+      </div>
+    </div>
+    <div style="font-size: 11px; opacity: 0.6; text-align: center;">Tente de démasquer l'imposture</div>
+  </div>
+</div>`
 ```
 
+:::
+
+::: {.separator}
 :::
 
 ::: {.results}
 
 ```{ojs}
 //| echo: false
+viewof monitor_gan = {
+  const m = ui.org.monitor({ header: "Analyse du Duel" });
+  m.status = m.addStatus("Équilibre de Nash", "Initialisation...", "info");
+  return m;
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+// Logic for real-time updates
 {
   const status = gan_epoch < 30 ? "danger" : gan_epoch < 80 ? "warning" : "success";
-  return ui.card(md`
-**${gan_epoch < 30 ? "Le Générateur produit du bruit informe. Le Discriminateur gagne facilement." : gan_epoch < 80 ? "Le Générateur commence à produire des formes reconnaissables. La compétition s'intensifie." : "Le Générateur a réussi ! Les images sont tellement réalistes que le Discriminateur est trompé."}**
-`, { title: "Analyse du Duel", status: status });
+  
+  const message = gan_epoch < 30 
+    ? "Le Faussaire produit du bruit informe. Le Policier gagne sans effort." 
+    : gan_epoch < 80 
+      ? "Le Faussaire commence à créer des formes. La compétition s'intensifie." 
+      : "Le Faussaire a réussi ! Les images sont réalistes, le Policier est trompé.";
+  
+  const monitor = viewof monitor_gan;
+  if (monitor && monitor.status) {
+    monitor.status.update(message, status);
+  }
 }
 ```
 
