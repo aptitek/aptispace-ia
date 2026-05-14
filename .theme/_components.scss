@@ -705,11 +705,27 @@ details[open]>summary>.folder-arrow {
     .slider-ticks {
         display: flex;
         justify-content: space-between;
-        margin-top: 5px;
-        font-size: 0.65em;
+        margin-top: 12px;
+        font-size: 0.6em;
         font-weight: bold;
         color: $sol-base1;
         text-transform: uppercase;
+        gap: 10px;
+
+        span {
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            transform: rotate(-15deg);
+            transform-origin: center;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+
+            &:hover {
+                opacity: 1;
+                color: var(--current-color);
+            }
+        }
     }
 }
 
