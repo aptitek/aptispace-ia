@@ -64,11 +64,14 @@ Plot.plot({
 
 ```{ojs}
 //| echo: false
-ui.card(md`| Sigmoïde(x) | Tanh(x) | ReLU(x) | Softmax(x) |
-|:---:|:---:|:---:|:---:|
-| **${sigmoid(x_val).toFixed(3)}** | **${tanh(x_val).toFixed(3)}** | **${relu(x_val).toFixed(3)}** | **${softmax(x_val).toFixed(3)}** |`, {
-  title: "Valeurs d'Activation"
-})
+{
+  const m = ui.org.monitor({ header: "Valeurs d'Activation" });
+  m.addValue("Sigmoïde", sigmoid(x_val).toFixed(3), { color: theme.red });
+  m.addValue("Tanh", tanh(x_val).toFixed(3), { color: theme.green });
+  m.addValue("ReLU", relu(x_val).toFixed(3), { color: theme.blue });
+  m.addValue("Softmax", softmax(x_val).toFixed(3), { color: theme.magenta });
+  return m;
+}
 ```
 
 :::

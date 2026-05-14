@@ -98,7 +98,8 @@ local js_files = {
   "js/card.js",
   "js/terminal.js",
   "js/canvas.js",
-  "js/compat.js"
+  "js/compat.js",
+  "js/monitor.js"
 }
 
 -- Use a filter list to control execution order
