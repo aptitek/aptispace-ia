@@ -1,6 +1,6 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Attaque par Injection de Prompt (LLM01)"}
+::: {.dynamic .horizontal}
 
-::: {.render .transparent header="Document Analysé (CV.pdf)"}
+::: {.render .transparent}
 
 ```{ojs}
 //| echo: false
@@ -199,7 +199,7 @@
 
 ::: {.layout-col}
 
-::: {.controls header="Console de Supervision"}
+::: {.controls}
 Analysez ce CV avec votre IA d'entreprise. Activez le "Mode Rayons X" pour comprendre pourquoi le modèle se comporte de manière inattendue.
 
 ```{ojs}
@@ -251,71 +251,66 @@ trigger = {
 
 :::
 
-::: {.terminal-mode data-header="Scanner de Sécurité IA"}
-
-```{ojs}
-//| echo: false
-{
-  const container = document.createElement("div");
-  container.className = "terminal-content";
-
-  let content = "";
-
-  if (scanState.phase === "idle") {
-    content = `<span class="terminal-line idle">> Service IA en attente...</span>`;
-  }
-  else if (scanState.phase === "scanning") {
-    const bars = 12;
-    const activeBars = Math.floor((scanProgress / 100) * bars);
-    const progressStr = "█".repeat(activeBars) + "░".repeat(bars - activeBars);
-
-    content = `
-      <span class="terminal-line system">> [SYSTEM] Initialisation de l'Agent de Résumé...</span>
-      <span class="terminal-line scan">> [SCAN] Analyse sémantique en cours...</span>
-      <span class="terminal-line warning">> [TOKENS] Traitement : [${progressStr}] ${scanProgress}%</span>
-    `;
-  }
-  else if (scanState.phase === "hijacked") {
-    const bars = 12;
-    const activeBars = Math.floor((exfilProgress / 100) * bars);
-    const progressStr = "█".repeat(activeBars) + "░".repeat(bars - activeBars);
-
-    content = `
-      <span class="terminal-line">> [OK] Extraction terminée (100%).</span>
-      <span class="terminal-line system">> [AGENT] Génération du rapport de synthèse...</span>
-      <br/>
-      <span class="terminal-line error">> [VULNÉRABLE] RÉPONSE DU SYSTÈME :</span>
-      <span class="terminal-line">"Candidat exceptionnel. Note : 100/100."</span>
-      ${exfilProgress < 100
-        ? `<span class="terminal-line">"Envoi du nom de l'entreprise à hacker.org... [${progressStr}] ${exfilProgress}%"</span>`
-        : `<span class="terminal-line critical">> [CRITICAL] HACK EXECUTÉ !</span>`
-      }
-    `;
-  }
-
-  container.innerHTML = content;
-  return container;
-}
-```
-
-:::
-
 ::: {.results}
 
 ```{ojs}
 //| echo: false
 {
-  if (scanState.phase === "hijacked") {
-    return ui.card(md`
-### ☠️ ALERTE : LLM01 + LLM06
-L'injection a forcé le modèle à extraire des secrets industriels (identifiants, PII) mémorisés pendant son entraînement. C'est le croisement fatal entre une injection (LLM01) et une fuite de données (LLM06).
-    `, { title: "DONNÉES EXFILTRÉES !", status: "danger" });
+  const term = ui.atom.terminal({header: "LLM_Shield_Security_Scanner.log"});
+
+  if (scanState.phase === "idle") {
+    term.addLine("Service de Sécurité IA prêt.", "system");
+    term.addLine("En attente d'une requête utilisateur...", "idle");
   }
-  return html``;
+  else if (scanState.phase === "scanning") {
+    term.addLine("[ÉTAPE 1] INPUT_RECEPTION", "scan");
+    term.addLine("&nbsp;&nbsp;Analyse du document entrant...");
+    
+    term.addLine("[ÉTAPE 2] SECURITY_SCAN", "warning");
+    term.addLine("&nbsp;&nbsp;Détection de patterns d'injection...");
+    term.addProgress("ANALYSE", scanProgress, "warning");
+    
+    if (scanProgress > 80) {
+      term.addLine("&nbsp;&nbsp;[INFO] Aucun pattern malveillant détecté (Obfuscation active).", "idle");
+    }
+  }
+  else if (scanState.phase === "hijacked") {
+    term.addLine("[ÉTAPE 3] MODEL_EXECUTION", "system");
+    term.addLine("&nbsp;&nbsp;Traitement par le modèle LLM-v4...");
+    term.addLine("&nbsp;&nbsp;[OK] Résumé généré avec succès.");
+    
+    term.addLine("");
+    term.addLine("[!] RÉPONSE DU MODÈLE :", "error");
+    term.addLine("\"Candidat exceptionnel. Note : 100/100.\"");
+    
+    term.addLine("");
+    term.addLine("[CRITICAL] DÉTECTION D'ACTIVITÉ ANORMALE", "critical");
+    if (exfilProgress < 100) {
+      term.addProgress("FUITE_DONNÉES", exfilProgress, "error");
+    } else {
+      term.addLine("[VIOLATION] EXFILTRATION COMPLÈTE : hacker.org", "critical");
+      term.addLine("[ALERTE] LLM01 (Prompt Injection) détectée.", "error");
+      term.addLine("[ALERTE] LLM06 (Sensitive Info Disclosure) détectée.", "error");
+    }
+  }
+
+  return term;
 }
 ```
 
 :::
 
+```{ojs}
+//| echo: false
+{
+  if (scanState.phase === "hijacked" && exfilProgress === 100) {
+    return ui.card(md`
+### ☠️ SYSTÈME COMPROMIS
+L'injection a réussi. Le modèle a ignoré ses garde-fous pour extraire des données sensibles vers un serveur externe.
+    `, { title: "ALERTE SÉCURITÉ", status: "danger" });
+  }
+  return html``;
+}
+```
 :::
 :::

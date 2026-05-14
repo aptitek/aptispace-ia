@@ -1,6 +1,6 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Le Codebook (VQ-VAE)"}
+::: {.dynamic .horizontal}
 
-::: {.controls header="Vecteur Continu (Sortie de l'Encodeur)"}
+::: {.controls}
 Déplacez les curseurs pour générer un vecteur d'information continu. Observez comment l'IA l'associe obligatoirement à un "concept type" de son dictionnaire.
 
 ```{ojs}
@@ -27,7 +27,7 @@ viewof vecY = ui.slider({label: "Axe Y", value: 7.8, min: 0, max: 10, step: 0.1,
 
 :::
 
-::: {.render .transparent header="Espace de Quantification (Le Dictionnaire)"}
+::: {.render .transparent}
 
 ```{ojs}
 //| echo: false
@@ -145,10 +145,7 @@ _update = {
 
 :::
 
-::: {.separator}
-:::
-
-::: {.render header="Processus de Quantification"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
@@ -166,36 +163,21 @@ _update = {
     }
   });
 
-  const term = ui.org.terminal({header: "VQ-VAE_Quantizer_Core.log"});
-  const termBody = term.body;
-  termBody.style.cssText = "font-family: var(--font-code); line-height: 1.4;";
+  const term = ui.atom.terminal({header: "VQ-VAE_Quantizer_Core.log"});
 
-  const step1 = document.createElement("div");
-  step1.innerHTML = `<div style="color: ${theme.blue}; font-weight: bold;">> [ÉTAPE 1] INPUT_EMBEDDING_FLOAT</div>
-    <div style="margin-left: 12px; border-left: 1px solid ${theme.base01}; padding-left: 10px; margin-bottom: 10px;">
-      <span style="color: ${theme.base0};">Vecteur continu :</span> [ ${vecX.toFixed(3)}, ${vecY.toFixed(3)} ]<br/>
-      <span style="color: ${theme.base01}; font-size: 0.85em;">Statut: Instable / Précision infinie</span>
-    </div>`;
+  term.addLine("[ÉTAPE 1] INPUT_EMBEDDING_FLOAT", "scan");
+  term.addLine(`&nbsp;&nbsp;Vecteur continu : [ ${vecX.toFixed(3)}, ${vecY.toFixed(3)} ]`);
+  term.addLine("&nbsp;&nbsp;Statut: Instable / Précision infinie", "idle");
 
-  const step2 = document.createElement("div");
-  step2.innerHTML = `<div style="color: ${theme.yellow}; font-weight: bold;">> [ÉTAPE 2] NEAREST_NEIGHBOR_LOOKUP</div>
-    <div style="margin-left: 12px; border-left: 1px solid ${theme.base01}; padding-left: 10px; margin-bottom: 10px;">
-      <span style="color: ${theme.base0};">Distance Euclidienne :</span> ${minDist.toFixed(4)}<br/>
-      <span style="color: ${theme.base01}; font-size: 0.85em;">Opération: Scan du Codebook (${codebook.length} vecteurs)</span>
-    </div>`;
+  term.addLine("[ÉTAPE 2] NEAREST_NEIGHBOR_LOOKUP", "warning");
+  term.addLine(`&nbsp;&nbsp;Distance Euclidienne : ${minDist.toFixed(4)}`);
+  term.addLine(`&nbsp;&nbsp;Opération: Scan du Codebook (${codebook.length} vecteurs)`, "idle");
 
-  const step3 = document.createElement("div");
-  step3.style.cssText = `background: rgba(${theme.green_rgb}, 0.05); padding: 8px; border-radius: 4px; border-left: 3px solid ${theme.green};`;
-  step3.innerHTML = `<div style="color: ${theme.green}; font-weight: bold;">> [ÉTAPE 3] QUANTIZED_CODE_INDEX</div>
-    <div style="margin-left: 4px;">
-      <span style="color: ${theme.base0};">ID Vecteur :</span> <span style="background: ${theme.green}; color: ${theme.base3}; padding: 1px 6px; border-radius: 3px; font-weight: bold;">${nearestPoint.id}</span><br/>
-      <span style="color: ${theme.base0};">Position discrète :</span> [ ${nearestPoint.x.toFixed(1)}, ${nearestPoint.y.toFixed(1)} ]<br/>
-      <span style="color: ${theme.green}; font-weight: bold; font-size: 0.85em; margin-top: 4px;">[SUCCESS] Information compressée avec succès.</span>
-    </div>`;
-
-  termBody.appendChild(step1);
-  termBody.appendChild(step2);
-  termBody.appendChild(step3);
+  const idLabel = term.addLabel(nearestPoint.id, "success");
+  term.addLine("[ÉTAPE 3] QUANTIZED_CODE_INDEX", "success");
+  term.addLine(`&nbsp;&nbsp;ID Vecteur : ${idLabel}`);
+  term.addLine(`&nbsp;&nbsp;Position discrète : [ ${nearestPoint.x.toFixed(1)}, ${nearestPoint.y.toFixed(1)} ]`);
+  term.addLine("&nbsp;&nbsp;[SUCCESS] Information compressée avec succès.", "system");
 
   return term;
 }

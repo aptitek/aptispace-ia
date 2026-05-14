@@ -1,6 +1,6 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : L'Espace Latent du RAG en 3D"}
+::: {.dynamic .horizontal}
 
-::: {.controls header="Moteur de Vectorisation (Embedding)"}
+::: {.controls}
 Saisissez une phrase pour simuler la vectorisation. Pour obtenir des résultats pertinents, utilisez des termes liés aux thèmes suivants :
 <ul class="mt-2 small text-sol-base1 list-unstyled ps-0">
   <li>🔹 <b>Informatique :</b> vpn, réseau, wifi, configurer, internet...</li>
@@ -34,7 +34,7 @@ viewof selectedWordEvent = {
 
 :::
 
-::: {.render .transparent header="L'Espace Sémantique 3D (Vue Interactive)"}
+::: {.render .transparent}
 
 ```{ojs}
 //| echo: false
@@ -430,28 +430,22 @@ viewof selectedWordEvent = {
 
   return svg;
 }
-```
 
-:::
-
-::: {.separator}
-:::
-
-::: {.results header="Terminal RAG : Pipeline de Récupération"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
 {
   const word = selectedWordEvent;
   
-
-  // terminal
-  const term = ui.org.terminal({header: "RAG_Agent_Trace.log"});
+  const term = ui.atom.terminal({header: "RAG_Agent_Trace.log"});
   term.classList.add("is-rag");
-  const termBody = term.body;
 
   if (!word) {
-    termBody.innerHTML = `<span style="color: #586e75;">> Service RAG Initialisé.<br>> En attente d'un événement...<br>> <span style="color: #2aa198; font-weight: bold;" class="blinking">Veuillez cliquer sur un mot dans le graphique 3D.</span></span>`;
+    term.addLine("Service RAG Initialisé.", "system");
+    term.addLine("En attente d'un événement...", "idle");
+    const label = term.addLabel("Veuillez cliquer sur un mot dans le graphique 3D.", "success");
+    term.addLine(`> ${label}`);
     return term;
   }
 
@@ -459,57 +453,36 @@ viewof selectedWordEvent = {
   const doc = word.nearest;
   const isKw = word.isKeyWord;
   const score = (100 - word.distance / 5).toFixed(1); // Conversion distance en "Score de Confiance"
-  const barWidth = Math.max(5, Math.min(100, score));
   
   // Etape 1: Vectorisation
-  const step1 = document.createElement("div");
-  step1.innerHTML = `
-    <div style="color: #268bd2; font-weight: bold;">[ÉTAPE 1] EXTRACT_EMBEDDING</div>
-    <div style="margin-left: 10px; border-left: 1px solid #586e75; padding-left: 10px; margin-top: 5px;">
-      <span style="color: #eee;">Token ciblé :</span> <span style="background: rgba(38,139,210,0.2); color: #2aa198; padding: 0 4px;">"${word.text}"</span><br/>
-      <span style="color: #eee;">Projection Latente :</span> [X: ${word.x.toFixed(2)}, Y: ${word.y.toFixed(2)}, Z: ${word.z.toFixed(2)}]<br/>
-      <span style="color: #586e75;">> Vectorisation terminée (4ms)</span>
-    </div>
-  `;
+  term.addLine("[ÉTAPE 1] EXTRACT_EMBEDDING", "scan");
+  const wordLabel = term.addLabel(`"${word.text}"`, "success");
+  term.addLine(`&nbsp;&nbsp;Token ciblé : ${wordLabel}`);
+  term.addLine(`&nbsp;&nbsp;Projection Latente : [X: ${word.x.toFixed(2)}, Y: ${word.y.toFixed(2)}, Z: ${word.z.toFixed(2)}]`);
+  term.addLine("&nbsp;&nbsp;> Vectorisation terminée (4ms)", "idle");
 
   // Etape 2: Recherche (Nearest Neighbor)
-  const step2 = document.createElement("div");
-  step2.innerHTML = `
-    <div style="color: #b58900; font-weight: bold; margin-top: 5px;">[ÉTAPE 2] COSINE_SIMILARITY_SEARCH</div>
-    <div style="margin-left: 10px; border-left: 1px solid #586e75; padding-left: 10px; margin-top: 5px;">
-      <span style="color: #eee;">Top-1 Document :</span> <b style="color: ${doc.color};">${doc.id}</b><br/>
-      <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-        <span style="color: #eee;">Confiance :</span> 
-        <div style="width: 150px; background: #073642; height: 12px; border-radius: 2px; overflow: hidden; border: 1px solid #586e75;">
-          <div style="width: ${barWidth}%; height: 100%; background: ${isKw ? '#859900' : '#dc322f'};"></div>
-        </div>
-        <span style="color: ${isKw ? '#859900' : '#dc322f'}; font-weight: bold;">${score}%</span>
-      </div>
-      <span style="color: #586e75;">> Distance vectorielle calculée : ${word.distance.toFixed(1)} unités</span>
-    </div>
-  `;
+  setTimeout(() => {
+    term.addLine("[ÉTAPE 2] COSINE_SIMILARITY_SEARCH", "warning");
+    term.addLine(`&nbsp;&nbsp;Top-1 Document : <b style="color: ${doc.color};">${doc.id}</b>`);
+    term.addProgress("Confiance", score, isKw ? 'success' : 'error');
+    term.addLine(`&nbsp;&nbsp;> Distance vectorielle : ${word.distance.toFixed(1)} unités`, "idle");
+  }, 300);
 
   // Etape 3: Résultat (Injection)
-  const step3 = document.createElement("div");
-  let promptAction = isKw 
-    ? `<span style="color: ${theme.green};">[SUCCÈS]</span> Pertinence sémantique validée. Le fragment suivant sera injecté dans le Prompt du LLM :<br/><br/><div style="padding: 8px; background: rgba(${theme.green_rgb}, 0.1); border-left: 3px solid ${doc.color}; color: ${theme.base0}; font-family: sans-serif;">"${doc.text}"</div>`
-    : `<span style="color: ${theme.red};">[ÉCHEC]</span> Seuil de pertinence non atteint (Bruit/Liaison). Le document <b style="color:${doc.color}">${doc.id}</b> a été identifié comme le plus proche, mais reste sémantiquement trop éloigné. <span style="color:${theme.yellow};">Ce token sera ignoré par le RAG.</span>`;
-
-  step3.innerHTML = `
-    <div style="color: #859900; font-weight: bold; margin-top: 5px;">[ÉTAPE 3] PROMPT_AUGMENTATION</div>
-    <div style="margin-left: 10px; border-left: 1px solid #586e75; padding-left: 10px; margin-top: 5px; line-height: 1.4;">
-      ${promptAction}
-    </div>
-  `;
-
-  // Rendu avec animation (effet cascade)
-  termBody.appendChild(step1);
-  setTimeout(() => termBody.appendChild(step2), 300);
-  setTimeout(() => termBody.appendChild(step3), 700);
+  setTimeout(() => {
+    term.addLine("[ÉTAPE 3] PROMPT_AUGMENTATION", "success");
+    if (isKw) {
+       term.addLine("&nbsp;&nbsp;[SUCCÈS] Pertinence sémantique validée.");
+       term.addLine(`&nbsp;&nbsp;<div style="padding: 8px; background: rgba(${theme.green_rgb}, 0.1); border-left: 3px solid ${doc.color}; color: ${theme.base0}; font-family: sans-serif;">"${doc.text}"</div>`);
+    } else {
+       term.addLine("&nbsp;&nbsp;[ÉCHEC] Seuil de pertinence non atteint.", "error");
+       term.addLine(`&nbsp;&nbsp;Le document <b style="color:${doc.color}">${doc.id}</b> est trop éloigné.`, "warning");
+    }
+  }, 700);
 
   return term;
 }
 ```
 
-:::
 :::

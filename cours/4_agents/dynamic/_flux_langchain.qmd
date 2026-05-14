@@ -1,6 +1,6 @@
-::: {.dynamic header="🕹️ Simulation Interactive : Le Flux de Données LangChain"}
+::: {.dynamic}
 
-::: {.controls header="Entrées Utilisateur (Inputs)"}
+::: {.controls}
 Saisissez vos variables. Cliquez sur Exécuter pour voir comment le texte est forgé, généré, puis nettoyé.
 
 
@@ -30,249 +30,130 @@ baseTemplate = "Tu es un assistant. Traduis la phrase suivante en style {persona
 ```
 :::
 
-::: {.steps-container}
+::: {.render}
 
-::: {#step1 .terminal-mode .terminal-step data-header="1. PromptTemplate (Remplacement des variables)"}
+::: {.layout-col}
+::: {#step1}
 
 ```{ojs}
 //| echo: false
 {
   runChainBtn;
-
-  const graph = document.querySelector(".tpl-dynamic");
-  const container = document.createElement("div");
-  container.className = "terminal-content";
-  container.style.opacity = "0.3";
-  container.style.transition = "all 0.5s";
+  const term = ui.atom.terminal({header: "1. PromptTemplate.log"});
 
   if (runChainBtn === 0) {
-    if (graph) graph.classList.remove("running");
-    document.querySelectorAll(".terminal-step, .sep-step").forEach(el => el.classList.remove("visible"));
-    document.querySelectorAll(".marquee-content").forEach(el => el.innerHTML = "");
-    container.innerHTML = `<span class="terminal-line idle">> En attente des données...</span>`;
-    yield container;
-    return;
+    term.addLine("En attente des données...", "idle");
+    return term;
   }
 
-  if (graph) graph.classList.add("running");
-  document.querySelector("#step1").classList.add("visible");
-  container.style.opacity = "1";
-  container.style.boxShadow = "0 0 15px rgba(42, 161, 152, 0.2)";
-
-  container.innerHTML = `<span class="terminal-line system">// Template initial :</span>
-<span class="terminal-line text-sol-base3" id="step1-target"></span>`;
-  
-  const target = container.querySelector("#step1-target");
   const baseTemplateStr = `Tu es un ${persona}.\nL'utilisateur te demande : "${userInput}".\nFormate ta réponse exclusivement en JSON valide.`;
   
-  let i = 0;
-  function typeWriter() {
-    if (i < baseTemplateStr.length) {
-      target.innerHTML = baseTemplateStr.substring(0, i+1).replace(/\n/g, '<br>');
-      i++;
-      setTimeout(typeWriter, 15);
-    } else {
-      const val1 = `<span class="bg-sol-red-subtle text-sol-red fw-bold rounded px-1">${persona}</span>`;
-      const val2 = `<span class="bg-sol-blue-subtle text-sol-blue fw-bold rounded px-1">${userInput}</span>`;
-      target.innerHTML = baseTemplateStr
-        .replace(persona, val1)
-        .replace(userInput, val2)
-        .replace(/\n/g, '<br>');
-    }
-  }
-  typeWriter();
-  yield container;
+  term.addLine("// Template initial :", "system");
+  term.addLine(baseTemplateStr);
+  
+  const personaLabel = term.addLabel(persona, "error");
+  const inputLabel = term.addLabel(userInput, "scan");
+  
+  Promises.delay(1000).then(() => {
+    term.clear();
+    term.addLine("// Template injecté :", "system");
+    term.addLine(baseTemplateStr.replace(persona, personaLabel).replace(userInput, inputLabel));
+  });
+
+  return term;
 }
 ```
 
 :::
 
-::: {#sep1 .separator .sep-step}
-<div class="marquee">
-  <div class="marquee-content"></div>
-</div>
-:::
-
-::: {#step2 .terminal-mode .terminal-step data-header="2. LLM (Génération brute / Raw Markdown)"}
+::: {#step2}
 
 ```{ojs}
 //| echo: false
 {
   runChainBtn;
-
-  const container = document.createElement("div");
-  container.className = "terminal-content";
-  container.style.opacity = "0.3";
-  container.style.transition = "all 0.5s";
+  const term = ui.atom.terminal({header: "2. LLM_Engine.log"});
 
   if (runChainBtn === 0) {
-    container.innerHTML = `<span class="terminal-line idle">> En attente de l'étape 1...</span>`;
-    yield container;
-    return;
+    term.addLine("En attente de l'étape 1...", "idle");
+    return term;
   }
 
-  yield container;
-  await Promises.delay(3200);
-
-  container.style.opacity = "1";
-  container.style.boxShadow = "0 0 15px rgba(211, 54, 130, 0.2)";
-  document.querySelector("#sep1").classList.add("visible");
-  
-  const flatPrompt = baseTemplate.replace("{persona}", persona).replace("{texte}", userInput).replace(/\n/g, ' ');
-  const sep1Text = `&nbsp;&gt;&gt;&gt; ${flatPrompt} &nbsp;&gt;&gt;&gt; ${flatPrompt} &nbsp;&gt;&gt;&gt; `;
-  document.querySelector("#sep1 .marquee-content").innerHTML = `<span>${sep1Text}</span><span>${sep1Text}</span>`;
-
-  document.querySelector("#step2").classList.add("visible");
-
-  const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
-  const rawLlmOutput = `Bien sûr, voici la traduction demandée :\n\`\`\`json\n{\n  "traduction": "${traduction}"\n}\n\`\`\`\nN'hésitez pas si vous avez d'autres phrases à traduire !`;
-
-  container.innerHTML = `<span class="terminal-line system">// model.invoke(prompt)</span>
-<span class="terminal-line text-sol-green" id="llm-target"></span>`;
-  const textSpan = container.querySelector("#llm-target");
-  
-  for (let i = 0; i <= rawLlmOutput.length; i += 3) {
-    textSpan.innerHTML = rawLlmOutput.substring(0, i).replace(/\n/g, '<br>');
-    await Promises.delay(10);
-  }
-  textSpan.innerHTML = rawLlmOutput.replace(/\n/g, '<br>');
-  
-  await Promises.delay(1000);
-  container.style.boxShadow = "none";
-}
-```
-
-:::
-
-::: {#sep2 .separator .sep-step}
-<div class="marquee">
-  <div class="marquee-content"></div>
-</div>
-:::
-
-::: {#step3 .terminal-mode .terminal-step data-header="3. OutputParser (Extraction Regex)"}
-
-```{ojs}
-//| echo: false
-{
-  runChainBtn;
-
-  const container = document.createElement("div");
-  container.className = "terminal-content";
-  container.style.opacity = "0.3";
-  container.style.transition = "all 0.5s";
-
-  if (runChainBtn === 0) {
-    container.innerHTML = `<span class="terminal-line idle">> En attente de l'étape 2...</span>`;
-    yield container;
-    return;
-  }
-
-  yield container;
-
-  const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
-  const rawLlmOutput = `Bien sûr, voici la traduction demandée :\n\`\`\`json\n{\n  "traduction": "${traduction}"\n}\n\`\`\`\nN'hésitez pas si vous avez d'autres phrases à traduire !`;
-
-  const step2Time = 500 + (Math.ceil(rawLlmOutput.length / 3) * 10) + 1000;
-  await Promises.delay(3200 + step2Time);
-
-  document.querySelector("#sep2").classList.add("visible");
-
-  const flatLlmOutput = rawLlmOutput.replace(/\n/g, ' ');
-  const sep2Text = `&nbsp;&gt;&gt;&gt; ${flatLlmOutput} &nbsp;&gt;&gt;&gt; ${flatLlmOutput} &nbsp;&gt;&gt;&gt; `;
-  document.querySelector("#sep2 .marquee-content").innerHTML = `<span>${sep2Text}</span><span>${sep2Text}</span>`;
-
-  document.querySelector("#step3").classList.add("visible");
-  container.style.opacity = "1";
-  container.style.boxShadow = "0 0 15px rgba(181, 137, 0, 0.2)";
-  
-  container.innerHTML = `<span class="terminal-line system">// parser.parse(raw_output)</span>
-<span class="terminal-line text-sol-green" id="parser-target">${rawLlmOutput.replace(/\n/g, '<br>')}</span>`;
-  
-  await Promises.delay(1500);
-  
-  const target = container.querySelector("#parser-target");
-  
-  target.innerHTML = `<span class="text-decoration-line-through text-sol-red opacity-75">Bien sûr, voici la traduction demandée :</span><br>
-<span class="text-sol-yellow fw-bold">\`\`\`json</span><br>
-<span class="text-sol-base3">{</span><br>
-  <span class="text-sol-blue">"traduction"</span>: <span class="text-sol-green fw-bold">"${traduction}"</span><br>
-<span class="text-sol-base3">}</span><br>
-<span class="text-sol-yellow fw-bold">\`\`\`</span><br>
-<span class="text-decoration-line-through text-sol-red opacity-75">N'hésitez pas si vous avez d'autres phrases à traduire !</span>`;
-  
+  yield term;
   await Promises.delay(2000);
+
+  const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
+  const rawLlmOutput = `Bien sûr, voici la traduction demandée :\n\`\`\`json\n{\n  "traduction": "${traduction}"\n}\n\`\`\`\nN'hésitez pas !`;
+
+  term.addLine("// model.invoke(prompt)", "system");
+  term.addLine(rawLlmOutput, "success");
   
-  target.innerHTML = `<span class="text-sol-base3">{</span><br>
-  <span class="text-sol-blue">"traduction"</span>: <span class="text-sol-green fw-bold">"${traduction}"</span><br>
-<span class="text-sol-base3">}</span>`;
-  
-  const successBadge = document.createElement("div");
-  successBadge.className = "terminal-line ok";
-  successBadge.innerHTML = "> ✅ Objet JSON prêt pour le code Python/JS";
-  successBadge.classList.add("terminal-success-badge");
-  container.appendChild(successBadge);
+  return term;
 }
 ```
 
 :::
 
-:::
-
-::: {.results #console-term .terminal-mode data-header="Console d'Orchestration"}
+::: {#step3}
 
 ```{ojs}
 //| echo: false
 {
   runChainBtn;
-  const container = document.createElement("div");
-  container.className = "terminal-content";
+  const term = ui.atom.terminal({header: "3. OutputParser.log"});
 
   if (runChainBtn === 0) {
-    container.innerHTML = `<span class="terminal-line idle">> [WAITING] En attente du signal d'orchestration...</span>`;
-    yield container;
-    return;
+    term.addLine("En attente de l'étape 2...", "idle");
+    return term;
   }
 
-  const l1 = `<span class="terminal-line system">> [SYSTEM] Initialisation de la chaîne...</span>`;
-  const l2 = `<span class="terminal-line warning">> [PROMPT] Injection des variables : {texte}, {persona}</span>`;
-  const l3 = `<span class="terminal-line system">> [LLM] Envoi de la requête au modèle...</span>`;
-  const l4 = `<span class="terminal-line">> [LLM] Génération de la réponse en cours...</span>`;
-  const l5 = `<span class="terminal-line ok">> [LLM] Réponse reçue (Style: ${persona})</span>`;
-  const l6 = `<span class="terminal-line system">> [PARSER] Analyse et nettoyage du JSON...</span>`;
-  const l7 = `<span class="terminal-line ok">> [SUCCESS] Pipeline exécuté avec succès.</span>`;
-
-  container.innerHTML = l1;
-  yield container;
-  await Promises.delay(1000);
-  
-  container.innerHTML = l1 + l2;
-  yield container;
-  await Promises.delay(1000); 
-
-  container.innerHTML = l1 + l2 + l3;
-  yield container;
-  await Promises.delay(1200);
-
-  container.innerHTML = l1 + l2 + l3 + l4;
-  yield container;
-  await Promises.delay(1000);
+  yield term;
+  await Promises.delay(4000);
 
   const traduction = llmResponses[persona] || llmResponses["Corporate 👔"];
-  const rawLlmOutput = "Bien sûr, voici la traduction demandée :\n\n```json\n{\n  \"traduction\": \"" + traduction + "\"\n}\n```\n\nN'hésitez pas si vous avez d'autres phrases à traduire !";
-  const step2Time = 500 + (Math.ceil(rawLlmOutput.length / 3) * 10) + 1000;
   
-  await Promises.delay(step2Time - 1500); 
-  container.innerHTML = l1 + l2 + l3 + l4 + l5;
-  yield container;
-  await Promises.delay(1000);
+  term.addLine("// parser.parse(raw_output)", "system");
+  term.addLine(`{ "traduction": "${traduction}" }`, "warning");
+  term.addLine("");
+  term.addLine("✅ Objet JSON prêt pour l'application.", "system");
+  
+  return term;
+}
+```
 
-  container.innerHTML = l1 + l2 + l3 + l4 + l5 + l6;
-  yield container;
-  await Promises.delay(4000); 
+:::
+:::
+:::
 
-  container.innerHTML = l1 + l2 + l3 + l4 + l5 + l6 + l7;
-  yield container;
+::: {.results}
+
+```{ojs}
+//| echo: false
+{
+  runChainBtn;
+  const term = ui.atom.terminal({header: "Orchestration_Console.log"});
+
+  if (runChainBtn === 0) {
+    term.addLine("En attente du signal...", "idle");
+    return term;
+  }
+
+  (async function() {
+    term.addLine("> [SYSTEM] Initialisation de la chaîne...", "system");
+    await Promises.delay(800);
+    term.addLine("> [PROMPT] Injection des variables...", "warning");
+    await Promises.delay(1200);
+    term.addLine("> [LLM] Appel du modèle en cours...", "scan");
+    term.addSpinner("GENERATING");
+    await Promises.delay(2000);
+    term.addLine("> [LLM] Réponse brute reçue.", "success");
+    await Promises.delay(1000);
+    term.addLine("> [PARSER] Nettoyage sémantique...", "warning");
+    await Promises.delay(1500);
+    term.addLine("> [SUCCESS] Pipeline terminé.", "system");
+  })();
+
+  return term;
 }
 ```
 

@@ -17,19 +17,14 @@
     .code-copy-button {
         display: none !important;
     }
+
+    &::before {
+        display: none !important;
+    }
     
     // Header Title
     .tpl-main-title {
-        @extend %card-header;
-        background: $sol-base2;
-        color: $sol-base01;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 0.85em;
-        border-bottom: 1px solid $sol-base2;
-        padding: 12px 20px;
-        margin: 0;
+        display: none !important;
     }
 
     // Controls Area
@@ -46,17 +41,6 @@
             justify-content: center;
         }
 
-        &[header]::before, &[title]::before {
-            content: attr(header);
-            display: block;
-            font-size: 0.75em;
-            font-weight: 800;
-            color: $sol-base1;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            text-align: center;
-        }
     }
 
     // Render Area
@@ -78,20 +62,8 @@
         
         &.transparent { background: transparent; }
         &.terminal-mode { 
-            background: $sol-base03; 
+            background: transparent; 
             padding: 0;
-        }
-
-        &[header]::before {
-            content: attr(header);
-            display: block;
-            font-size: 0.75em;
-            font-weight: 800;
-            color: $sol-base1;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            text-align: center;
         }
     }
 
@@ -101,17 +73,6 @@
         padding: 20px;
         border-top: 1px solid $sol-base2;
 
-        &[header]::before {
-            content: attr(header);
-            display: block;
-            font-size: 0.75em;
-            font-weight: 800;
-            color: $sol-base1;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            text-align: center;
-        }
     }
 
     // Horizontal Template Overrides
@@ -808,68 +769,7 @@ g.edgeLabel rect {
 // (Empty section for now, will be cleaned up)
 
 // Global Terminal Mode (Applied to .render, .results, or .dynamic-graph-canvas)
-.graph:has(.terminal-mode) {
-    padding: 0 !important;
-}
-
-.terminal-mode {
-    background: $sol-base03 !important;
-    border: 1px solid $sol-base02 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    display: block !important;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow: hidden !important;
-
-    &::before {
-        background: $sol-base02 !important;
-        color: $sol-base1 !important;
-        margin: 0 !important;
-        padding: 10px 18px !important;
-        text-align: left !important;
-        font-family: $font-family-code;
-        text-transform: none !important;
-        border-bottom: 1px solid rgba($sol-base1, 0.1);
-        content: " " attr(data-header) !important;
-        font-size: 0.85em;
-        letter-spacing: 0.5px;
-        display: flex !important;
-        align-items: center;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .sparsity-waiting, .sparsity-matrix-view {
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        background: transparent !important;
-    }
-
-    .cell-output-display {
-        overflow-x: hidden !important;
-        width: 100% !important;
-    }
-
-    // Custom Scrollbar for Terminal Mode
-    &::-webkit-scrollbar {
-        width: 10px;
-    }
-    &::-webkit-scrollbar-track {
-        background: $sol-base03;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: $sol-base02;
-        border: 2px solid $sol-base03;
-        border-radius: 10px;
-        &:hover {
-            background: $sol-base01;
-        }
-    }
-}
+// Legacy terminal-mode block removed
 
 /* Terminal Content Utilities */
 .terminal-content {

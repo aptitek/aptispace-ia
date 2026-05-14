@@ -1,5 +1,4 @@
-::: {.dynamic .horizontal .side-results header="🕹️ Simulation Interactive : Le Mécanisme de Self-Attention"}
-
+::: {.dynamic .horizontal .side-results}
 
 ```{ojs}
 //| echo: false
@@ -27,7 +26,7 @@ attentionMatrix = [
 mutable activeQ = 4;
 ```
 
-::: {.render .transparent .flex-grow-2 header="Cliquer sur un mot pour analyser son Attention"}
+::: {.render .transparent .flex-grow-2}
 
 ```{ojs}
 //| echo: false
@@ -145,7 +144,7 @@ mutable activeQ = 4;
 
 :::
 
-::: {.results header="Décomposition Mathématique : Q × K = Softmax"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
@@ -164,38 +163,23 @@ mutable activeQ = 4;
     .range([theme.blue, theme.green, theme.yellow, theme.red])
     .clamp(true);
 
-  const term = ui.org.terminal({header: "Transformer_Attention_Engine.log"});
-  const termBody = term.body;
-  termBody.style.cssText = "font-family: var(--font-code); line-height: 1.4;";
+  const term = ui.atom.terminal({header: "Transformer_Attention_Engine.log"});
 
-  const step1 = document.createElement("div");
-  step1.innerHTML = `<div style="color: ${theme.magenta}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 1] QUERY_PROJECTION</div>
-    <div style="margin-left: 8px; border-left: 1px solid ${theme.base01}; padding-left: 8px; margin-bottom: 6px;">
-      <span style="color: ${theme.base0};">Token source :</span> <span style="background: rgba(${theme.magenta_rgb}, 0.2); color: ${theme.magenta}; padding: 0 4px; border-radius: 2px;">"${qToken}"</span><br/>
-    </div>`;
+  term.addLine("[ÉTAPE 1] QUERY_PROJECTION", "scan");
+  const qLabel = term.addLabel(`"${qToken}"`, "success");
+  term.addLine(`&nbsp;&nbsp;Token source : ${qLabel}`);
 
-  let kMatchHtml = sortedAttentions.map(item => {
-    const bgColor = heatmapScale(item.w);
-    const textColor = item.w > 0.4 ? theme.base3 : theme.base03;
-    return `<span style="background: ${bgColor}; color: ${textColor}; padding: 1px 6px; border-radius: 4px; font-weight: bold; font-size: 0.85em; border: 1px solid rgba(${theme.base3_rgb}, 0.1); margin-right: 3px; display: inline-block; margin-bottom: 3px;">${item.word} (${(item.w * 100).toFixed(0)}%)</span>`;
-  }).join("");
+  term.addLine("[ÉTAPE 2] SOFTMAX_DIST", "warning");
+  let kLabels = sortedAttentions.map(item => {
+    const wPercent = (item.w * 100).toFixed(0);
+    const color = item.w > 0.6 ? 'error' : (item.w > 0.3 ? 'warning' : 'system');
+    return term.addLabel(`${item.word} (${wPercent}%)`, color);
+  });
+  term.addLine(`&nbsp;&nbsp;${kLabels.join(" ")}`);
 
-  const step2 = document.createElement("div");
-  step2.innerHTML = `<div style="color: ${theme.cyan}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 2] SOFTMAX_DIST</div>
-    <div style="margin-left: 8px; border-left: 1px solid ${theme.base01}; padding-left: 8px; margin-bottom: 6px;">
-      <div style="margin-top: 4px;">${kMatchHtml}</div>
-    </div>`;
-
-  const step3 = document.createElement("div");
-  step3.style.cssText = `background: rgba(${theme.magenta_rgb}, 0.05); padding: 6px; border-radius: 4px; border-left: 3px solid ${theme.magenta};`;
-  step3.innerHTML = `<div style="color: ${theme.magenta}; font-weight: bold; font-size: 0.9em;">> [ÉTAPE 3] AUGMENTATION</div>
-    <div style="margin-left: 4px;">
-      <span style="color: ${theme.base2}; font-size: 0.9em;">Vecteur de "${qToken}" enrichi.</span>
-    </div>`;
-
-  termBody.appendChild(step1);
-  termBody.appendChild(step2);
-  termBody.appendChild(step3);
+  term.addLine("[ÉTAPE 3] CONTEXT_AUGMENTATION", "success");
+  term.addLine(`&nbsp;&nbsp;Vecteur de ${qLabel} enrichi via contexte.`);
+  term.addLine("&nbsp;&nbsp;[SUCCESS] Pipeline d'attention validé.", "system");
 
   return term;
 }

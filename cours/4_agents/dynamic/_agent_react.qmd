@@ -1,6 +1,6 @@
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : L'Agent Autonome (Boucle ReAct)"}
+::: {.dynamic .horizontal .controls-top}
 
-::: {.controls header="Centre de Commande (Missions)"}
+::: {.controls}
 Confiez une mission complexe à l'Agent. Observez comment il décompose le problème et utilise ses outils (Recherche, Calculatrice) de manière autonome.
 
 ```{ojs}
@@ -33,7 +33,7 @@ viewof agentPhase = {
 
 :::
 
-::: {.render header="Le Cerveau de l'Agent (Framework ReAct)"}
+::: {.render}
 
 
 ```{ojs}
@@ -199,21 +199,16 @@ viewof agentPhase = {
 
 :::
 
-::: {.separator}
-:::
-
-::: {.results header="Terminal LLM : Trace d'Exécution (Logs)"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
 {
   if (startAgentBtn === 0) {
-    const div = document.createElement("div");
-    div.style.cssText = "font-family: 'Courier New', monospace; background: #002b36; padding: 20px; color: #586e75; border-radius: 6px; min-height: 250px;";
-
-    div.innerHTML = `> Agent Initialisé avec 2 outils : [Recherche_Web, Calculatrice]<br>> En attente d'une mission...`;
-    yield div;
-    return;
+    const term = ui.atom.terminal({header: "ReAct_Agent_Trace.log"});
+    term.addLine("Agent Initialisé avec 2 outils : [Recherche_Web, Calculatrice]", "system");
+    term.addLine("En attente d'une mission...", "idle");
+    return term;
   }
 
 
@@ -244,28 +239,7 @@ viewof agentPhase = {
     { type: "final", text: "Le résultat de l'addition de leurs années de naissance (1912 + 1960) est 3872.", delay: 500 }
   ];
 
-  // --- CONTENEUR DU TERMINAL ---
-  const container = document.createElement("div");
-  container.style.cssText = "font-family: 'Courier New', monospace; background: #002b36; border: 1px solid #073642; border-radius: 6px; overflow-y: auto; height: 350px; font-size: 13px; color: #839496; display: flex; flex-direction: column;";
-
-
-  const termHeader = document.createElement("div");
-  termHeader.style.cssText = "background: #073642; padding: 5px 15px; border-bottom: 1px solid #586e75; position: sticky; top: 0; z-index: 10;";
-  termHeader.innerHTML = `<span class="text-sol-cyan fw-bold">[ReAct_Agent_Trace.log]</span> - Exécution en cours...`;
-  container.appendChild(termHeader);
-
-  const termBody = document.createElement("div");
-  termBody.style.cssText = "padding: 15px; display: flex; flex-direction: column; gap: 8px;";
-  container.appendChild(termBody);
-
-  // Fonction utilitaire pour écrire avec un effet "machine à écrire" très rapide
-  async function typeWriter(element, text, speed = 5) {
-    for (let i = 0; i <= text.length; i += 2) {
-      element.innerHTML = text.substring(0, i) + '<span class="opacity-50">█</span>';
-      await Promises.delay(speed);
-    }
-    element.innerHTML = text;
-  }
+  const term = ui.atom.terminal({header: "ReAct_Agent_Trace.log"});
 
   // Boucle principale d'animation asynchrone
   (async function() {
@@ -274,41 +248,30 @@ viewof agentPhase = {
       viewof agentPhase.value = { type: step.type, step: i }; // Met à jour le graph SVG
       viewof agentPhase.dispatchEvent(new CustomEvent("input"));
 
-      
-      const line = document.createElement("div");
-      
       if (step.type === "thought") {
-        line.innerHTML = `<span class="text-sol-cyan fw-bold">> THOUGHT:</span> <span class="text-content text-sol-base3"></span>`;
-        termBody.appendChild(line);
-        await typeWriter(line.querySelector(".text-content"), step.text);
+        term.addLine(`> THOUGHT: ${step.text}`, "scan");
         
       } else if (step.type === "action") {
-        line.style.cssText = "margin-left: 15px; border-left: 2px solid #b58900; padding-left: 10px;";
-        line.innerHTML = `<span class="text-sol-yellow fw-bold">> ACTION:</span> Utilisation de l'outil [<b class="text-sol-base3">${step.tool}</b>]<br/><span class="text-sol-base01">  Input:</span> <code class="text-sol-orange bg-sol-base02 px-1 rounded">${step.input}</code>`;
-        termBody.appendChild(line);
+        const toolLabel = term.addLabel(step.tool, "warning");
+        term.addLine(`> ACTION: Utilisation de l'outil ${toolLabel}`);
+        term.addLine(`&nbsp;&nbsp;Input: ${step.input}`, "idle");
         
       } else if (step.type === "obs") {
-        line.style.cssText = "margin-left: 15px; border-left: 2px solid #859900; padding-left: 10px; background: rgba(133,153,0,0.05); padding-top: 4px; padding-bottom: 4px;";
-        line.innerHTML = `<span class="text-sol-green fw-bold">> OBSERVATION:</span> <span class="text-content text-sol-base3"></span>`;
-        termBody.appendChild(line);
-        await typeWriter(line.querySelector(".text-content"), step.text, 2); // Plus rapide car c'est une lecture
+        term.addLine(`> OBSERVATION: ${step.text}`, "system");
         
       } else if (step.type === "final") {
-        line.style.cssText = "margin-top: 15px; background: #073642; padding: 15px; border-left: 4px solid #d33682; border-radius: 4px;";
-        line.innerHTML = `<span class="text-sol-magenta fw-bold fs-6">✅ RÉPONSE FINALE :</span><br/><span class="text-content text-sol-base3 font-sans mt-2 d-inline-block"></span>`;
-        termBody.appendChild(line);
-        await typeWriter(line.querySelector(".text-content"), step.text, 10);
+        term.addLine("");
+        const finalLabel = term.addLabel("RÉPONSE FINALE", "success");
+        term.addLine(`${finalLabel}: ${step.text}`);
+        term.addLine("[SUCCESS] Mission terminée.", "system");
       }
 
-      // Auto-scroll du terminal vers le bas
-      container.scrollTop = container.scrollHeight;
-      
       // Pause avant la prochaine étape
       await Promises.delay(step.delay);
     }
   })();
 
-  yield container;
+  return term;
 }
 ```
 
