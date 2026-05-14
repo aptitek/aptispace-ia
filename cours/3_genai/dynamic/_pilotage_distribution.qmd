@@ -1,12 +1,12 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
+::: {.dynamic .horizontal .has-controls header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
 
-::: {.controls header="Paramètres d'Échantillonnage" style="flex: 0 0 450px;"}
+::: {.org-controls header="Paramètres d'Échantillonnage"}
 
-:::: {.d-flex .flex-wrap .gap-4 .align-items-start .justify-content-center .py-4}
+<div style="display: flex; flex-direction: row; gap: 1rem; align-items: flex-start; justify-content: center; padding: 1rem 0;">
+<div>
 
 ```{ojs}
 //| echo: false
-// 1. Temperature (Thermometer Widget)
 viewof temp = ui.mol.thermometer({
   label: "Température",
   value: 0.7,
@@ -15,8 +15,13 @@ viewof temp = ui.mol.thermometer({
   step: 0.05,
   height: "240px"
 })
+```
 
-// 2. Top-K (Guillotine / Blade Slider)
+</div>
+<div>
+
+```{ojs}
+//| echo: false
 viewof topK = ui.mol.blade_slider({
   label: "Top-K",
   value: 8,
@@ -24,10 +29,15 @@ viewof topK = ui.mol.blade_slider({
   max: 8,
   height: "240px"
 })
+```
 
-// 3. Top-P (Radial Slider)
+</div>
+<div>
+
+```{ojs}
+//| echo: false
 viewof topP = ui.mol.slider_radial({
-  label: "Top-P (Nucleus)",
+  label: "Top-P",
   value: 1,
   min: 0.1,
   max: 1,
@@ -37,11 +47,12 @@ viewof topP = ui.mol.slider_radial({
 })
 ```
 
-::::
+</div>
+</div>
 
 :::
 
-::: {.render .transparent .flex-fill style="max-width: 400px; margin: 0;" header="Distribution Softmax Dynamique"}
+::: {.org-render .transparent style="margin: 0; justify-content: center;" header="Distribution Softmax Dynamique"}
 
 ```{ojs}
 //| echo: false
@@ -88,9 +99,6 @@ viewof topP = ui.mol.slider_radial({
   });
 }
 ```
-:::
-
-::: {.separator .is-vertical}
 :::
 
 ::: {.results header="Configuration de l'Échantillonnage"}

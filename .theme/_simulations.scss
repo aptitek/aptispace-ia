@@ -127,7 +127,7 @@
             .tpl-main-title { flex: 0 0 100%; }
             
             .org-controls { 
-                flex: 0 0 240px;
+                flex: 0 0 auto;
                 border-bottom: none;
                 border-right: 1px solid $sol-base2;
                 display: none; // Hidden by default, shown if .has-controls
@@ -189,7 +189,6 @@
                 }
             }
 
-            // Small calculators (No render area)
             &:not(:has(.org-render)) {
                 @media (min-width: 992px) {
                     .org-results {
@@ -197,6 +196,22 @@
                         border-top: none;
                         border-left: 1px solid $sol-base2;
                     }
+                }
+            }
+            
+            &.force-row {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: stretch;
+
+                .org-controls { 
+                    display: flex; 
+                    flex: 0 0 auto; 
+                    border-bottom: none; 
+                    border-right: 1px solid $sol-base2; 
+                }
+                .org-render { 
+                    flex: 1; 
                 }
             }
         }
