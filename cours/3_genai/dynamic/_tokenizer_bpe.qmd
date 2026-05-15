@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Le Tokenizer BPE (Byte-Pair Encoding)"}
+::: {.dynamic .horizontal .side-results header="🕹️ Simulation Interactive : Le Tokenizer BPE (Byte-Pair Encoding)"}
 
 ::: {.controls header="Saisie du Texte Brut" style="flex: 0 0 400px;"}
 Tapez une phrase ci-dessous. Observez comment le modèle découpe les mots fréquents, les mots rares et la ponctuation avant de les transformer en vecteurs.
@@ -103,30 +103,34 @@ tokenizerResults = {
 
 :::
 
-::: {.results header="Analyse Statistique du BPE"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
+viewof monitor_tokenizer = {
+  const m = ui.org.monitor({ header: "Diagnostic Tokenizer" });
+  
+  m.chars = m.addValue("Caractères", tokenizerResults.chars, { color: theme.blue });
+  m.tokens = m.addValue("Tokens", tokenizerResults.count, { color: theme.red });
+  m.ratio = m.addValue("Ratio (Char/Tok)", (tokenizerResults.chars / tokenizerResults.count).toFixed(2), { color: theme.green });
+  
+  m.context = m.addProgressBar("Occupation Fenêtre d'Attention", tokenizerResults.count / 8192, {
+    max: 1, colorGood: theme.magenta
+  });
+  
+  return m;
+}
+// Update logic
 {
+  const m = viewof monitor_tokenizer;
   const stats = tokenizerResults;
-  if (!stats.tokens || stats.tokens.length === 0) return html`<div class="text-muted">En attente de texte...</div>`;
-
-  const ratio = (stats.chars / stats.count).toFixed(2);
-
-  return html`<div class="org-matrix-grid">
-    <div class="mol-stat-card" style="border-color: ${theme.blue}">
-      <div class="stat-label">Caractères</div>
-      <div class="stat-value" style="color: ${theme.blue}">${stats.chars}</div>
-    </div>
-    <div class="mol-stat-card" style="border-color: ${theme.red}">
-      <div class="stat-label">Tokens</div>
-      <div class="stat-value" style="color: ${theme.red}">${stats.count}</div>
-    </div>
-    <div class="mol-stat-card" style="border-color: ${theme.green}">
-      <div class="stat-label">Ratio (Char/Tok)</div>
-      <div class="stat-value" style="color: ${theme.green}">${ratio}</div>
-    </div>
-  </div>`;
+  if (m && stats.tokens.length > 0) {
+    m.chars.update(stats.chars);
+    m.tokens.update(stats.count);
+    m.ratio.update((stats.chars / stats.count).toFixed(2));
+    m.context.update(stats.count / 8192);
+  }
+  return html`<span></span>`;
 }
 ```
 
@@ -152,15 +156,6 @@ tokenizerResults = {
         <div style="color: ${theme.cyan}; font-weight: bold; min-width: 80px;">Découpe :</div>
         <div>Les mots complexes sont fragmentés. Cela permet au modèle de comprendre des mots qu'il n'a jamais vus en assemblant des racines connues.</div>
       </div>` : ''}
-    <div class="d-flex flex-column gap-1 mt-2 pt-2 border-top border-secondary opacity-75 small">
-      <div class="d-flex gap-3">
-        <div style="color: ${theme.magenta}; font-weight: bold; min-width: 80px;">Contexte :</div>
-        <div>Cette séquence occupe <b>${stats.count} / 8192</b> slots de la fenêtre d'attention.</div>
-      </div>
-      <div style="width: 100%; height: 6px; background: ${theme.base02}44; border-radius: 10px; overflow: hidden; margin-top: 4px; border: 1px solid ${theme.base02}22;">
-        <div style="width: ${Math.min(100, (stats.count / 8192 * 100)).toFixed(1)}%; height: 100%; background: ${theme.magenta}; border-radius: 10px; transition: width 0.4s ease-out;"></div>
-      </div>
-    </div>
   </div>`;
 }
 ```

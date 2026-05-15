@@ -173,14 +173,18 @@
                         flex: 1;
                         display: flex;
                         flex-direction: column;
-                        height: 500px; // Forced height to prevent content expansion
-                        min-height: 500px;
-                        max-height: 500px;
+                        min-height: 0;
 
                         .terminal-body {
                             flex: 1;
                             min-height: 0; // Crucial for scrolling in flex containers
                             overflow-y: auto;
+
+                            .token-highlight {
+                                color: $sol-red;
+                                font-weight: 800;
+                                text-shadow: 0 0 8px rgba($sol-red, 0.4);
+                            }
                         }
                     }
                 }
@@ -189,7 +193,6 @@
                     border-top: none;
                     border-left: 1px solid $sol-base2;
                     min-width: 400px;
-                    min-height: 500px;
                     display: flex;
                     flex-direction: column;
                     justify-content: flex-start; // Start content from top to avoid jumping
@@ -197,7 +200,32 @@
                     .org-monitor {
                         width: 100%;
                         .monitor-grid {
-                            grid-template-columns: 1fr !important;
+                            grid-template-columns: repeat(3, 1fr) !important;
+                            gap: 10px;
+
+                            .mol-progressbar-card, .mol-status-card {
+                                grid-column: 1 / -1;
+                            }
+                        }
+                    }
+                }
+
+                // Specific stabilization for Sparsity simulation
+                &.sim-sparsity {
+                    .org-render, .org-results {
+                        height: 540px; 
+                        max-height: 540px;
+                        overflow: visible; // Allow subtle shadows/glows
+                    }
+                    .atom-terminal {
+                        height: 500px !important;
+                        display: flex;
+                        flex-direction: column;
+
+                        .terminal-body {
+                            flex: 1;
+                            height: auto !important;
+                            overflow-y: auto !important;
                         }
                     }
                 }

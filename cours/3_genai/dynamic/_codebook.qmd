@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal}
+::: {.dynamic .horizontal .side-results header="Quantification Vectorielle (VQ-VAE)"}
 
 ::: {.controls}
 Déplacez les curseurs pour générer un vecteur d'information continu. Observez comment l'IA l'associe obligatoirement à un "concept type" de son dictionnaire.
@@ -163,7 +163,7 @@ _update = {
     }
   });
 
-  const term = ui.atom.terminal({header: "VQ-VAE_Quantizer_Core.log"});
+  const term = ui.atom.terminal({header: "VQ-VAE_Quantizer_Core.log", height: "100%"});
 
   term.addLine("[ÉTAPE 1] INPUT_EMBEDDING_FLOAT", "scan");
   term.addLine(`&nbsp;&nbsp;Vecteur continu : [ ${vecX.toFixed(3)}, ${vecY.toFixed(3)} ]`);

@@ -1,7 +1,6 @@
-::: {.dynamic .horizontal .side-results .has-controls header="Le Mur de la Sparsité"}
+::: {.dynamic .horizontal .side-results .has-controls .sim-sparsity header="Le Mur de la Sparsité"}
 
 ::: {.controls}
-Cliquez sur le bouton pour déclencher la féaturisation.
 
 ```{ojs}
 //| echo: false
@@ -33,10 +32,9 @@ tweetBox = {
   </div>`;
 }
 
-html`<div style="display: flex; gap: 40px; align-items: center; width: 100%; justify-content: center;">
-  <div style="flex: 0 0 auto;">${viewof btnSparsity}</div>
-  <div class="separator"></div>
+html`<div style="display: flex; gap: 60px; align-items: center; width: 100%; justify-content: center;">
   ${tweetBox}
+  <div style="flex: 0 0 auto;">${viewof btnSparsity}</div>
 </div>`
 ```
 
