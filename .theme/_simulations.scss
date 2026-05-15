@@ -114,13 +114,12 @@
             
             .org-controls { 
                 flex: 0 0 100%;
-                border-bottom: none;
-                border-right: 1px solid $sol-base2;
-                display: none; // Hidden by default, shown if .has-controls
-                
-                flex-direction: column;
+                display: flex;
                 justify-content: center;
-                padding: 25px;
+                align-items: center;
+                margin-bottom: 20px;
+                padding: 20px;
+                border-bottom: 1px solid rgba($sol-base1, 0.1);
             }
             
             .org-render { 
@@ -522,11 +521,9 @@
 .magnify-wrapper {
     position: relative;
     width: 100%;
-    background: $sol-base3;
-    border-radius: 12px;
-    overflow: hidden;
+    background: transparent;
     user-select: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: none;
 
     .magnify-base {
         width: 100%;
@@ -616,8 +613,9 @@
     overflow: hidden;
     box-sizing: border-box;
     border: 1px solid rgba(0,0,0,0.05);
+    clip-path: polygon(0 0, calc(100% - 46px) 0, 100% 46px, 100% 100%, 0 100%);
 
-    // Main background with cutout for the fold
+    // Inverted fold direction: Main background with cutout
     background: linear-gradient(225deg, transparent 32px, $sol-base3 34px);
 
     // The Fold
