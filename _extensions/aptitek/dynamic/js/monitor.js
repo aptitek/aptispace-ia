@@ -126,6 +126,77 @@ window.ui.org.monitor = ({ header, height = 'auto' } = {}) => {
     };
   };
 
+  // 3. Comparison (Ratio focus, can be > 1)
+  container.addComparison = (label, valA, valB, { labelA = 'Initial', labelB = 'Final', colorA = window.theme.blue, colorB = window.theme.green } = {}) => {
+    const el = document.createElement('div');
+    el.className = 'mol-ratio-card';
+
+    const header = document.createElement('div');
+    header.className = 'ratio-header';
+    header.innerText = label;
+
+    const body = document.createElement('div');
+    body.className = 'ratio-body';
+
+    const left = document.createElement('div');
+    left.className = 'r-box r-left';
+    left.style.setProperty('--r-color', colorA);
+    left.innerHTML = `<div class="r-label">${labelA}</div><div class="r-val">${valA}</div>`;
+
+    const center = document.createElement('div');
+    center.className = 'r-center';
+    const ratioEl = document.createElement('div');
+    ratioEl.className = 'r-multiplier';
+    center.appendChild(ratioEl);
+
+    const right = document.createElement('div');
+    right.className = 'r-box r-right';
+    right.style.setProperty('--r-color', colorB);
+    right.innerHTML = `<div class="r-label">${labelB}</div><div class="r-val">${valB}</div>`;
+
+    body.appendChild(left);
+    body.appendChild(center);
+    body.appendChild(right);
+
+    const bars = document.createElement('div');
+    bars.className = 'ratio-bars';
+    const barA = document.createElement('div');
+    barA.className = 'r-bar r-bar-a';
+    barA.style.background = colorA;
+    const barB = document.createElement('div');
+    barB.className = 'r-bar r-bar-b';
+    barB.style.background = colorB;
+    bars.appendChild(barA);
+    bars.appendChild(barB);
+
+    const updateUI = (a, b) => {
+      const ratio = (b / (a || 1));
+      ratioEl.innerText = 'x' + ratio.toFixed(1);
+      if (ratio > 1) ratioEl.classList.add('is-gain');
+      else ratioEl.classList.remove('is-gain');
+
+      const max = Math.max(a, b) || 1;
+      barA.style.width = (a / max * 100) + '%';
+      barB.style.width = (b / max * 100) + '%';
+    };
+
+    updateUI(valA, valB);
+
+    el.appendChild(header);
+    el.appendChild(body);
+    el.appendChild(bars);
+    grid.appendChild(el);
+
+    return {
+      el,
+      update: (newA, newB) => {
+        left.querySelector('.r-val').innerText = newA;
+        right.querySelector('.r-val').innerText = newB;
+        updateUI(newA, newB);
+      }
+    };
+  };
+
   // 3. Status (semantic alerts)
   container.addStatus = (label, statusText, level = 'info') => {
     const el = document.createElement('div');

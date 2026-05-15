@@ -1902,3 +1902,104 @@ details[open]>summary>.folder-arrow {
         }
     }
 }
+/* Ratio Comparison Component */
+.mol-ratio-card {
+    background: $sol-base3;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+
+    .ratio-header {
+        font-size: 0.75em;
+        font-weight: 800;
+        color: $sol-base1;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        opacity: 0.8;
+    }
+
+    .ratio-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        .r-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            
+            &.r-left { align-items: flex-start; }
+            &.r-right { align-items: flex-end; }
+
+            .r-label { 
+                font-size: 11px; 
+                color: $sol-base01; 
+                font-weight: 600;
+                margin-bottom: 2px; 
+            }
+            .r-val { 
+                font-family: $font-family-code; 
+                font-weight: 800; 
+                font-size: 1.4em; 
+                color: var(--r-color); 
+            }
+        }
+
+        .r-center {
+            flex: 0 0 auto;
+            position: relative;
+            
+            &::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: -40px;
+                right: -40px;
+                height: 1px;
+                background: rgba(0,0,0,0.05);
+                z-index: 1;
+            }
+
+            .r-multiplier {
+                position: relative;
+                z-index: 2;
+                background: $sol-base2;
+                color: $sol-base00;
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-weight: 900;
+                font-size: 13px;
+                border: 2px solid $sol-base3;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+
+                &.is-gain {
+                    background: $sol-green;
+                    color: $sol-base3;
+                }
+            }
+        }
+    }
+
+    .ratio-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 4px 0;
+
+        .r-bar {
+            height: 6px;
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0.8;
+            
+            &.r-bar-a { opacity: 0.4; }
+            &.r-bar-b { opacity: 1; }
+        }
+    }
+}

@@ -200,11 +200,15 @@
                     .org-monitor {
                         width: 100%;
                         .monitor-grid {
-                            grid-template-columns: repeat(3, 1fr) !important;
+                            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
                             gap: 10px;
 
-                            .mol-progressbar-card, .mol-status-card {
+                            .mol-status-card {
                                 grid-column: 1 / -1;
+                            }
+                            
+                            .mol-ratio-card {
+                                grid-column: auto !important;
                             }
                         }
                     }

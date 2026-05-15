@@ -110,13 +110,14 @@ tokenizerResults = {
 viewof monitor_tokenizer = {
   const m = ui.org.monitor({ header: "Diagnostic Tokenizer" });
   
-  m.chars = m.addValue("Caractères", tokenizerResults.chars, { color: theme.blue });
-  m.tokens = m.addValue("Tokens", tokenizerResults.count, { color: theme.red });
-  m.ratio = m.addValue("Ratio (Char/Tok)", (tokenizerResults.chars / tokenizerResults.count).toFixed(2), { color: theme.green });
-  
-  m.context = m.addProgressBar("Occupation Fenêtre d'Attention", tokenizerResults.count / 8192, {
-    max: 1, colorGood: theme.magenta
+  m.comp = m.addComparison("Densité d'Information", tokenizerResults.count, tokenizerResults.chars, { 
+    labelA: "Tokens", labelB: "Caractères", colorA: theme.red, colorB: theme.blue 
   });
+  
+  m.dist = m.addPieChart("Occupation Fenêtre d'Attention", [
+    { name: "Utilisé", value: tokenizerResults.count, color: theme.magenta },
+    { name: "Libre", value: 8192 - tokenizerResults.count, color: theme.base02 }
+  ]);
   
   return m;
 }
@@ -125,10 +126,11 @@ viewof monitor_tokenizer = {
   const m = viewof monitor_tokenizer;
   const stats = tokenizerResults;
   if (m && stats.tokens.length > 0) {
-    m.chars.update(stats.chars);
-    m.tokens.update(stats.count);
-    m.ratio.update((stats.chars / stats.count).toFixed(2));
-    m.context.update(stats.count / 8192);
+    m.comp.update(stats.count, stats.chars);
+    m.dist.update([
+      { name: "Utilisé", value: stats.count, color: theme.magenta },
+      { name: "Libre", value: 8192 - stats.count, color: theme.base02 }
+    ]);
   }
   return html`<span></span>`;
 }

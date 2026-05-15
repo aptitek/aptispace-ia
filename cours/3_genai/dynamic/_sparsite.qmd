@@ -173,10 +173,9 @@ viewof monitor_sparsity = {
   m.history = m.addHistory("Historique des Ressources", simState.history, { 
     min: 0, max: 1, color: theme.blue 
   });
-  m.dist = m.addPieChart("Distribution des Bits (0 vs 1)", [
-    { name: "Zéros", value: bitCounts.zeros, color: theme.green },
-    { name: "Uns", value: bitCounts.ones, color: theme.red }
-  ]);
+  m.comp = m.addComparison("Gonflement des données (Octets)", 60, 1, { 
+    labelA: "Texte Brut", labelB: "Vecteur BoW", colorA: theme.blue, colorB: theme.red 
+  });
   return m;
 }
 ```
@@ -195,10 +194,11 @@ viewof monitor_sparsity = {
   if (monitor) {
     if (monitor.usage) monitor.usage.update(simState.currentLevel);
     if (monitor.history) monitor.history.update(simState.history);
-    if (monitor.dist) monitor.dist.update([
-      { name: "Zéros", value: (1 - displayOnes) * 100, color: theme.green },
-      { name: "Uns", value: displayOnes * 100, color: theme.red }
-    ]);
+    if (monitor.comp) {
+      const rawSize = 60;
+      const vectorSize = (bitCounts.zeros + bitCounts.ones) * 4;
+      monitor.comp.update(rawSize, vectorSize);
+    }
   }
 }
 ```
