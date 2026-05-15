@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal header="🕹️ Simulation Interactive : Interpolation dans l'Espace Latent (AE vs VAE)"}
+::: {.dynamic .horizontal .side-results .has-controls header="🕹️ Simulation Interactive : Interpolation dans l'Espace Latent (AE vs VAE)"}
 
 ::: {.controls header="Modèle"}
 Sélectionnez l'architecture et naviguez directement dans l'espace mathématique en faisant glisser le curseur.
@@ -128,99 +128,97 @@ alphaLatent = {
 
 :::
 
-::: {.separator}
-:::
-
-::: {.render header="Sortie"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
-
-// Générateur du résultat en fonction de la position et de l'architecture
+// Rendu visuel de l'emoji (maintenu au-dessus du moniteur)
 {
-  const container = document.createElement("div");
-  container.style.cssText = "display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 10px;";
-
-  let emoji = "";
-  let confidence = 0;
-  let textOut = "";
+  const alpha = alphaLatent;
+  const mode = modeVAE;
+  const container = html`<div style="display: flex; align-items: center; justify-content: center; height: 120px; font-size: 5em; margin-bottom: 10px;"></div>`;
+  
   let isGlitch = false;
+  if (mode !== "vae" && alpha >= 0.15 && alpha <= 0.85) isGlitch = true;
 
-  if (modeVAE === "vae") {
-    // Logique VAE : Interpolation douce (Confidence & Labels)
-    confidence = 0.85 + (Math.abs(alphaLatent - 0.5) * 0.3);
-    if (alphaLatent < 0.2) textOut = "Concept : Chat";
-    else if (alphaLatent > 0.8) textOut = "Concept : Chien";
-    else textOut = "Espace Latent : Transition Cohérente";
-  } else {
-    // Logique AE classique : Chute brutale de cohérence au milieu
-    if (alphaLatent < 0.15) {
-      emoji = "🐱"; textOut = "Chat"; confidence = 0.98;
-    } else if (alphaLatent > 0.85) {
-      emoji = "🐶"; textOut = "Chien"; confidence = 0.98;
-    } else {
-      isGlitch = true;
-      confidence = Math.max(0, 1 - (Math.abs(alphaLatent - 0.5) * 5)); // Chute drastique vers 0
-      textOut = "ERREUR: Point mort dans l'espace";
-    }
-  }
-
-  // Effet "Glitch" (Bruit latent) pour l'AE au milieu
-  if (isGlitch) {
-    const glitches = ["🤡", "🤖", "👽", "👻", "👹", "👺", "🌚", "🌝", "👾", "💩", "🦄", "🧟", "🧠", "🐷", "🐸", "🐵", "🐔", "🐨", "🐯", "🐮", "🐧", "🤪", "😵", "🧐"];
-    emoji = glitches[Math.floor(Math.random() * glitches.length)];
-  }
-
-  // Rendu UI
-  const displayEmoji = document.createElement("div");
-  displayEmoji.style.cssText = `font-size: 4em; height: 1.2em; display: flex; align-items: center; justify-content: center; position: relative; filter: ${isGlitch ? 'hue-rotate(90deg) blur(2px)' : 'none'}`;
-
-  if (modeVAE === "vae") {
-    // Cross-fade triple pour une transition fluide (Chat -> Fox -> Chien)
-    const createLayer = (txt, op) => {
-      const span = document.createElement("span");
-      span.innerText = txt;
-      span.style.cssText = `position: absolute; opacity: ${op}; transition: opacity 0.1s;`;
-      return span;
-    };
-
+  if (mode === "vae") {
     let opCat = 0, opFox = 0, opDog = 0;
-    if (alphaLatent <= 0.5) {
-      opCat = 1 - (alphaLatent * 2);
-      opFox = alphaLatent * 2;
+    if (alpha <= 0.5) {
+      opCat = 1 - (alpha * 2); opFox = alpha * 2;
     } else {
-      opFox = 1 - ((alphaLatent - 0.5) * 2);
-      opDog = (alphaLatent - 0.5) * 2;
+      opFox = 1 - ((alpha - 0.5) * 2); opDog = (alpha - 0.5) * 2;
+    }
+    
+    container.innerHTML = `
+      <div style="position: relative; width: 1em; height: 1em;">
+        <span style="position: absolute; left: 0; top: 0; opacity: ${opCat}">🐱</span>
+        <span style="position: absolute; left: 0; top: 0; opacity: ${opFox}">🦊</span>
+        <span style="position: absolute; left: 0; top: 0; opacity: ${opDog}">🐶</span>
+      </div>`;
+  } else {
+    if (isGlitch) {
+      const glitches = ["🤡", "🤖", "👽", "👻", "👹", "👺", "🌚", "🌝", "👾", "💩", "🦄", "🧟", "🧠", "🐷", "🐸", "🐵", "🐔", "🐨", "🐯", "🐮", "🐧", "🤪", "😵", "🧐"];
+      const emoji = glitches[Math.floor(Math.random() * glitches.length)];
+      container.innerHTML = `<span style="filter: hue-rotate(90deg) blur(2px);">${emoji}</span>`;
+    } else {
+      container.innerHTML = `<span>${alpha < 0.5 ? "🐱" : "🐶"}</span>`;
+    }
+  }
+  
+  return container;
+}
+```
+
+```{ojs}
+//| echo: false
+viewof monitor_vae = {
+  const m = ui.org.monitor({ header: "Diagnostic Latent" });
+  
+  m.concept = m.addStatus("Classification", "Concept : Chat", "info");
+  m.coherence = m.addProgressBar("Cohérence sémantique", 0.98, { 
+    max: 1, 
+    colorGood: theme.green, 
+    colorBad: theme.red 
+  });
+  
+  return m;
+}
+
+// Update logic
+{
+  const m = viewof monitor_vae;
+  const mode = modeVAE;
+  const alpha = alphaLatent;
+  
+  if (m) {
+    let concept = "";
+    let confidence = 0;
+    let level = "info";
+    let isGlitch = false;
+
+    if (mode === "vae") {
+      confidence = 0.85 + (Math.abs(alpha - 0.5) * 0.3);
+      if (alpha < 0.2) concept = "Concept : Chat";
+      else if (alpha > 0.8) concept = "Concept : Chien";
+      else concept = "Interpolation : Transition Cohérente";
+      level = "success";
+    } else {
+      if (alpha < 0.15) {
+        concept = "Concept : Chat"; confidence = 0.98; level = "success";
+      } else if (alpha > 0.85) {
+        concept = "Concept : Chien"; confidence = 0.98; level = "success";
+      } else {
+        isGlitch = true;
+        confidence = Math.max(0, 1 - (Math.abs(alpha - 0.5) * 5));
+        concept = "ERREUR : Point Mort Latent";
+        level = "danger";
+      }
     }
 
-    displayEmoji.appendChild(createLayer("🐱", opCat));
-    displayEmoji.appendChild(createLayer("🦊", opFox));
-    displayEmoji.appendChild(createLayer("🐶", opDog));
-  } else {
-    displayEmoji.innerText = emoji;
+    m.concept.update(concept, level);
+    m.coherence.update(confidence);
   }
-
-  const desc = document.createElement("div");
-  desc.style.cssText = `font-family: monospace; font-size: 1.5em; margin-top: 15px; color: ${isGlitch ? theme.red : theme.cyan}; font-weight: bold;`;
-  desc.innerText = textOut;
-
-  // Jauge de cohérence mathématique
-  const meterCont = document.createElement("div");
-  meterCont.style.cssText = `width: 100%; background: ${theme.base2}; height: 16px; border-radius: 8px; margin-top: 25px; overflow: hidden;`;
-  const fill = document.createElement("div");
-  fill.style.cssText = `width: ${confidence * 100}%; height: 100%; background: ${confidence > 0.5 ? theme.green : theme.red}; transition: width 0.3s;`;
-  meterCont.appendChild(fill);
-
-  const meterLabel = document.createElement("div");
-  meterLabel.style.cssText = `font-size: 1.1em; color: theme.base03; margin-top: 10px; font-weight: 600;`;
-  meterLabel.innerText = `Cohérence sémantique : ${(confidence * 100).toFixed(1)}%`;
-
-  container.appendChild(displayEmoji);
-  container.appendChild(desc);
-  container.appendChild(meterCont);
-  container.appendChild(meterLabel);
-
-  return container;
+  return html`<span></span>`;
 }
 ```
 
