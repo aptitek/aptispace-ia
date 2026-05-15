@@ -1,4 +1,4 @@
-::: {.dynamic .horizontal .has-controls header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
+::: {.dynamic .horizontal .side-results .has-controls header="🕹️ Simulation Interactive : Pilotage de la Distribution Probabiliste"}
 
 ::: {.org-controls header="Paramètres d'Échantillonnage"}
 
@@ -101,69 +101,54 @@ viewof topP = ui.mol.slider_radial({
 ```
 :::
 
-::: {.results header="Configuration de l'Échantillonnage"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
+viewof monitor_pilotage = {
+  const m = ui.org.monitor({ header: "Configuration de l'Échantillonnage" });
+  
+  m.temp = m.addStatus("Température", "Équilibré", "info", { comment: "Navigation fluide entre logique et variabilité." });
+  m.topK = m.addStatus("Top-K (Candidates)", "Large Éventail", "info", { comment: "Le modèle explore une plus grande diversité." });
+  m.topP = m.addStatus("Top-P (Nucleus)", "Masse Ouverte", "info", { comment: "La traîne de probabilité est conservée." });
+  
+  return m;
+}
+
+// Update logic
 {
-  // 1. Temperature Card
-  const tempStatus = temp < 0.4 ? "warning" : (temp > 1.4 ? "success" : "info");
-  const tempCard = ui.card(html`
-    <div class="card-metric-container position-relative overflow-hidden">
-      <div class="position-relative z-2">
-        <div class="card-metric-label">Température</div>
-        <div class="card-metric-value" style="color: ${tempStatus === 'warning' ? theme.yellow : (tempStatus === 'success' ? theme.orange : theme.blue)};">${temp.toFixed(2)}</div>
-        <div class="small opacity-75 mt-2" style="line-height: 1.3;">
-          ${temp < 0.4
-            ? "<b>Déterministe</b>. Distribution pincée, focus sur la logique pure."
-            : (temp > 1.4
-              ? "<b>Créatif</b>. Distribution aplatie, focus sur l'originalité."
-              : "<b>Équilibré</b>. Navigation fluide entre logique et variabilité.")
-          }
-        </div>
-      </div>
-    </div>
-  `, { status: tempStatus });
-
-  // 2. Top-K Card
-  const kStatus = topK <= 3 ? "warning" : "info";
-  const kCard = ui.card(html`
-    <div class="card-metric-container position-relative overflow-hidden">
-      <div class="position-relative z-2">
-        <div class="card-metric-label">Top-K (Candidates)</div>
-        <div class="card-metric-value" style="color: ${theme.cyan};">${topK}</div>
-        <div class="small opacity-75 mt-2" style="line-height: 1.3;">
-          ${topK <= 3
-            ? "<b>Cercle Restreint</b>. Seul le haut du panier est autorisé."
-            : "<b>Large Éventail</b>. Le modèle explore une plus grande diversité."
-          }
-        </div>
-      </div>
-    </div>
-  `, { status: kStatus });
-
-  // 3. Top-P Card
-  const pStatus = topP < 0.6 ? "warning" : "info";
-  const pCard = ui.card(html`
-    <div class="card-metric-container position-relative overflow-hidden">
-      <div class="position-relative z-2">
-        <div class="card-metric-label">Top-P (Nucleus)</div>
-        <div class="card-metric-value" style="color: ${theme.yellow};">${(topP * 100).toFixed(0)}%</div>
-        <div class="small opacity-75 mt-2" style="line-height: 1.3;">
-          ${topP < 0.6
-            ? "<b>Nucleus Serré</b>. On ne garde que le cœur de la probabilité."
-            : "<b>Masse Ouverte</b>. La traîne de probabilité est conservée."
-          }
-        </div>
-      </div>
-    </div>
-  `, { status: pStatus });
-
-  return html`<div class="d-flex flex-row gap-3 w-100 flex-wrap">
-    <div style="flex: 1; min-width: 250px;">${tempCard}</div>
-    <div style="flex: 1; min-width: 250px;">${kCard}</div>
-    <div style="flex: 1; min-width: 250px;">${pCard}</div>
-  </div>`;
+  const m = viewof monitor_pilotage;
+  const t = temp;
+  const k = topK;
+  const p = topP;
+  
+  if (m) {
+    // Temperature
+    let tText = "Équilibré"; let tStatus = "info"; 
+    let tComment = "Navigation fluide entre logique et variabilité.";
+    if (t < 0.4) { 
+      tText = "Déterministe"; tStatus = "warning"; 
+      tComment = "Focus sur la logique pure, distribution pincée.";
+    }
+    else if (t > 1.4) { 
+      tText = "Créatif"; tStatus = "success"; 
+      tComment = "Focus sur l'originalité, distribution aplatie.";
+    }
+    m.temp.update(tText, tStatus, tComment);
+    
+    // Top-K
+    let kText = k <= 3 ? "Cercle Restreint" : "Large Éventail";
+    let kStatus = k <= 3 ? "warning" : "info";
+    let kComment = k <= 3 ? "Seul le haut du panier est autorisé." : "Le modèle explore une plus grande diversité.";
+    m.topK.update(kText, kStatus, kComment);
+    
+    // Top-P
+    let pText = p < 0.6 ? "Nucleus Serré" : "Masse Ouverte";
+    let pStatus = p < 0.6 ? "warning" : "info";
+    let pComment = p < 0.6 ? "On ne garde que le cœur de la probabilité." : "La traîne de probabilité est conservée.";
+    m.topP.update(pText, pStatus, pComment);
+  }
+  return html`<span></span>`;
 }
 ```
 

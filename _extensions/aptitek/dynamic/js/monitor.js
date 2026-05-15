@@ -44,12 +44,10 @@ window.ui.org.monitor = ({ header, height = 'auto' } = {}) => {
     el.appendChild(labelEl);
     el.appendChild(valueEl);
 
-    if (comment) {
-      const commentEl = document.createElement('div');
-      commentEl.className = 'stat-comment';
-      commentEl.innerText = comment;
-      el.appendChild(commentEl);
-    }
+    const commentEl = document.createElement('div');
+    commentEl.className = 'stat-comment';
+    commentEl.innerText = comment;
+    el.appendChild(commentEl);
 
     grid.appendChild(el);
 
@@ -57,8 +55,8 @@ window.ui.org.monitor = ({ header, height = 'auto' } = {}) => {
       el,
       update: (newVal, newComment) => {
         valueEl.innerText = newVal;
-        if (newComment !== undefined && comment) {
-          el.querySelector('.stat-comment').innerText = newComment;
+        if (newComment !== undefined) {
+          commentEl.innerText = newComment;
         }
       }
     };
@@ -198,7 +196,7 @@ window.ui.org.monitor = ({ header, height = 'auto' } = {}) => {
   };
 
   // 3. Status (semantic alerts)
-  container.addStatus = (label, statusText, level = 'info') => {
+  container.addStatus = (label, statusText, level = 'info', { comment = '' } = {}) => {
     const el = document.createElement('div');
     el.className = `mol-status-card is-${level}`;
 
@@ -210,17 +208,26 @@ window.ui.org.monitor = ({ header, height = 'auto' } = {}) => {
     textEl.className = 'status-text';
     textEl.innerText = statusText;
 
+    const commentEl = document.createElement('div');
+    commentEl.className = 'stat-comment';
+    commentEl.style.marginTop = '4px';
+    commentEl.innerText = comment;
+
     el.appendChild(labelEl);
     el.appendChild(textEl);
+    el.appendChild(commentEl);
 
     grid.appendChild(el);
 
     return {
       el,
-      update: (newText, newLevel) => {
-        textEl.innerText = newText;
+      update: (newText, newLevel, newComment) => {
+        if (newText !== undefined) textEl.innerText = newText;
         if (newLevel) {
           el.className = `mol-status-card is-${newLevel}`;
+        }
+        if (newComment !== undefined) {
+          commentEl.innerText = newComment;
         }
       }
     };

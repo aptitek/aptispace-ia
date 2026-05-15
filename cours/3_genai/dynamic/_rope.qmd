@@ -21,7 +21,7 @@ html`<style>
 </style>`
 ```
 
-::: {#sim-rope .dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
+::: {#sim-rope .dynamic .horizontal .side-results .has-controls header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
 
 ::: {.controls header="Saisie et Sélection Textuelle"}
 
@@ -208,33 +208,36 @@ viewof thetaBase = ui.slider({
 
 :::
 
-::: {.results header="Analyse de la Position Relative"}
+::: {.results}
 
 ```{ojs}
 //| echo: false
-{
+viewof monitor_rope = {
+  const m = ui.org.monitor({ header: "Analyse de Position" });
   const dist = Math.abs(idxA - idxB);
   const totalAngle = dist * thetaBase;
-  const wordA = tokens[idxA].word;
-  const wordB = tokens[idxB].word;
+  
+  m.motA = m.addValue("Mot A", `[${idxA}]`, { comment: tokens[idxA].word, color: theme.blue });
+  m.motB = m.addValue("Mot B", `[${idxB}]`, { comment: tokens[idxB].word, color: theme.red });
+  m.phi = m.addValue("Déphasage", `${totalAngle}°`, { 
+    comment: `Δ = ${dist} mots`, color: theme.yellow 
+  });
+  
+  return m;
+}
 
-  return html`<div class="org-matrix-grid">
-    <div class="mol-stat-card" style="border-color: ${theme.blue}">
-      <div class="stat-label">Mot A</div>
-      <div class="stat-value" style="color: ${theme.blue}">[${idxA}]</div>
-      <div class="small opacity-75">${wordA}</div>
-    </div>
-    <div class="mol-stat-card" style="border-color: ${theme.red}">
-      <div class="stat-label">Mot B</div>
-      <div class="stat-value" style="color: ${theme.red}">[${idxB}]</div>
-      <div class="small opacity-75">${wordB}</div>
-    </div>
-    <div class="mol-stat-card" style="border-color: ${theme.yellow}">
-      <div class="stat-label">Déphasage</div>
-      <div class="stat-value" style="color: ${theme.yellow}">${totalAngle}°</div>
-      <div class="small opacity-75">Δ = ${dist} mots</div>
-    </div>
-  </div>`;
+// Update logic
+{
+  const m = viewof monitor_rope;
+  const dist = Math.abs(idxA - idxB);
+  const totalAngle = dist * thetaBase;
+  
+  if (m) {
+    m.motA.update(`[${idxA}]`, tokens[idxA].word);
+    m.motB.update(`[${idxB}]`, tokens[idxB].word);
+    m.phi.update(`${totalAngle}°`, `Δ = ${dist} mots`);
+  }
+  return html`<span></span>`;
 }
 ```
 
