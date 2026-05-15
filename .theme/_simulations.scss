@@ -114,12 +114,13 @@
             
             .org-controls { 
                 flex: 0 0 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-bottom: 20px;
-                padding: 20px;
-                border-bottom: 1px solid rgba($sol-base1, 0.1);
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                margin-bottom: 25px;
+                padding: 15px;
+                width: 100%;
+                box-sizing: border-box;
             }
             
             .org-render { 
@@ -155,7 +156,9 @@
                     flex: 1.6; 
                     padding: 0 !important;
                     display: flex;
-                    align-items: stretch;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: flex-start;
                     
                     svg {
                         width: 100%;
@@ -626,7 +629,7 @@
         right: 0;
         width: 46px;
         height: 46px;
-        background: linear-gradient(135deg, 
+        background: linear-gradient(-135deg, 
             transparent 47%, 
             rgba(0,0,0,0.05) 50%, 
             $sol-base2 53%, 

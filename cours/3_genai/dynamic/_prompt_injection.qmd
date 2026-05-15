@@ -249,7 +249,7 @@ trigger = {
 ```{ojs}
 //| echo: false
 {
-  const container = html`<div style="display: flex; flex-direction: column; gap: 15px; height: 100%; min-height: 620px;"></div>`;
+  const container = html`<div style="display: flex; flex-direction: column; gap: 15px; height: 100%; min-height: 520px;"></div>`;
   const recruiterTerm = ui.atom.terminal({header: "RECRUITER_ANALYSIS_VIEW", height: "240px"});
   const hackerTerm = ui.atom.terminal({header: "SYSTEM_BREACH_MONITOR", height: "240px"});
   
