@@ -163,15 +163,36 @@
                         height: 100%;
                         display: block;
                     }
+
+                    // Fix for OJS cells to allow flex stretching
+                    .cell, .cell-output, .cell-output-display {
+                        display: contents;
+                    }
+
+                    .atom-terminal {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        height: 500px; // Forced height to prevent content expansion
+                        min-height: 500px;
+                        max-height: 500px;
+
+                        .terminal-body {
+                            flex: 1;
+                            min-height: 0; // Crucial for scrolling in flex containers
+                            overflow-y: auto;
+                        }
+                    }
                 }
                 .org-results { 
                     flex: 1; 
                     border-top: none;
                     border-left: 1px solid $sol-base2;
                     min-width: 400px;
+                    min-height: 500px;
                     display: flex;
                     flex-direction: column;
-                    justify-content: center; // Keep content centered within the terminal area
+                    justify-content: flex-start; // Start content from top to avoid jumping
 
                     .org-monitor {
                         width: 100%;

@@ -223,16 +223,17 @@ window.ui.org.monitor = ({ header, height = 'auto' } = {}) => {
 
     const render = (d) => {
       chartCont.innerHTML = '';
-      if (window.Plot) {
-        const plot = window.Plot.plot({
+      const P = window.Plot || (typeof Plot !== 'undefined' ? Plot : null);
+      if (P) {
+        const plot = P.plot({
           width: chartCont.clientWidth || 300,
           height: 120,
           style: { background: "transparent", color: window.theme.base01 },
           x: { axis: null },
           y: { domain: [min, max], axis: "right", ticks: 3, tickFormat: d => (d * 100).toFixed(0) + '%' },
           marks: [
-            window.Plot.areaY(d, { x: "t", y: "v", fill: color, fillOpacity: 0.2, curve: "basis" }),
-            window.Plot.lineY(d, { x: "t", y: "v", stroke: color, strokeWidth: 2, curve: "basis" })
+            P.areaY(d, { x: "t", y: "v", fill: color, fillOpacity: 0.2, curve: "basis" }),
+            P.lineY(d, { x: "t", y: "v", stroke: color, strokeWidth: 2, curve: "basis" })
           ]
         });
         chartCont.appendChild(plot);

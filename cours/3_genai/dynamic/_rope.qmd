@@ -2,14 +2,14 @@
 //| echo: false
 html`<style>
 /* Suppression des marges excessives pour cette simulation */
-.tpl-dynamic { margin-bottom: 1.5rem !important; }
-.org-controls { padding: 15px !important; flex: 0 0 380px !important; } /* Larger left panel */
-.org-render { padding: 0 !important; min-height: 0 !important; align-self: center !important; } /* Vertical centering */
-.org-render::before { margin-bottom: 0 !important; display: none; }
-.org-render .cell { margin: 0 !important; padding: 0 !important; }
-.org-render .cell-output { margin: 0 !important; padding: 0 !important; }
-.org-render .cell-output-display { margin: 0 !important; padding: 0 !important; }
-.org-results { padding: 0 !important; }
+#sim-rope.dynamic .tpl-dynamic { margin-bottom: 1.5rem !important; }
+#sim-rope.dynamic .org-controls { padding: 15px !important; flex: 0 0 380px !important; } /* Larger left panel */
+#sim-rope.dynamic .org-render { padding: 0 !important; min-height: 0 !important; align-self: center !important; } /* Vertical centering */
+#sim-rope.dynamic .org-render::before { margin-bottom: 0 !important; display: none; }
+#sim-rope.dynamic .org-render .cell { margin: 0 !important; padding: 0 !important; }
+#sim-rope.dynamic .org-render .cell-output { margin: 0 !important; padding: 0 !important; }
+#sim-rope.dynamic .org-render .cell-output-display { margin: 0 !important; padding: 0 !important; }
+#sim-rope.dynamic .org-results { padding: 0 !important; }
 
 /* Token stream optimizations */
 .org-token-stream {
@@ -21,7 +21,7 @@ html`<style>
 </style>`
 ```
 
-::: {.dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
+::: {#sim-rope .dynamic .horizontal .controls-top header="🕹️ Simulation Interactive : RoPE appliquée au Texte"}
 
 ::: {.controls header="Saisie et Sélection Textuelle"}
 
