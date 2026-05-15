@@ -221,7 +221,7 @@
                     .org-render, .org-results {
                         height: 540px; 
                         max-height: 540px;
-                        overflow: visible; // Allow subtle shadows/glows
+                        overflow: hidden; 
                     }
                     .atom-terminal {
                         height: 500px !important;
