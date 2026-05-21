@@ -430,6 +430,7 @@ viewof selectedWordEvent = {
 
   return svg;
 }
+```
 
 ::: {.results}
 

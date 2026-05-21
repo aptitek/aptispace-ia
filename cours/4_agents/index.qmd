@@ -2,6 +2,13 @@
 title: "🤖 Orchestration & Agents"
 ---
 
+```{ojs}
+//| echo: false
+//| output: false
+// Block de stabilisation OJS pour le projet Quarto
+_stabilize = true
+```
+
 
 
 {{< include _41_orchestrateur.qmd >}}
